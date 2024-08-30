@@ -1,5 +1,5 @@
 {
-    "name": "Follow-up of the leagues ",
+    "name": "Follow-up of the leagues",
     "version": "1.0",
     "author": "Jorge Alberto Quiroz Sierra",
     "category": "FollowUp/Leagues",
@@ -11,11 +11,16 @@
         sports enthusiasts and organizations needing a centralized
         platform for league management.
     """,
+    "sequence": -10,
     "depends": ["base", "web"],
     "data": [
-        # "views/my_view.xml",
+        "security/ir.model.access.csv",
+        "views/football/countries_wizard.xml",
+        "views/football/countries.xml",
+        "views/menu.xml",
     ],
     "installable": True,
     "application": True,
     "auto_install": False,
+    "license": "LGPL-3",
 }
