@@ -1,6 +1,8 @@
 services:
   web:  # This service defines the Odoo container.
     image: odoo:17.0  # Uses the official Odoo version 17.0 image.
+    env_file:
+      - .env
     depends_on:  # Specifies dependencies. The 'web' service will only start after the 'db' service is active.
       - db
     ports:

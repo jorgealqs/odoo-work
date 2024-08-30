@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <menuitem id="football_country_menu_root" name="Follow-up">
+        <menuitem id="football_country_first_level_menu" name="Football">
+            <menuitem id="football_country_menu_action" action="football_country_action"/>
+
+            <menuitem id="football_country_download_level_menu" name="Donwload">
+                <menuitem id="football_country_wizard_menu_action" action="action_football_country_wizard"/>
+            </menuitem>
+
+        </menuitem>
+    </menuitem>
+</odoo>

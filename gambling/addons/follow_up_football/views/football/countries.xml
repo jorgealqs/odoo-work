@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="football_country_tree" model="ir.ui.view">
+        <field name="name">football.country Tree</field>
+        <field name="model">football.country</field>
+        <field name="arch" type="xml">
+            <tree limit="20">
+                <field name="name"/>
+                <field name="country_code"/>
+                <field name="flag" widget="image_url" options="{'size': [50, 50]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="football_country_form" model="ir.ui.view">
+        <field name="name">football.country Form</field>
+        <field name="model">football.country</field>
+        <field name="arch" type="xml">
+            <form string="Countries">
+                <sheet>
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <label for="name"/>
+                        </div>
+                        <h1 class="mb32">
+                            <field name="name" class="mb16"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="Description">
+                            <group>
+                                <field name="country_code"/>
+                                <field name="flag"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="football_country_action" model="ir.actions.act_window">
+        <field name="name">Countries</field>
+        <field name="res_model">football.country</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
