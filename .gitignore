@@ -1,0 +1,49 @@
+config/
+__pycache__
+
+# Logs
+log/
+*.log
+
+# Odoo specific
+*.pid
+*.log
+docker-compose.override.yml
+*.csv
+# *.xml
+*.json
+*.rst
+
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+*.env
+venv/
+.envrc
+
+# Odoo specific
+odoo_pg_pass
+*.db
+*.sqlite
+*.sqlite3
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+Thumbs.db
+

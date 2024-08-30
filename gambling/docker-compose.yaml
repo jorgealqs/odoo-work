@@ -1,0 +1,40 @@
+services:
+  web:  # This service defines the Odoo container.
+    image: odoo:17.0  # Uses the official Odoo version 17.0 image.
+    depends_on:  # Specifies dependencies. The 'web' service will only start after the 'db' service is active.
+      - db
+    ports:
+      - "8071:8069"  # Maps port 8069 of the container to port 8070 on the host, allowing access to Odoo via port 8071.
+    volumes:
+      - odoo-web-data:/var/lib/odoo  # Mounts a persistent volume for Odoo data.
+      - ./config:/etc/odoo  # Mounts custom configuration files from your local machine to the container.
+      - ./addons:/mnt/extra-addons  # Mounts the folder for custom addons.
+      - ./log:/var/log/odoo  # Mounts the log folder so you can view logs locally.
+    environment:
+      - PASSWORD_FILE=/run/secrets/postgresql_password  # Specifies the location of the file containing the database password.
+    secrets:
+      - postgresql_password  # Defines a secret that will be passed securely to the container.
+
+  db:  # This service defines the PostgreSQL container.
+    image: postgres:15  # Uses the official PostgreSQL version 15 image.
+    environment:
+      - POSTGRES_DB=postgres  # The default database name that will be created.
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgresql_password  # Specifies the location of the file containing the database password.
+      - POSTGRES_USER=odoo  # Defines the PostgreSQL user as 'odoo'.
+      - PGDATA=/var/lib/postgresql/data/pgdata  # Specifies the location of the PostgreSQL data directory.
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata  # Mounts a persistent volume for database data.
+    secrets:
+      - postgresql_password  # Defines a secret that will be passed securely to the container.
+
+volumes:
+  odoo-web-data:
+    name: odoo_web_data_volume_work  # Defines a persistent volume with a specific name for Odoo data.
+  odoo-db-data:
+    name: odoo_db_data_volume_work  # Defines a persistent volume with a specific name for PostgreSQL data.
+
+secrets:
+  postgresql_password:
+    file: odoo_pg_pass  # Specifies the location of the secret file containing the database password.
+
+name: odoo-work  # The name of the configuration, useful for identifying this specific project.
