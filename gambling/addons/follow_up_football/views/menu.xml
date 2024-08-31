@@ -7,9 +7,12 @@
 
             <menuitem id="football_session_menu_action" action="football_session_action" sequence="20"/>
 
-            <menuitem id="football_country_download_level_menu" name="Donwload" sequence="30">
+            <menuitem id="football_league_menu_action" action="football_league_action" sequence="30"/>
+
+            <menuitem id="football_country_download_level_menu" name="Donwload" sequence="100">
                 <menuitem id="football_country_wizard_menu_action" action="action_football_country_wizard" sequence="10"/>
                 <menuitem id="football_session_wizard_menu_action" action="action_football_session_wizard" sequence="20"/>
+                <menuitem id="football_league_wizard_menu_action" action="action_football_league_wizard" sequence="30"/>
             </menuitem>
 
         </menuitem>

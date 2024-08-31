@@ -19,6 +19,8 @@
         "views/football/countries.xml",
         "views/session/session_wizard.xml",
         "views/session/session.xml",
+        "views/leagues/league.xml",
+        "views/leagues/league_wizard.xml",
         "views/menu.xml",
     ],
     "installable": True,

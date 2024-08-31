@@ -27,7 +27,7 @@
         <field name="arch" type="xml">
             <tree limit="30">
                 <field name="country_id"/>
-                <field name="year"/>
+                <field name="year" string="Session"/>
                 <field name="is_active"/>
             </tree>
         </field>
