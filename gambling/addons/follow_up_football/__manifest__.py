@@ -17,6 +17,8 @@
         "security/ir.model.access.csv",
         "views/football/countries_wizard.xml",
         "views/football/countries.xml",
+        "views/session/session_wizard.xml",
+        "views/session/session.xml",
         "views/menu.xml",
     ],
     "installable": True,

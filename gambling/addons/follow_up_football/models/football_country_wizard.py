@@ -10,5 +10,5 @@ class FootballCountryWizard(models.TransientModel):
 
     def action_sync_countries(self):
         model = self.env['football.country']
-        model.sync_countries()
+        model._sync_countries()
         return {'type': 'ir.actions.act_window_close'}
