@@ -18,13 +18,18 @@ class FootballCountry(models.Model):
     )
     flag = fields.Char(string='Flag')
     has_data = fields.Boolean(compute='_compute_has_data', store=True)
+    session_ids = fields.One2many(
+        comodel_name='football.session',
+        inverse_name='country_id',
+        string='Sessions'
+    )
 
     @api.depends('name')
     def _compute_has_data(self):
         for record in self:
             record.has_data = len(self.search([])) > 0
 
-    def sync_countries(self):
+    def _sync_countries(self):
 
         # Verifica si la tabla ya tiene datos
         if self.search([]):

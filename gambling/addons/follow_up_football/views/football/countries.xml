@@ -34,6 +34,17 @@
                                 <field name="flag"/>
                             </group>
                         </page>
+                        <page string="Sessions">
+                            <group>
+                                <field name="session_ids" string="">
+                                    <tree limit="5">
+                                        <field name="country_id"/>
+                                        <field name="year"/>
+                                        <field name="is_active"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

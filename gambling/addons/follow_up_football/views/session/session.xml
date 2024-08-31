@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="football_session_search" model="ir.ui.view">
+        <field name="name">football.session Search</field>
+        <field name="model">football.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="country_id"/>
+                <field name="year"/>
+                <field name="is_active"/>
+                <!-- Default group by country -->
+                <group expand="1" string="Group By">
+                    <filter string="Country" name="group_country" context="{'group_by':'country_id'}"/>
+                </group>
+                <!-- Default filter to show only active sessions -->
+                <filter name="filter_active"
+                    domain="[('is_active', '=', True)]"
+                    string="Active"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="football_session_tree" model="ir.ui.view">
+        <field name="name">football.session Tree</field>
+        <field name="model">football.session</field>
+        <field name="arch" type="xml">
+            <tree limit="30">
+                <field name="country_id"/>
+                <field name="year"/>
+                <field name="is_active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="football_session_action" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">football.session</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="football_session_tree"/>
+        <field name="context">{'search_default_group_country': 1, 'search_default_filter_active': 1}</field>
+    </record>
+</odoo>

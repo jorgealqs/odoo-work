@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_football_session_wizard_form" model="ir.ui.view">
+        <field name="name">football.session.wizard Form</field>
+        <field name="model">football.session.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sessions">
+                <sheet>
+                    <div class="oe_title">
+                        <h1 class="text-center mb-4">
+                            <span class="fa fa-globe"></span> Sync Football Sessions
+                        </h1>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        Download sessions data from the Football-API. Click "Sync" to start the process.
+                    </div>
+                    <footer>
+                        <button string="Sync" type="object" name="action_sync_sessions" class="btn btn-success" icon="fa-download"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_football_session_wizard" model="ir.actions.act_window">
+        <field name="name">Sync Sessions</field>
+        <field name="res_model">football.session.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_football_session_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
