@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <menuitem id="football_country_menu_root" name="Follow-up">
-        <menuitem id="football_country_first_level_menu" name="Football">
+        <menuitem id="football_country_first_level_menu" name="Football" sequence="10">
 
             <menuitem id="football_country_menu_action" action="football_country_action" sequence="10"/>
 
@@ -9,12 +9,14 @@
 
             <menuitem id="football_league_menu_action" action="football_league_action" sequence="30"/>
 
-            <menuitem id="football_country_download_level_menu" name="Donwload" sequence="100">
+        </menuitem>
+        <menuitem id="football_country_download_level_menu" name="Donwload" sequence="20">
+            <menuitem id="football_country_download_second_level_menu" name="Sync">
                 <menuitem id="football_country_wizard_menu_action" action="action_football_country_wizard" sequence="10"/>
                 <menuitem id="football_session_wizard_menu_action" action="action_football_session_wizard" sequence="20"/>
                 <menuitem id="football_league_wizard_menu_action" action="action_football_league_wizard" sequence="30"/>
+                <menuitem id="football_team_wizard_menu_action" action="action_football_team_wizard" sequence="40"/>
             </menuitem>
-
         </menuitem>
     </menuitem>
 </odoo>
