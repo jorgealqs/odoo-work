@@ -21,6 +21,8 @@
         "views/session/session.xml",
         "views/leagues/league.xml",
         "views/leagues/league_wizard.xml",
+        "views/team/team.xml",
+        "views/team/team_wizard.xml",
         "views/menu.xml",
     ],
     "installable": True,

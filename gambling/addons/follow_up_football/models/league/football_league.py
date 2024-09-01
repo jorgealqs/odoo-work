@@ -16,7 +16,6 @@ class FootballLeague(models.Model):
     name = fields.Char(string='Name', required=True)
     type = fields.Char(string='Type')
     logo = fields.Char(string='Logo URL')
-
     # Many2one relationship to the football.session model
     session_id = fields.Many2one(
         comodel_name='football.session',
@@ -31,6 +30,14 @@ class FootballLeague(models.Model):
     )
     start = fields.Date(string='Start Date')
     end = fields.Date(string='End Date')
+    # New boolean field to indicate if the league should be followed
+    follow = fields.Boolean(string='Follow', default=False)
+    # Relación One2many con el modelo FootballTeam
+    team_ids = fields.One2many(
+        comodel_name='football.team',
+        inverse_name='league_id',
+        string='Teams'
+    )
 
     def _sync_leagues(self):
         _logger.info("\n\n Llegaste perras \n\n")
@@ -71,7 +78,6 @@ class FootballLeague(models.Model):
                     'x-rapidapi-host': 'v3.football.api-sports.io',
                     'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
                 }
-
                 try:
                     response = requests.get(url, headers=headers)
                     response.raise_for_status()
@@ -103,11 +109,3 @@ class FootballLeague(models.Model):
                         f"Error al obtener datos de la API "
                         f"para {country.country_code} "
                         f"y {session['Year']}: {e}")
-
-                _logger.info(
-                    f"URL -> {url}"
-                    f"headers -> {headers}"
-                    f"Country ID: {country.id}, "
-                    f"Country Name: {country.name}, Session ID:"
-                    f"{session['ID']}, Session Year: {session['Year']}"
-                )
