@@ -1,6 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
+    <record id="football_country_search" model="ir.ui.view">
+        <field name="name">football.country Search</field>
+        <field name="model">football.country</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="country_code"/>
+            </search>
+        </field>
+    </record>
+
     <record id="football_country_tree" model="ir.ui.view">
         <field name="name">football.country Tree</field>
         <field name="model">football.country</field>

@@ -23,6 +23,8 @@
         "views/leagues/league_wizard.xml",
         "views/team/team.xml",
         "views/team/team_wizard.xml",
+        "views/standings/standing.xml",
+        "views/standings/standing_wizard.xml",
         "views/menu.xml",
     ],
     "installable": True,

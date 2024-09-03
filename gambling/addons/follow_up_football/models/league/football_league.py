@@ -22,6 +22,12 @@ class FootballLeague(models.Model):
         string='Season',
         required=True
     )
+    # Campo relacionado
+    season_year = fields.Char(
+        related='session_id.year',
+        string='Session',
+        store=True
+    )
     # Many2one relationship to the football.country model
     country_id = fields.Many2one(
         comodel_name='football.country',
@@ -37,6 +43,12 @@ class FootballLeague(models.Model):
         comodel_name='football.team',
         inverse_name='league_id',
         string='Teams'
+    )
+    # Relación One2many con el modelo FootballStanding
+    standing_ids = fields.One2many(
+        comodel_name='football.standing',
+        inverse_name='league_id',
+        string='Standings'
     )
 
     def _sync_leagues(self):

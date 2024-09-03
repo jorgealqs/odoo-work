@@ -27,12 +27,24 @@
             <form string="League">
                 <sheet>
                     <div class="oe_title">
-                        <div class="oe_edit_only">
-                            <label for="name"/>
-                        </div>
-                        <h1 class="mb32">
-                            <field name="name" class="mb16"/>
-                        </h1>
+                        <group>
+                            <group>
+                                <div class="oe_edit_only">
+                                    <label for="country_id"/>
+                                </div>
+                                <h1 class="mb32">
+                                    <field name="country_id"/>
+                                </h1>
+                            </group>
+                            <group>
+                                <div class="oe_edit_only">
+                                    <label for="name"/>
+                                </div>
+                                <h1 class="mb32">
+                                    <field name="name" class="mb16" string="League"/>
+                                </h1>
+                            </group>
+                        </group>
                     </div>
                     <notebook>
                         <page string="Information">
@@ -44,7 +56,6 @@
                                     <field name="session_id"/>
                                 </group>
                                 <group>
-                                    <field name="country_id"/>
                                     <field name="start"/>
                                     <field name="end"/>
                                     <field name="follow"/>
@@ -63,6 +74,28 @@
                                 </field>
                             </group>
                         </page>
+                        <page string="Standings">
+                            <div class="o_form_label">
+                                <div class="jumbotron text-center py-4">
+                                    <p class="lead">Up-to-date standings for the current league season.</p>
+                                </div>
+                            </div>
+                            <group>
+                                <field name="standing_ids" string="">
+                                    <tree decoration-success="rank == 1" decoration-bf="rank == 1">
+                                        <field name="team_id" />
+                                        <field name="rank" />
+                                        <field name="points" />
+                                        <field name="played" />
+                                        <field name="win" />
+                                        <field name="draw" />
+                                        <field name="lose" />
+                                        <field name="scored" />
+                                        <field name="conceded" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -76,9 +109,9 @@
             <tree limit="30">
                 <field name="name"/>
                 <field name="logo" widget="image_url" options="{'size': [50, 50]}" string="Logo"/>
-                <field name="session_id"/>
-                <field name="country_id"/>
-                <field name="follow"/>
+                <field name="season_year" optional="true"/>
+                <field name="country_id" optional="true"/>
+                <field name="follow" optional="true"/>
                 <field name="start"/>
                 <field name="end"/>
             </tree>
