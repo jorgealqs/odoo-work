@@ -16,6 +16,7 @@
                 <menuitem id="football_session_wizard_menu_action" action="action_football_session_wizard" sequence="20"/>
                 <menuitem id="football_league_wizard_menu_action" action="action_football_league_wizard" sequence="30"/>
                 <menuitem id="football_team_wizard_menu_action" action="action_football_team_wizard" sequence="40"/>
+                <menuitem id="football_standing_wizard_menu_action" action="action_football_standing_wizard" sequence="50"/>
             </menuitem>
         </menuitem>
     </menuitem>

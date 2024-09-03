@@ -48,7 +48,6 @@ class FootballTeam(models.Model):
 
         active_leagues = self.env['football.league'].search([
             ('follow', '=', True),
-            ('country_id.name', '=', 'Colombia')
         ])
 
         url = 'https://v3.football.api-sports.io/teams'
