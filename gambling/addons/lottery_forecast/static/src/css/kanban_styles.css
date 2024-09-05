@@ -1,0 +1,27 @@
+.kanban-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.ball, .super-ball {
+    display: inline-block;
+    width: 37px;
+    height: 37px;
+    line-height: 37px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #fff;
+    background-color: #004e5b;
+}
+
+.super-ball {
+    background-color: #de570e; /* Color para Super Baloto */
+}
+
+.kanban-date {
+    font-size: 14px;
+    color: #6c757d;
+}

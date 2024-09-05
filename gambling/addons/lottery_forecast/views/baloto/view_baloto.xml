@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="lottery_baloto_search" model="ir.ui.view">
+        <field name="name">lottery.baloto Search</field>
+        <field name="model">lottery.baloto</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <!-- Add your fields here -->
+                <field name="lottery_type_id"/>
+                <group string="Group By">
+                    <filter string="Type" name="lottery_type_id_context" context="{'group_by':'lottery_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_kanban" model="ir.ui.view">
+        <field name="name">lottery.baloto Kanban</field>
+        <field name="model">lottery.baloto</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="lottery_type_id" drag_drop="false">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="kanban-item">
+                                <div class="kanban-numbers">
+                                    <span class="ball"> <field name="number_1"/> </span>
+                                    <span class="ball"> <field name="number_2"/> </span>
+                                    <span class="ball"> <field name="number_3"/> </span>
+                                    <span class="ball"> <field name="number_4"/> </span>
+                                    <span class="ball"> <field name="number_5"/> </span>
+                                    <span class="super-ball"> <field name="super_baloto"/> </span>
+                                </div>
+                                <div class="kanban-date">
+                                    Result date:<field name="draw_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- lottery.baloto tree view -->
+    <record id="lottery_baloto_tree" model="ir.ui.view">
+        <field name="name">lottery.baloto Tree</field>
+        <field name="model">lottery.baloto</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add your fields here -->
+                <field name="lottery_type_id" string="Type"/>
+                <field name="number_1" string="#1"/>
+                <field name="number_2" string="#2"/>
+                <field name="number_3" string="#3"/>
+                <field name="number_4" string="#4"/>
+                <field name="number_5" string="#5"/>
+                <field name="super_baloto" string="S/B"/>
+                <field name="draw_date" string="Date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- lottery.baloto form view -->
+    <record id="lottery_baloto_form" model="ir.ui.view">
+        <field name="name">lottery.baloto Form</field>
+        <field name="model">lottery.baloto</field>
+        <field name="arch" type="xml">
+            <form string="Lottery Results">
+                <sheet>
+                    <div class="oe_title">
+                        <group>
+                            <div class="oe_edit_only">
+                                <label for="lottery_type_id"/>
+                            </div>
+                            <h1 class="mb32">
+                                <field name="lottery_type_id"/>
+                            </h1>
+                            <field name="draw_date"/>
+                        </group>
+                    </div>
+                    <notebook>
+                        <page string="Information">
+                            <group>
+                                <field name="number_1"/>
+                                <field name="number_2"/>
+                                <field name="number_3"/>
+                                <field name="number_4"/>
+                                <field name="number_5"/>
+                                <field name="super_baloto"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- lottery.baloto action window -->
+    <record id="lottery_baloto_action" model="ir.actions.act_window">
+        <field name="name">Result</field>
+        <field name="res_model">lottery.baloto</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="target">current</field>
+        <!-- Activar el filtro por defecto -->
+        <field name="context">{'search_default_lottery_type_id_context': 1}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <strong>Note:</strong> Before you can add lottery results, you must first create the lottery types.
+            </p>
+            <p>
+                Lottery types define the rules and structure for each type of lottery (e.g., Baloto, Revancha, MiLoto).
+                Make sure to create and configure them correctly in the <em>Baloto Types</em> section.
+            </p>
+        </field>
+    </record>
+
+</odoo>

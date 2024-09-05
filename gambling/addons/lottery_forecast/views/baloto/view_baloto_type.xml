@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="lottery_baloto_type_tree" model="ir.ui.view">
+        <field name="name">lottery.baloto.type Tree</field>
+        <field name="model">lottery.baloto.type</field>
+        <field name="arch" type="xml">
+            <tree string="Lottery Types" default_order="sequence">
+                <field name="sequence" widget="handle" />
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- lottery.baloto.type action window -->
+    <record id="lottery_baloto_type_action" model="ir.actions.act_window">
+        <field name="name">Baloto Types</field>
+        <field name="res_model">lottery.baloto.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Start by creating the different types of lotteries available.
+            </p>
+            <p>
+                In this section, you can define the structure of each lottery type (e.g., Baloto, Revancha, MiLoto).
+                These configurations will be used to manage the lottery results effectively.
+                Remember to give each type a unique name that clearly identifies it.
+            </p>
+        </field>
+    </record>
+</odoo>

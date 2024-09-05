@@ -101,7 +101,7 @@ class FootballStanding(models.Model):
         create records in the database."""
         active_leagues = self.env['football.league'].search([
             ('follow', '=', True),
-            ('country_id.name', '=', "Italy"),
+            # ('country_id.name', '=', "Italy"),
         ])
 
         url = "https://v3.football.api-sports.io/standings"
