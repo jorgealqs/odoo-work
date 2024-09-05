@@ -12,10 +12,17 @@ services:
       - ./config:/etc/odoo  # Mounts custom configuration files from your local machine to the container.
       - ./addons:/mnt/extra-addons  # Mounts the folder for custom addons.
       - ./log:/var/log/odoo  # Mounts the log folder so you can view logs locally.
+      - ./requirements.txt:/requirements.txt  # Monta el archivo requirements.txt dentro del contenedor.
+      - ./addons/lottery_forecast/data_baloto:/mnt/extra-addons/lottery_forecast/data_baloto
+
     environment:
       - PASSWORD_FILE=/run/secrets/postgresql_password  # Specifies the location of the file containing the database password.
     secrets:
       - postgresql_password  # Defines a secret that will be passed securely to the container.
+    command: >
+      bash -c "
+      pip3 install -r /requirements.txt &&
+      /entrypoint.sh odoo"
 
   db:  # This service defines the PostgreSQL container.
     image: postgres:15  # Uses the official PostgreSQL version 15 image.

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="lottery_baloto_wizard_form" model="ir.ui.view">
+        <field name="name">lottery.baloto.wizard Form</field>
+        <field name="model">lottery.baloto.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sync">
+                <sheet>
+                    <div class="oe_title">
+                        <h1 class="text-center mb-4">
+                            <span class="fa fa-globe"></span> Sync Results Baloto
+                        </h1>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        Download sessions data from the Baloto. Click "Sync" to start the process.
+                    </div>
+                    <footer>
+                        <button string="Sync" type="object" name="action_sync_results" class="btn btn-success" icon="fa-download"/>
+                        <button string="Sync Miloto" type="object" name="action_sync_results_miloto" class="btn btn-success" icon="fa-download"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_wizard_action" model="ir.actions.act_window">
+        <field name="name">Sync</field>
+        <field name="res_model">lottery.baloto.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="lottery_baloto_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

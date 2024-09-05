@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <menuitem id="lottery_menu_root" name="Lotteries">
+
+        <menuitem id="lottery_baloto_first_level_menu" name="Baloto" sequence="10">
+
+            <menuitem id="lottery_baloto_second_level_menu" name="Configuration" sequence="10">
+
+                <menuitem id="lottery_baloto_type_menu_action" action="lottery_baloto_type_action" sequence="10"/>
+
+                <menuitem id="football_session_wizard_menu_action" action="lottery_baloto_wizard_action" sequence="20"/>
+
+            </menuitem>
+
+            <menuitem id="lottery_baloto_menu_action" action="lottery_baloto_action" sequence="20"/>
+
+        </menuitem>
+
+    </menuitem>
+</odoo>

@@ -6,9 +6,17 @@
     "category": "Lottery/Creations",
     "sequence": -11,
     'data': [
-        # 'views/api_football_view.xml',
-        # 'data/api_football_data.xml',
+        "security/ir.model.access.csv",
+        "wizards/baloto/view_baloto_wizard.xml",
+        "views/baloto/view_baloto.xml",
+        "views/baloto/view_baloto_type.xml",
+        "views/menu.xml",
     ],
+    'assets': {
+        'web.assets_backend': [
+            "lottery_forecast/static/src/css/kanban_styles.css",
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,
