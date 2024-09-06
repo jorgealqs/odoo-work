@@ -96,6 +96,9 @@
                                 </field>
                             </group>
                         </page>
+                        <page string="Fixtures">
+                            <field name="session_round_ids" string=""/>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

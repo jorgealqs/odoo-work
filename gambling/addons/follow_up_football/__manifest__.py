@@ -1,5 +1,5 @@
 {
-    "name": "Follow-up of the leagues",
+    "name": "Sports",
     "version": "1.0",
     "author": "Jorge Alberto Quiroz Sierra",
     "category": "FollowUp/Leagues",
@@ -11,7 +11,7 @@
         sports enthusiasts and organizations needing a centralized
         platform for league management.
     """,
-    "sequence": -10,
+    "sequence": -12,
     "depends": ["base", "web"],
     "data": [
         "security/ir.model.access.csv",
@@ -25,6 +25,7 @@
         "views/team/team_wizard.xml",
         "views/standings/standing.xml",
         "views/standings/standing_wizard.xml",
+        "views/football_api/football_api_wizard.xml",
         "views/menu.xml",
     ],
     "installable": True,

@@ -50,9 +50,13 @@ class FootballLeague(models.Model):
         inverse_name='league_id',
         string='Standings'
     )
+    session_round_ids = fields.One2many(
+        comodel_name='football.fixture.session.round',
+        inverse_name='league_id',
+        string='Session Rounds'
+    )
 
     def _sync_leagues(self):
-        _logger.info("\n\n Llegaste perras \n\n")
         active_countries = self.env['football.country'].search([
             ('session_ids.is_active', '=', True)
         ])
@@ -121,3 +125,6 @@ class FootballLeague(models.Model):
                         f"Error al obtener datos de la API "
                         f"para {country.country_code} "
                         f"y {session['Year']}: {e}")
+
+    def donwload_fixtures_round(self):
+        _logger.info("\n\ndonwload_fixtures_round\n\n")

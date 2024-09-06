@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <menuitem id="football_country_menu_root" name="Follow-up">
+    <menuitem id="football_country_menu_root" name="Sports">
         <menuitem id="football_country_first_level_menu" name="Football" sequence="10">
 
             <menuitem id="football_country_menu_action" action="football_country_action" sequence="10"/>
@@ -17,6 +17,7 @@
                 <menuitem id="football_league_wizard_menu_action" action="action_football_league_wizard" sequence="30"/>
                 <menuitem id="football_team_wizard_menu_action" action="action_football_team_wizard" sequence="40"/>
                 <menuitem id="football_standing_wizard_menu_action" action="action_football_standing_wizard" sequence="50"/>
+                <menuitem id="football_api_wizard_menu_action" action="action_football_api_wizard" sequence="60"/>
             </menuitem>
         </menuitem>
     </menuitem>
