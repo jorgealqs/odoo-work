@@ -61,6 +61,11 @@ class FootballLeague(models.Model):
         inverse_name='league_id',
         string='Fixtures'
     )
+    continent = fields.Char(
+        string='Continent',
+        related='country_id.continent',
+        store=True
+    )
 
     def _sync_leagues(self):
         active_countries = self.env['football.country'].search([

@@ -8,6 +8,11 @@
             <search>
                 <field name="name"/>
                 <field name="country_code"/>
+                <!-- Default group by country -->
+                <group expand="1" string="Group By">
+                    <filter string="Continents" name="group_continent" context="{'group_by':'continent'}"/>
+                    <filter string="Has Active Session" name="group_has_active_session" context="{'group_by':'has_active_session'}"/>
+                </group>
             </search>
         </field>
     </record>
@@ -20,6 +25,7 @@
                 <field name="name"/>
                 <field name="country_code"/>
                 <field name="flag" widget="image_url" options="{'size': [50, 50]}"/>
+                <field name="continent"/>
             </tree>
         </field>
     </record>
@@ -66,6 +72,12 @@
         <field name="name">Countries</field>
         <field name="res_model">football.country</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">
+            {
+                'search_default_group_continent': 1,
+                'search_default_group_has_active_session': 1,
+            }
+    </field>
     </record>
 
 </odoo>

@@ -23,6 +23,40 @@ class FootballCountry(models.Model):
         inverse_name='country_id',
         string='Sessions'
     )
+    has_active_session = fields.Boolean(
+        string='Has Active Session',
+        compute='_compute_has_active_session',
+        store=True
+    )
+    continent = fields.Char(
+        string='Continent',
+        compute='_compute_continent',
+        store=True
+    )
+
+    @api.depends('country_code')
+    def _compute_continent(self):
+        for country in self:
+            if country.country_code:
+                try:
+                    response = requests.get(
+                        f"https://restcountries.com/v3.1/alpha/"
+                        f"{country.country_code}"
+                    )
+                    if response.status_code == 200:
+                        data = response.json()
+                        country.continent = data[0]['continents'][0]
+                    else:
+                        country.continent = 'Unknown'
+                except requests.RequestException:
+                    country.continent = 'Unknown'
+
+    @api.depends('session_ids.is_active')
+    def _compute_has_active_session(self):
+        for country in self:
+            country.has_active_session = any(
+                session.is_active for session in country.session_ids
+            )
 
     @api.depends('name')
     def _compute_has_data(self):
