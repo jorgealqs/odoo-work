@@ -12,3 +12,8 @@ class FootballApiWizard(models.TransientModel):
         model = self.env['football.fixture.session.round']
         model._sync_fixture_sessions()
         return {'type': 'ir.actions.act_window_close'}
+
+    def action_sync_fixtures(self):
+        model = self.env['football.fixture']
+        model._sync_fixtures()
+        return {'type': 'ir.actions.act_window_close'}

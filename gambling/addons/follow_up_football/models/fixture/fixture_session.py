@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 class FootballFixtureSessionRound(models.Model):
     _name = 'football.fixture.session.round'
     _description = 'Football Fixture Session'
-    _order = 'name ASC'
+    # _order = 'name ASC'
 
     name = fields.Char(string='Round Name', required=True)
     league_id = fields.Many2one(
@@ -98,3 +98,19 @@ class FootballFixtureSessionRound(models.Model):
                     _logger.error(f"\nRequest error occurred: {req_err}\n")
                 except Exception as e:
                     _logger.error(f"\nAn unexpected error occurred: {e}\n")
+
+    def action_view_rounds(self):
+        """Open the rounds related to the selected league."""
+        self.ensure_one()  # Asegura que solo se seleccione una liga
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f"Fixtures for {self.name}",
+            'view_mode': 'tree,form',
+            'res_model': 'football.fixture',
+            'domain': [
+                ('round_id', '=', self.id),
+                ('league_id', '=', self.league_id.id)
+            ],  # Filtra por la ronda y la liga seleccionada
+            'context': dict(self.env.context),
+        }

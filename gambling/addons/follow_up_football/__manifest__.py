@@ -26,6 +26,8 @@
         "views/standings/standing.xml",
         "views/standings/standing_wizard.xml",
         "views/football_api/football_api_wizard.xml",
+        "views/fixture/fixture.xml",
+        "views/user_manual/football_api_user_manual.xml",
         "views/menu.xml",
     ],
     "installable": True,

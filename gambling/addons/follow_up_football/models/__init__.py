@@ -7,3 +7,4 @@ from . import team  # noqa: F401
 from . import standing  # noqa: F401
 from . import fixture  # noqa: F401
 from . import football_api_wizard  # noqa: F401
+from . import football_api_manual  # noqa: F401

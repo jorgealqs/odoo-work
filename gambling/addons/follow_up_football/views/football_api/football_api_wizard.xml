@@ -2,22 +2,41 @@
 <odoo>
 
     <record id="view_football_api_wizard" model="ir.ui.view">
-        <field name="name">football.api.wizard Form</field>
+        <field name="name">football.api.wizard.form</field>
         <field name="model">football.api.wizard</field>
         <field name="arch" type="xml">
-            <form string="Sessions">
+            <form string="Sync Football Data">
                 <sheet>
-                    <div class="oe_title">
-                        <h1 class="text-center mb-4">
-                            <span class="fa fa-globe"></span> Sync Football League Sessions
+                    <!-- Título con icono y subtítulo -->
+                    <div class="oe_title text-center mb-4">
+                        <h1 class="text-primary">
+                            <i class="fa fa-futbol-o"></i> Sync Football Data
                         </h1>
+                        <h4 class="text-muted mb-4">
+                            Choose an option to sync rounds or fixtures
+                        </h4>
                     </div>
-                    <div class="alert alert-info" role="alert">
-                        Download sessions by league data from the Football-API. Click "Sync" to start the process.
+
+                    <!-- Alerta informativa -->
+                    <div class="alert alert-info text-center" role="alert">
+                        Download data by league from the Football-API. Click "Sync" to start the process.
                     </div>
-                    <footer>
-                        <button string="Sync" type="object" name="action_sync_sessions" class="btn btn-success" icon="fa-download"/>
-                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+
+                    <!-- Botones de sincronización organizados y centrados -->
+                    <footer class="d-flex justify-content-center mt-4">
+                        <button string="Sync Rounds" type="object"
+                                name="action_sync_sessions"
+                                class="btn btn-success mx-2"
+                                icon="fa-refresh"/>
+
+                        <button string="Sync Fixtures" type="object"
+                                name="action_sync_fixtures"
+                                class="btn btn-info mx-2"
+                                icon="fa-download"/>
+
+                        <button string="Cancel"
+                                class="btn btn-secondary mx-2"
+                                special="cancel"/>
                     </footer>
                 </sheet>
             </form>
