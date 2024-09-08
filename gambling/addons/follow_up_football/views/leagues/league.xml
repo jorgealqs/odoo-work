@@ -70,6 +70,8 @@
                                         <field name="founded"/>
                                         <field name="logo" widget="image_url" options="{'size': [50, 50]}" string="Logo"/>
                                         <field name="venue_id" string="Stadium"/>
+                                        <field name="id_team" optional="1"/>
+                                        <field name="id" optional="1"/>
                                     </tree>
                                 </field>
                             </group>
@@ -95,6 +97,23 @@
                                     </tree>
                                 </field>
                             </group>
+                        </page>
+                        <page string="Rounds">
+                            <field name="session_round_ids" string="">
+                                <tree>
+                                    <field name="name"/>
+                                    <button
+                                        name="action_view_rounds"
+                                        string=""
+                                        type="object"
+                                        class=""
+                                        icon="fa-eye"
+                                    />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Fixtures">
+                            <field name="fixture_ids" string=""/>
                         </page>
                     </notebook>
                 </sheet>

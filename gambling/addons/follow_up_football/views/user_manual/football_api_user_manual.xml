@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_football_manual_form" model="ir.ui.view">
+        <field name="name">football.api.manual Form</field>
+        <field name="model">football.api.manual</field>
+        <field name="arch" type="xml">
+            <form string="User Manual and Costs">
+                <sheet>
+                    <div class="container mt-4">
+                        <h1 class="text-center mb-4">Football Management Manual</h1>
+
+                        <notebook>
+                            <!-- Página del Manual de Usuario -->
+                            <page string="User Manual">
+                                <div class="bg-light p-4 rounded border">
+                                    <h2 class="text-primary">1. Introduction</h2>
+                                    <p>Welcome to the Football Management App. This app allows you to manage football leagues, teams, and fixtures efficiently.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">2. Accessing the Football API</h2>
+                                    <p>To start using the app, you must first gain access to the Football API. This is essential for fetching football data, including leagues, teams, and fixtures. Ensure you have a valid API key.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">3. Data Download Process</h2>
+                                    <p>Follow these steps to download and set up the data:</p>
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><b>Download Countries:</b> The system will first download the list of countries.</li>
+                                        <li class="list-group-item"><b>Download Seasons:</b> After countries, download the football seasons available.</li>
+                                        <li class="list-group-item"><b>Assign Countries and Seasons:</b> Navigate to the country section, select a country, and then choose a season. Each country can only have one active season at a time.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">4. Download Leagues</h2>
+                                    <p>In the Download menu, choose 'Leagues' to fetch the available leagues. The system will prompt you to select which leagues to follow. Note that not all leagues are covered by betting houses.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">5. Download Teams</h2>
+                                    <p>After setting up the leagues, proceed to download team information. This step ensures that you have all relevant teams for the selected leagues.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">6. Download Standings</h2>
+                                    <p>Download standings to view current positions and rankings for each league.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">7. Download Rounds</h2>
+                                    <p>Fetch the rounds for the selected leagues. This information is crucial for tracking fixtures and results.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-primary">8. Download Fixtures</h2>
+                                    <p>Finally, download the fixtures for the selected leagues. Fixtures provide detailed information on upcoming matches.</p>
+                                </div>
+                            </page>
+
+                            <!-- Página del Manual de Costos de Hospedaje -->
+                            <page string="Hosting Costs">
+                                <div class="bg-light p-4 rounded border">
+                                    <h2 class="text-success">1. Introduction</h2>
+                                    <p>This manual provides an overview of the costs associated with hosting our software. Here you'll find information on server costs, domain, SSL, and other financial aspects.</p>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-success">2. Server Costs</h2>
+                                    <p>For hosting the software, DigitalOcean is recommended. Approximate costs are:</p>
+                                    <ul>
+                                        <li><strong>Basic Plan</strong>: $5/month - 1 GB RAM, 1 vCPU, 25 GB SSD</li>
+                                        <li><strong>Advanced Plan</strong>: $10/month - 2 GB RAM, 1 vCPU, 50 GB SSD</li>
+                                        <li><strong>Pro Plan</strong>: $20/month - 4 GB RAM, 2 vCPU, 80 GB SSD</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-success">3. Domain Costs</h2>
+                                    <p>The cost of registering a domain can vary depending on the registrar. Approximate costs are:</p>
+                                    <ul>
+                                        <li><strong>.com Domain</strong>: $10 - $15/year</li>
+                                        <li><strong>.net Domain</strong>: $10 - $15/year</li>
+                                        <li><strong>.org Domain</strong>: $10 - $15/year</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-success">4. SSL Certificate</h2>
+                                    <p>To secure communication between the server and users, acquiring an SSL certificate is recommended. Costs are:</p>
+                                    <ul>
+                                        <li><strong>Basic SSL Certificate</strong>: $50 - $100/year</li>
+                                        <li><strong>Pro SSL Certificate</strong>: $100 - $150/year</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-light p-4 rounded border mt-3">
+                                    <h2 class="text-success">5. Total Estimated Cost</h2>
+                                    <p>Summing all costs, the estimated monthly cost for hosting and domain, excluding SSL, would be approximately between $15 and $25. Adding SSL, the annual cost would be $50 - $150.</p>
+                                </div>
+                            </page>
+                        </notebook>
+                    </div>
+
+                    <footer class="p-3 mt-4 text-center">
+                        <button string="Close" class="btn btn-danger" special="cancel" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para abrir el Wizard -->
+    <record id="action_football_api_manual" model="ir.actions.act_window">
+        <field name="name">Read</field>
+        <field name="res_model">football.api.manual</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_football_manual_form"/>
+    </record>
+
+</odoo>

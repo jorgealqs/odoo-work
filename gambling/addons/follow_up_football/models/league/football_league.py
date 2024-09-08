@@ -50,9 +50,19 @@ class FootballLeague(models.Model):
         inverse_name='league_id',
         string='Standings'
     )
+    session_round_ids = fields.One2many(
+        comodel_name='football.fixture.session.round',
+        inverse_name='league_id',
+        string='Session Rounds'
+    )
+    # Relación inversa con los fixtures
+    fixture_ids = fields.One2many(
+        comodel_name='football.fixture',
+        inverse_name='league_id',
+        string='Fixtures'
+    )
 
     def _sync_leagues(self):
-        _logger.info("\n\n Llegaste perras \n\n")
         active_countries = self.env['football.country'].search([
             ('session_ids.is_active', '=', True)
         ])

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- model.football.fixture tree view -->
+    <record id="football_fixture_tree" model="ir.ui.view">
+        <field name="name">football.fixture Tree</field>
+        <field name="model">football.fixture</field>
+        <field name="arch" type="xml">
+            <tree default_order="date DESC">
+                <field name="fixture_id" optional="1"/>
+                <field name="round_id"/>
+                <field name="home_team_id"/>
+                <field name="away_team_id"/>
+                <field name="home_goals" string="Goals Home"/>
+                <field name="away_goals" string="Goals Away"/>
+                <field name="referee"/>
+                <field name="date"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
