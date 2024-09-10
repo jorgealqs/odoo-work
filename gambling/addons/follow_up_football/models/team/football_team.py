@@ -2,7 +2,7 @@ import logging
 import requests
 import os
 from odoo import models, fields
-# from odoo.exceptions import RequestException
+from requests.exceptions import RequestException
 
 _logger = logging.getLogger(__name__)
 
@@ -44,89 +44,117 @@ class FootballTeam(models.Model):
     )
 
     def _sync_teams(self):
-        _logger.info('\n\nSync Teams started\n\n')
+        """Sync football teams for leagues marked as 'follow'."""
+        _logger.info('Sync Teams started.')
 
-        active_leagues = self.env['football.league'].search([
-            ('follow', '=', True),
-        ])
-
-        url = 'https://v3.football.api-sports.io/teams'
-        headers = {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
-            'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
-        }
+        active_leagues = self._get_active_leagues()
 
         for league in active_leagues:
-            # Verificar si ya existen equipos para la
-            # combinación de país, liga y sesión
-            existing_teams = self.env['football.team'].search([
-                ('league_id', '=', league.id),
-                ('session_id', '=', league.session_id.id),
-                ('country_id', '=', league.country_id.id)
-            ])
-
-            if existing_teams:
+            if self._teams_exist(league):
                 _logger.info(
-                    f"Teams already exist for League ID: "
-                    f" {league.id_league}, Country: {league.country_id.name}, "
-                    f"Year: {league.session_id.year}. Skipping API request."
+                    f"Teams already exist for League: {league.name} "
+                    f"({league.country_id.name}, {league.session_id.year}). "
+                    f"Skipping API request."
                 )
                 continue
 
-            # Realizar la petición a la API
-            response = requests.get(url, headers=headers, params={
-                'country': league.country_id.name,
-                'league': league.id_league,
-                'season': league.session_id.year,
-            })
+            response = self._fetch_teams_from_api(league)
 
-            if response.status_code == 200:
-                data = response.json().get('response', [])
-                for team_data in data:
-                    venue_data = team_data.get('venue')
-                    team_data_result = team_data.get('team')
-
-                    # Validación y creación de Venue
-                    venue = None
-                    if venue_data and venue_data.get('name'):
-                        venue = self.env['football.venue'].create({
-                            'id_venue': venue_data.get('id'),
-                            'name': venue_data.get('name'),
-                            'address': venue_data.get('address', ''),
-                            'city': venue_data.get('city', ''),
-                            'capacity': venue_data.get('capacity', 0),
-                            'surface': venue_data.get('surface', ''),
-                            'image': venue_data.get('image', ''),
-                        })
-                    else:
-                        _logger.warning(
-                            f"Venue name missing for venue ID: "
-                            f"{venue_data.get('id')}"
-                        )
-
-                    # Crear el equipo si se tiene un venue
-                    if venue:
-                        self.env['football.team'].create({
-                            'name': team_data_result.get('name'),
-                            'id_team': team_data_result.get('id'),
-                            'code': team_data_result.get('code', ''),
-                            'founded': team_data_result.get('founded', 0),
-                            'national': team_data_result.get('national'),
-                            'logo': team_data_result.get('logo', ''),
-                            'venue_id': venue.id,
-                            'league_id': league.id,
-                            'session_id': league.session_id.id,
-                            'country_id': league.country_id.id,
-                        })
-                        _logger.info(
-                            f"Created team: {team_data_result.get('name')} "
-                            f"with venue ID: {venue.id}"
-                        )
+            if response and response.status_code == 200:
+                teams_data = response.json().get('response', [])
+                self._process_and_create_teams(teams_data, league)
             else:
                 _logger.error(
-                    f"Failed to fetch teams for League ID: {league.id_league},"
-                    f"Country: {league.country_id.name}, Year: "
-                    f" {league.session_id.year}. Status code: "
-                    f"{response.status_code}")
+                    f"Failed to fetch teams for League: {league.name} "
+                    f"({league.country_id.name}, {league.session_id.year}). "
+                    "Status Code: "
+                    f"{response.status_code if response else 'No Response'}"
+                )
 
-        _logger.info('\n\nSync Teams completed\n\n')
+        _logger.info('Sync Teams completed.')
+
+    def _get_active_leagues(self):
+        """Retrieve leagues marked as 'follow'."""
+        return self.env['football.league'].search([('follow', '=', True)])
+
+    def _teams_exist(self, league):
+        """Check if teams already exist for a league, session, and country."""
+        return self.env['football.team'].search_count([
+            ('league_id', '=', league.id),
+            ('session_id', '=', league.session_id.id),
+            ('country_id', '=', league.country_id.id)
+        ]) > 0
+
+    def _fetch_teams_from_api(self, league):
+        """
+        Make API request to fetch teams for a
+        specific league and session.
+        """
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + '/teams'
+        headers = {
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
+            'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
+        }
+        params = {
+            'country': league.country_id.name,
+            'league': league.id_league,
+            'season': league.session_id.year,
+        }
+
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            return response
+        except RequestException as e:
+            _logger.error(f"Error fetching teams for {league.name}: {e}")
+            return None
+
+    def _process_and_create_teams(self, teams_data, league):
+        """Process and create teams based on API response."""
+        for team_data in teams_data:
+            venue = self._create_or_get_venue(team_data.get('venue'))
+
+            if venue:
+                team_info = team_data.get('team', {})
+                self._create_team_record(team_info, venue.id, league)
+                _logger.info(
+                    f"Created team: {team_info.get('name')} "
+                    f"in League: {league.name}"
+                )
+
+    def _create_or_get_venue(self, venue_data):
+        """Create or retrieve the venue based on venue data."""
+        if not venue_data or not venue_data.get('name'):
+            _logger.warning(f"Venue name missing for venue data: {venue_data}")
+            return None
+
+        return self.env['football.venue'].create({
+            'id_venue': venue_data.get('id'),
+            'name': venue_data.get('name'),
+            'address': venue_data.get('address', ''),
+            'city': venue_data.get('city', ''),
+            'capacity': venue_data.get('capacity', 0),
+            'surface': venue_data.get('surface', ''),
+            'image': venue_data.get('image', ''),
+        })
+
+    def _create_team_record(self, team_info, venue_id, league):
+        """Create a new football team record."""
+        self.env['football.team'].create({
+            'name': team_info.get('name'),
+            'id_team': team_info.get('id'),
+            'code': team_info.get('code', ''),
+            'founded': team_info.get('founded', 0),
+            'national': team_info.get('national'),
+            'logo': team_info.get('logo', ''),
+            'venue_id': venue_id,
+            'league_id': league.id,
+            'session_id': league.session_id.id,
+            'country_id': league.country_id.id,
+        })

@@ -28,8 +28,14 @@
         "views/football_api/football_api_wizard.xml",
         "views/fixture/fixture.xml",
         "views/user_manual/football_api_user_manual.xml",
+        "views/config_football_api/football_api_configuration_wizar.xml",
         "views/menu.xml",
     ],
+    'assets': {
+        'web.assets_backend': [
+            "follow_up_football/static/src/css/main.css",
+        ],
+    },
     "installable": True,
     "application": True,
     "auto_install": False,

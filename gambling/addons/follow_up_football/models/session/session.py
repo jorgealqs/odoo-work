@@ -19,6 +19,7 @@ class FootballSession(models.Model):
     _name = 'football.session'
     _description = 'Football Season'
     _order = "year desc, country_id asc"
+    _rec_name = 'year'
     # Orders sessions by year in descending order,
     # then by country in ascending order.
 
@@ -53,17 +54,23 @@ class FootballSession(models.Model):
                         f"session: ***{active_sessions.year}***"
                     )
 
-    def _sync_sessions(self):
+    def _sync_seasons(self):
         """
         Method to synchronize football seasons from the Api-Football API.
         This method makes a GET request to the API, retrieves the
         list of available seasons, and saves them in the `football.session`
         model associated with each country.
         """
-        url = 'https://v3.football.api-sports.io/leagues/seasons'
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + '/leagues/seasons'
         # API URL to fetch seasons
         headers = {
-            'x-rapidapi-host': 'v3.football.api-sports.io',  # API host
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),  # API host
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
             # API key retrieved from environment variables
         }
@@ -73,7 +80,6 @@ class FootballSession(models.Model):
             response.raise_for_status()  # Check if the request was successful
             sessions = response.json().get('response', [])
             # Extract the list of seasons from the response
-            _logger.info(f"\n\n{sessions}\n\n")  # Log the retrieved seasons
 
             countries = self.env['football.country'].search([])
             # Retrieve all countries
@@ -96,17 +102,6 @@ class FootballSession(models.Model):
                             'year': session,
                             'country_id': country.id
                         })
-                        _logger.info(
-                            f"Session {session} created "
-                            f"successfully for country {country.name}."
-                        )  # Log that the season was created successfully
-                    else:
-                        # If it already exists, log that the season is
-                        # already in the database
-                        _logger.info(
-                            f"Session {session} already "
-                            f"exists for country {country.name}."
-                        )
 
         except RequestException as e:
             # Handle any exceptions that occur during the API request

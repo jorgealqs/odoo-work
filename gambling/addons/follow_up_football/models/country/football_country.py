@@ -3,7 +3,6 @@ import requests
 import logging
 from requests.exceptions import RequestException
 from odoo import models, fields, api  # noqa: F401
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -23,6 +22,40 @@ class FootballCountry(models.Model):
         inverse_name='country_id',
         string='Sessions'
     )
+    has_active_session = fields.Boolean(
+        string='Has Active Session',
+        compute='_compute_has_active_session',
+        store=True
+    )
+    continent = fields.Char(
+        string='Continent',
+        compute='_compute_continent',
+        store=True
+    )
+
+    @api.depends('country_code')
+    def _compute_continent(self):
+        for country in self:
+            if country.country_code:
+                try:
+                    response = requests.get(
+                        f"https://restcountries.com/v3.1/alpha/"
+                        f"{country.country_code}"
+                    )
+                    if response.status_code == 200:
+                        data = response.json()
+                        country.continent = data[0]['continents'][0]
+                    else:
+                        country.continent = 'Unknown'
+                except requests.RequestException:
+                    country.continent = 'Unknown'
+
+    @api.depends('session_ids.is_active')
+    def _compute_has_active_session(self):
+        for country in self:
+            country.has_active_session = any(
+                session.is_active for session in country.session_ids
+            )
 
     @api.depends('name')
     def _compute_has_data(self):
@@ -30,16 +63,16 @@ class FootballCountry(models.Model):
             record.has_data = len(self.search([])) > 0
 
     def _sync_countries(self):
-
-        # Verifica si la tabla ya tiene datos
-        if self.search([]):
-            _logger.info('The countries data is already up-to-date.')
-            # Opcional: Mostrar un mensaje al usuario en la interfaz
-            raise UserError('The countries data is already up-to-date.')
-
-        url = 'https://v3.football.api-sports.io/countries'
+        # Verificar si la URL está correctamente configurada
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + '/countries'
         headers = {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
         }
 
@@ -59,7 +92,6 @@ class FootballCountry(models.Model):
         try:
             country = self.env['football.country'].search(
                 [
-                    ('country_code', '=', country_data['code']),
                     ('name', '=', country_data['name'])
                 ], limit=1)
             if country:

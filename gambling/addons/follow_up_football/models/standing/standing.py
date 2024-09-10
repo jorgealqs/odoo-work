@@ -101,12 +101,17 @@ class FootballStanding(models.Model):
         create records in the database."""
         active_leagues = self.env['football.league'].search([
             ('follow', '=', True),
-            # ('country_id.name', '=', "Italy"),
         ])
 
-        url = "https://v3.football.api-sports.io/standings"
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + '/standings'
         headers = {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
         }
 
