@@ -9,7 +9,7 @@
             <form string="">
                 <sheet>
                     <div class="container py-1">
-                        <div class="alert alert-info" role="alert">
+                        <div class="alert alert-warning" role="alert">
                             <h4 class="alert-heading">Welcome to the Synchronization Wizard!</h4>
                             <p>This wizard will guide you through the process of synchronizing data with the Football API. Follow the steps below to ensure that your system is up-to-date.</p>
                             <hr />
