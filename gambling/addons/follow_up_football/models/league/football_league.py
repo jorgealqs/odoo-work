@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+from requests.exceptions import RequestException
 from odoo import models, fields
 
 _logger = logging.getLogger(__name__)
@@ -68,71 +69,82 @@ class FootballLeague(models.Model):
     )
 
     def _sync_leagues(self):
+        """
+        Sync football leagues for active countries and
+        their active sessions.
+        """
         active_countries = self.env['football.country'].search([
             ('session_ids.is_active', '=', True)
         ])
-        # Iterar sobre los países activos y registrar información
+
         for country in active_countries:
-            # Filtrar sesiones activas para el país
             active_sessions = country.session_ids.filtered('is_active')
-            # Construir la lista de sesiones activas con ID y Year
             sessions_info = [
                 {'ID': session.id, 'Year': session.year}
                 for session in active_sessions
             ]
-            # Imprimir información de cada sesión
+
             for session in sessions_info:
+                if self._leagues_exist(country.id, session['ID']):
+                    continue
 
-                # Verificar si ya existen registros para el país y la sesión
-                existing_leagues = self.env['football.league'].search([
-                    ('country_id', '=', country.id),
-                    ('session_id', '=', session['ID'])
-                ])
-
-                if existing_leagues:
-                    _logger.info(
-                        f"\n Ya existen datos para el país "
-                        f"{country.name} y la temporada "
-                        f"{session['Year']}. Omitting API request.\n\n"
-                    )
-                    continue  # Pasar al siguiente país/sesión
-
-                url = (
-                    "https://v3.football.api-sports.io/leagues"
-                    f"?code={country.country_code}&season={session['Year']}"
+                leagues = self._fetch_leagues(
+                    country.country_code,
+                    session['Year']
                 )
-                headers = {
-                    'x-rapidapi-host': 'v3.football.api-sports.io',
-                    'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
+                if leagues:
+                    self._process_and_save_leagues(
+                        leagues,
+                        session['ID'],
+                        country.id
+                    )
+
+    def _leagues_exist(self, country_id, session_id):
+        """Check if leagues already exist for a given country and session."""
+        return self.env['football.league'].search_count([
+            ('country_id', '=', country_id),
+            ('session_id', '=', session_id)
+        ]) > 0
+
+    def _fetch_leagues(self, country_code, year):
+        """Fetch leagues data from API for a given country and season."""
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + f'/leagues?code={country_code}&season={year}'
+        headers = {
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
+            'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
+        }
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            return response.json().get('response', [])
+        except RequestException as e:
+            _logger.error(
+                f"Error fetching data from API for {country_code} "
+                f"and {year}: {e}"
+            )
+            return []
+
+    def _process_and_save_leagues(self, leagues, session_id, country_id):
+        """Process and save the fetched leagues data."""
+        for league in leagues:
+            league_data = league.get('league', {})
+            seasons = league.get('seasons', [])
+            for season in seasons:
+                data = {
+                    'id_league': league_data.get('id'),
+                    'name': league_data.get('name'),
+                    'type': league_data.get('type'),
+                    'logo': league_data.get('logo'),
+                    'session_id': session_id,
+                    'country_id': country_id,
+                    'start': season.get('start'),
+                    'end': season.get('end')
                 }
-                try:
-                    response = requests.get(url, headers=headers)
-                    response.raise_for_status()
-                    # Lanza una excepción para
-                    # códigos de estado HTTP no exitosos
-
-                    data = response.json()
-                    leagues = data.get('response', [])
-
-                    # Procesar y guardar las ligas obtenidas
-                    for league in leagues:
-                        league_data = league.get('league', {})
-                        seasons = league.get('seasons', [])
-                        for season in seasons:
-                            data = {
-                                'id_league': league_data.get('id'),
-                                'name': league_data.get('name'),
-                                'type': league_data.get('type'),
-                                'logo': league_data.get('logo'),
-                                'session_id': session['ID'],
-                                'country_id': country.id,
-                                'start': season.get('start'),
-                                'end': season.get('end')
-                            }
-                            self.env['football.league'].create(data)
-                            _logger.info(f"\n\n league created: {data} \n\n")
-                except requests.RequestException as e:
-                    _logger.error(
-                        f"Error al obtener datos de la API "
-                        f"para {country.country_code} "
-                        f"y {session['Year']}: {e}")
+                self.env['football.league'].create(data)

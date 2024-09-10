@@ -3,7 +3,6 @@ import requests
 import logging
 from requests.exceptions import RequestException
 from odoo import models, fields, api  # noqa: F401
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -64,16 +63,16 @@ class FootballCountry(models.Model):
             record.has_data = len(self.search([])) > 0
 
     def _sync_countries(self):
-
-        # Verifica si la tabla ya tiene datos
-        if self.search([]):
-            _logger.info('The countries data is already up-to-date.')
-            # Opcional: Mostrar un mensaje al usuario en la interfaz
-            raise UserError('The countries data is already up-to-date.')
-
-        url = 'https://v3.football.api-sports.io/countries'
+        # Verificar si la URL está correctamente configurada
+        base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            raise Exception(
+                "API_FOOTBALL_URL is not defined. Please configure "
+                "the environment variable."
+            )
+        url = base_url + '/countries'
         headers = {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
+            'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
         }
 
@@ -93,7 +92,6 @@ class FootballCountry(models.Model):
         try:
             country = self.env['football.country'].search(
                 [
-                    ('country_code', '=', country_data['code']),
                     ('name', '=', country_data['name'])
                 ], limit=1)
             if country:

@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- football.api.configuration.wizard form view -->
+    <record id="football_api_configuration_wizard_view_form" model="ir.ui.view">
+        <field name="name">football.api.configuration.wizard Form</field>
+        <field name="model">football.api.configuration.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <div class="container py-1">
+                        <div class="alert alert-info" role="alert">
+                            <h4 class="alert-heading">Welcome to the Synchronization Wizard!</h4>
+                            <p>This wizard will guide you through the process of synchronizing data with the Football API. Follow the steps below to ensure that your system is up-to-date.</p>
+                            <hr />
+                            <p class="mb-0"><strong>Instructions:</strong> Please follow each step carefully. You will start by synchronizing countries, then proceed to synchronize seasons, and finally sync leagues and teams.</p>
+                            <p class="mb-0">If you need assistance, refer to the documentation or contact support.</p>
+                        </div>
+                    </div>
+                    <notebook>
+                        <!-- Paso 1: Sincronización de Países -->
+                        <page string="Step 1">
+                            <div class="container py-5">
+                                <div class="jumbotron bg-light p-4 rounded shadow-sm">
+                                    <h3 class="text-primary">Synchronize Countries and Seasons</h3>
+                                    <hr class="my-4" />
+
+                                    <!-- Paso 1: Sincronización de Países -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 1:</strong> Download and synchronize the list of <strong>countries</strong> from the Football API. This step is essential for managing countries in the system.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Click on the <strong>Sync Countries</strong> button to synchronize countries.
+                                    </p>
+                                    <p class="text-muted">
+                                        <strong class="text-danger">Note:</strong> This synchronization should be done at least once a year to keep the data up to date.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Countries"
+                                            type="object"
+                                            name="action_sync_countries"
+                                            class="btn btn-primary"
+                                            icon="fa-globe"
+                                        >
+                                        </button>
+                                    </div>
+
+                                    <hr class="my-4" />
+
+                                    <!-- Paso 2: Sincronización de Temporadas -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 2:</strong> After downloading the countries, you must download the football <strong>seasons</strong>. Once the seasons are downloaded, navigate to the <strong>Country</strong> view and select the season for tracking. Only one season is allowed per country.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Click on the <strong>Sync Seasons</strong> button to synchronize seasons.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Seasons"
+                                            type="object"
+                                            name="action_sync_seasons"
+                                            class="btn btn-primary "
+                                            icon="fa-calendar"
+                                        >
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                        <page string="Step 2">
+                            <div class="container py-5">
+                                <div class="jumbotron bg-light p-4 rounded shadow-sm">
+                                    <h3 class="text-primary">Synchronize Leagues and Teams</h3>
+                                    <hr class="my-4" />
+                                    <!-- Paso 1: Sincronización de Ligas -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 1:</strong> Select a <strong>season</strong> and the <strong>countries</strong> for which you want to synchronize the leagues.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Click on the <strong>Sync Leagues</strong> button to synchronize the leagues for the selected countries and season.
+                                    </p>
+                                    <p class="text-muted">
+                                        <strong class="text-danger">Note:</strong> Ensure that at least one country and season is selected before proceeding.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Leagues"
+                                            type="object"
+                                            name="action_sync_leagues"
+                                            class="btn btn-primary  "
+                                            icon="fa-trophy"
+                                        >
+                                        </button>
+                                    </div>
+
+                                    <hr class="my-4" />
+                                    <!-- Paso 2: Selección de Ligas a Seguir -->
+                                    <p class="lead text-muted">
+                                        After downloading the leagues, navigate to the <strong>Leagues</strong> form view, uncheck the <strong>follow</strong> filter, and you will see all the leagues for each country.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Select which leagues to follow for each country.
+                                    </p>
+
+                                    <hr class="my-4" />
+                                    <!-- Paso 3: Sincronización de Equipos -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 2:</strong> After selecting the leagues to follow, click on the <strong>Sync Teams</strong> button to fetch the teams.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Teams"
+                                            type="object"
+                                            name="action_sync_teams"
+                                            class="btn btn-primary "
+                                            icon="fa-users"
+                                        >
+                                        </button>
+                                    </div>
+                                    <hr class="my-4" />
+                                    <p class="lead text-muted">
+                                        <strong>Step 3:</strong> After downloading the teams, click on the <strong>Sync Rouns</strong> button to fetch the rounds by league.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Rounds"
+                                            type="object"
+                                            name="action_sync_rounds"
+                                            class="btn btn-primary "
+                                            icon="fa-calendar"
+                                        >
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                        <page string="Step 3">
+                            <div class="container py-5">
+                                <div class="jumbotron bg-light p-4 rounded shadow-sm">
+                                    <h3 class="text-primary">Synchronize Standings and Fixtures</h3>
+                                    <hr class="my-4" />
+
+                                    <!-- Paso 1: Sincronización de Standings -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 1:</strong> After synchronizing the leagues, you can synchronize the standings for the selected leagues.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Click on the <strong>Sync Standings</strong> button to fetch the standings for the synchronized leagues.
+                                    </p>
+                                    <p class="text-muted">
+                                        <strong class="text-danger">Note:</strong> Ensure that you have synchronized the leagues before proceeding to sync standings.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Standings"
+                                            type="object"
+                                            name="action_sync_standings"
+                                            class="btn btn-primary btn-lg"
+                                        >
+                                            <i class="fa fa-trophy"></i> Sync Standings
+                                        </button>
+                                    </div>
+
+                                    <hr class="my-4" />
+
+                                    <!-- Paso 2: Sincronización de Fixtures -->
+                                    <p class="lead text-muted">
+                                        <strong>Step 2:</strong> Once you have synchronized the standings, proceed to sync the fixtures for the leagues.
+                                    </p>
+                                    <p class="lead text-muted">
+                                        Click on the <strong>Sync Fixtures</strong> button to fetch the fixtures for the synchronized leagues.
+                                    </p>
+                                    <p class="text-muted">
+                                        <strong class="text-danger">Note:</strong> Ensure that you have synchronized the standings before proceeding to sync fixtures.
+                                    </p>
+                                    <div class="mt-4">
+                                        <button
+                                            string="Sync Fixtures"
+                                            type="object"
+                                            name="action_sync_fixtures"
+                                            class="btn btn-primary btn-lg"
+                                        >
+                                            <i class="fa fa-calendar-check"></i> Sync Fixtures
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <!-- <button string="Close" class="btn btn-danger" special="cancel" icon="fa-times"/> -->
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- football.api.configuration.wizard action window -->
+    <record id="football_api_configuration_wizard_action" model="ir.actions.act_window">
+        <field name="name">Sync</field>
+        <field name="res_model">football.api.configuration.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="football_api_configuration_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

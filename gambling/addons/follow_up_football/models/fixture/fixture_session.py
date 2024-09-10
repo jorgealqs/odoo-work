@@ -19,85 +19,79 @@ class FootballFixtureSessionRound(models.Model):
         required=True
     )
 
-    def _sync_fixture_sessions(self):
+    def _sync_rounds(self):
         """Sync fixture sessions (rounds) for leagues that are followed."""
-        # Obtener todas las ligas que están marcadas para ser seguidas
-        football_leagues = self.env['football.league'].search(
-            [
-                ('follow', '=', True),
-                # ('country_id.name', 'in', ['Spain', 'Peru', 'Italy'])
-            ]
-        )
+        football_leagues = self._get_followed_leagues()
 
+        if football_leagues:
+            for league in football_leagues:
+                if not self._rounds_already_synced(league):
+                    try:
+                        rounds_data = self._fetch_rounds_data(league)
+                        self._process_rounds(league, rounds_data)
+                    except Exception as e:
+                        _logger.error(
+                            "Failed to sync rounds for league "
+                            f"{league.id_league}: {e}"
+                        )
+                else:
+                    _logger.info(
+                        f"Rounds for league {league.id_league} "
+                        "are already synced. Skipping."
+                    )
+
+    def _get_followed_leagues(self):
+        """Retrieve leagues marked to be followed."""
+        return self.env['football.league'].search([
+            ('follow', '=', True),
+        ])
+
+    def _fetch_rounds_data(self, league):
+        """Fetch rounds data from the API for a given league."""
         url = "https://v3.football.api-sports.io/fixtures/rounds"
         headers = {
             'x-rapidapi-host': 'v3.football.api-sports.io',
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
         }
+        params = {
+            'league': league.id_league,
+            'season': league.session_id.year
+        }
 
-        if football_leagues:
-            for league in football_leagues:
-                id_league = league.id_league
-                session_year = league.session_id.year
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        return response.json().get('response', [])
 
-                # Definir los parámetros para la petición
-                params = {
-                    'league': id_league,
-                    'season': session_year
-                }
+    def _process_rounds(self, league, rounds_data):
+        """Process and store rounds data."""
+        for round_name in rounds_data:
+            if not self._round_exists(league.id, round_name):
+                self._create_round(league.id, round_name)
+                _logger.info(
+                    f"Created round {round_name} for league {league.name}"
+                )
 
-                try:
-                    # Hacer la petición GET a la API
-                    response = requests.get(
-                        url,
-                        headers=headers,
-                        params=params
-                    )
-                    response.raise_for_status()
-                    # Verificar si hay errores HTTP
-                    rounds_data = response.json().get('response', [])
+    def _rounds_already_synced(self, league):
+        """Check if any rounds are already synced for a given league."""
+        existing_rounds = self.env['football.fixture.session.round'].search([
+            ('league_id', '=', league.id),
+        ])
+        # Return True if there are already synced rounds for this league
+        return bool(existing_rounds)
 
-                    _logger.info(
-                        f"\n League {id_league}, \nSeason {session_year} "
-                        f"\nRound {len(rounds_data)} "
-                        f"\nName: {league.name}"
-                        f"\nCountry: {league.country_id.name}"
-                    )
+    def _round_exists(self, league_id, round_name):
+        """Check if a round already exists."""
+        return self.env['football.fixture.session.round'].search([
+            ('name', '=', round_name),
+            ('league_id', '=', league_id)
+        ], limit=1)
 
-                    # Procesar los datos obtenidos
-                    for round_name in rounds_data:
-                        # Verificar si ya existe un round con el mismo
-                        # nombre y liga
-                        existing_round = self.env[
-                            'football.fixture.session.round'
-                        ].search([
-                            ('name', '=', round_name),
-                            ('league_id', '=', league.id)
-                        ], limit=1)
-                        if not existing_round:
-                            self.env['football.fixture.session.round'].create({
-                                'name': round_name,
-                                'league_id': league.id,
-                            })
-                            _logger.info(
-                                f"Created round {round_name} for "
-                                f"league {league.name}"
-                            )
-                        # Pausar para evitar sobrepasar el
-                        # límite de solicitudes
-                        # time.sleep(5)
-                        # Pausa de 5 segundos entre cada solicitud
-
-                except requests.exceptions.HTTPError as http_err:
-                    _logger.error(f"\nHTTP error occurred: {http_err}\n")
-                except requests.exceptions.ConnectionError as conn_err:
-                    _logger.error(f"\nConnection error occurred: {conn_err}\n")
-                except requests.exceptions.Timeout as timeout_err:
-                    _logger.error(f"\nTimeout error occurred: {timeout_err}\n")
-                except requests.exceptions.RequestException as req_err:
-                    _logger.error(f"\nRequest error occurred: {req_err}\n")
-                except Exception as e:
-                    _logger.error(f"\nAn unexpected error occurred: {e}\n")
+    def _create_round(self, league_id, round_name):
+        """Create a new round record."""
+        self.env['football.fixture.session.round'].create({
+            'name': round_name,
+            'league_id': league_id,
+        })
 
     def action_view_rounds(self):
         """Open the rounds related to the selected league."""
