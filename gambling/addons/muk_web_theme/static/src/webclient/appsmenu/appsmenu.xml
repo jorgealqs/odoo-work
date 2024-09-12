@@ -2,9 +2,9 @@
 
 <templates xml:space="preserve">
 
-	<t 
-		t-name="muk_web_theme.AppsMenu" 
-		t-inherit="web.Dropdown" 
+	<t
+		t-name="muk_web_theme.AppsMenu"
+		t-inherit="web.Dropdown"
 		t-inherit-mode="primary"
 	>
 		<xpath expr="//div[@t-ref='menuRef']" position="attributes">
@@ -13,5 +13,5 @@
 		    </attribute>
 	    </xpath>
 	</t>
-	
+
 </templates>
