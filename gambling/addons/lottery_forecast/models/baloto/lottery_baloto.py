@@ -1,12 +1,13 @@
 import logging
-import os
-import pandas as pd
+# import os
+# import pandas as pd
 from datetime import datetime, timedelta
 import random
 import requests
 import time
 from bs4 import BeautifulSoup
-from odoo import models, fields, tools
+from odoo import models, fields
+# from odoo import models, fields, tools
 from requests.exceptions import RequestException
 
 _logger = logging.getLogger(__name__)
@@ -31,90 +32,115 @@ class LotteryBaloto(models.Model):
         ondelete='restrict'
     )
 
-    def _sync_results(self):
-        _logger.info("Iniciando sincronización de resultados con pandas")
+    def _get_wednesday_and_saturday(self):
+        """
+        Calculate the upcoming Wednesday and Saturday based on the current
+        date. Returns two dates: the next Wednesday and Saturday.
+        """
+        today = datetime.today()
 
-        # Obtén la ruta del archivo dentro del módulo
-        module_path = tools.config['addons_path'].split(',')[0]
-        file_path = os.path.join(
-            module_path,
-            'lottery_forecast',
-            'data_baloto',
-            'baloto_results.xlsx'
+        # Calculate Wednesday (2 = Wednesday)
+        wednesday = today + timedelta(
+            days=(
+                2 - today.weekday()
+            ) if today.weekday() <= 2 else -(today.weekday() - 2)
         )
 
+        # Calculate Saturday (5 = Saturday)
+        saturday = today + timedelta(
+            days=(
+                5 - today.weekday()
+            ) if today.weekday() <= 5 else -(today.weekday() - 5)
+        )
+
+        return wednesday.date(), saturday.date()
+
+    def _sync_results(self):
+        """
+        Synchronizes Baloto lottery results from an Excel file and, if
+        necessary, from a web scraping API. It only syncs results for the next
+        Wednesday and Saturday of the week.
+
+        The process includes:
+        1. Reading an XLSX file using pandas, where the Baloto lottery results
+        are extracted.
+        2. Checking if the lottery type already exists in the system. If it
+        doesn't exist, the creation is skipped.
+        3. Checking if a record with the same date already exists. If the
+        record already exists, creation is skipped.
+        4. If the record does not exist, a new one is created with the data
+        read from the file.
+        5. Then, it fetches results for the upcoming Wednesday and Saturday,
+        if they don't already exist, via a web scraping API.
+        """
+
+        # Get the file path within the module
+        # module_path = tools.config['addons_path'].split(',')[0]
+        # file_path = os.path.join(
+        #     module_path,
+        #     'lottery_forecast',
+        #     'data_baloto',
+        #     'baloto_results.xlsx'
+        # )
+
         try:
-            # Leer el archivo XLSX usando pandas
-            df = pd.read_excel(file_path)
+            # Read the XLSX file using pandas
+            # df = pd.read_excel(file_path)
 
-            for _, row in df.iterrows():
-                lottery_type_name = row['Type']
-                numbers = [row[f'# {i}'] for i in range(1, 6)]
-                super_baloto = row['Super Baloto']
-                draw_date = row['Fecha de Creación']
+            # for _, row in df.iterrows():
+            #     lottery_type_name = row['Type']
+            #     numbers = [row[f'# {i}'] for i in range(1, 6)]
+            #     super_baloto = row['Super Baloto']
+            #     draw_date = row['Fecha de Creación']
 
-                # Obtener el ID del tipo de lotería basado en el nombre
-                lottery_type = self.env['lottery.baloto.type'].search(
-                    [
-                        ('name', '=', lottery_type_name)
-                    ], limit=1
-                )
-                if not lottery_type:
-                    _logger.warning(
-                        f"Tipo de lotería '{lottery_type_name}' no encontrado."
-                    )
-                    continue
+            #     # Get the ID of the lottery type based on the name
+            #     lottery_type = self.env['lottery.baloto.type'].search(
+            #         [('name', '=', lottery_type_name)], limit=1
+            #     )
+            #     if not lottery_type:
+            #         continue
 
-                # Buscar si ya existe un registro con la misma fecha
-                existing_record = self.search([
-                    ('draw_date', '=', draw_date),
-                    ('lottery_type_id', '=', lottery_type.id)
-                ], limit=1)
-                if existing_record:
-                    _logger.info(
-                        f"Registro con la fecha {draw_date} ya existe. "
-                        "Omite la creación."
-                    )
-                    continue
+            #     # Check if a record with the same date already exists
+            #     existing_record = self.search([
+            #         ('draw_date', '=', draw_date),
+            #         ('lottery_type_id', '=', lottery_type.id)
+            #     ], limit=1)
+            #     if existing_record:
+            #         continue
 
-                # Crear nuevo registro
-                self.create({
-                    'number_1': numbers[0],
-                    'number_2': numbers[1],
-                    'number_3': numbers[2],
-                    'number_4': numbers[3],
-                    'number_5': numbers[4],
-                    'super_baloto': super_baloto,
-                    'draw_date': draw_date,
-                    'lottery_type_id': lottery_type.id,
-                })
+            #     # Create new record
+            #     self.create({
+            #         'number_1': numbers[0],
+            #         'number_2': numbers[1],
+            #         'number_3': numbers[2],
+            #         'number_4': numbers[3],
+            #         'number_5': numbers[4],
+            #         'super_baloto': super_baloto,
+            #         'draw_date': draw_date,
+            #         'lottery_type_id': lottery_type.id,
+            #     })
 
-            _logger.info("Sincronización completada con éxito")
+            # Calculate upcoming Wednesday and Saturday
+            next_wednesday, next_saturday = self._get_wednesday_and_saturday()
+            dates_to_fetch = [next_wednesday, next_saturday]
 
-            start_date = datetime(2021, 5, 1)
-            end_date = datetime.now()
+            # wait_time = random.uniform(8, 12)
+            for date in dates_to_fetch:
+                # Format the date to YYYY-MM-DD
+                formatted_date = date.strftime('%Y-%m-%d')
 
-            dates = self._generate_dates(start_date, end_date)
-            espera = random.uniform(10, 15)
-            for date in dates:
-                # Verificar si ya existe un registro para esta
-                # fecha antes de hacer la petición
                 existing_record = self.search(
                     [
-                        ('draw_date', '=', date)
+                        ('draw_date', '=', formatted_date)
                     ], limit=1
                 )
-                if existing_record:
-                    _logger.info(
-                        f"Ya existe un registro para la fecha: {date}."
-                    )
-                else:
-                    # Solo hacer la petición si no existe un registro
-                    self._fetch_and_log_results(date)
-                    time.sleep(espera)
+                if not existing_record:
+                    # Only make the request if no record exists
+                    self._fetch_and_log_results(formatted_date)
+                    # time.sleep(wait_time)
 
         except Exception as e:
-            _logger.error(f"Error al sincronizar resultados: {str(e)}")
+            _logger.error(f"Error syncing results: {str(e)}")
 
     def _generate_dates(self, start_date, end_date):
         dates = []
@@ -127,8 +153,6 @@ class LotteryBaloto(models.Model):
 
     def _fetch_and_log_results(self, date):
         url = f'https://baloto.com/resultados?date={date}'
-        _logger.info(f"Procesando URL: {url}")
-
         try:
             response = requests.get(url)
             response.raise_for_status()
@@ -166,13 +190,6 @@ class LotteryBaloto(models.Model):
                             'draw_date': date,
                             'lottery_type_id': lottery_type.id,
                         })
-                        _logger.info(
-                            f"Resultados guardados {tipos[idx]} fecha: {date}"
-                        )
-                    else:
-                        _logger.warning(
-                            f"Formato inesperado en los resultados: {row[2]}"
-                        )
             else:
                 _logger.warning(
                     "No se encontró la tabla con el ID 'results-table'."
@@ -209,23 +226,23 @@ class LotteryBaloto(models.Model):
             'Diciembre': 'December'
         }
 
+        lottery_type = self.env[
+            'lottery.baloto.type'
+        ].search([('name', '=', 'MiLoto')], limit=1)
+        if not lottery_type:
+            return
+        # Count the number of existing 'MiLoto' records
+        total_records = self.search_count(
+            [('lottery_type_id.name', '=', 'MiLoto')]
+        )
+
+        # Start the loop from the next sorteo number
+        start_sorteo = total_records + 1
         # Iterar sobre el rango de sorteos para obtener los resultados
-        for sorteo in range(1, 187):
+        for sorteo in range(start_sorteo, start_sorteo + 2):
             wait_time = random.uniform(10, 15)
-            url = f'{base_url}{sorteo}'
-            _logger.info(f"Accediendo a: {url}")
-
+            url = f"{base_url}{sorteo}"
             try:
-                lottery_type = self.env[
-                    'lottery.baloto.type'
-                ].search([('name', '=', 'MiLoto')], limit=1)
-                if not lottery_type:
-                    _logger.warning(
-                        "Tipo de lotería 'MiLoto' no "
-                        "encontrado. Omite el registro."
-                    )
-                    continue
-
                 # Verificar si ya existe un registro con el mismo super_baloto
                 existing_record = self.search([
                     ('super_baloto', '=', sorteo),
@@ -233,10 +250,6 @@ class LotteryBaloto(models.Model):
                 ], limit=1)
 
                 if existing_record:
-                    _logger.info(
-                        f"Ya existe un registro para el sorteo {sorteo}. "
-                        "Se omite la sincronización."
-                    )
                     continue
 
                 # Realizar la petición HTTP a la página
@@ -249,15 +262,11 @@ class LotteryBaloto(models.Model):
                 # Capturar la fecha del sorteo
                 formatted_date = self._extract_date(soup, month_replacements)
                 if not formatted_date:
-                    _logger.warning(
-                        f"No se pudo extraer la fecha para el sorteo {sorteo}"
-                    )
                     continue
 
                 # Capturar los números de las bolas
                 numbers = self._extract_numbers(soup)
                 if numbers:
-
                     self.create({
                         'number_1': numbers[0],
                         'number_2': numbers[1],
@@ -268,15 +277,6 @@ class LotteryBaloto(models.Model):
                         'draw_date': formatted_date,
                         'lottery_type_id': lottery_type.id,
                     })
-
-                    _logger.info(
-                        f"Fecha: {formatted_date}, "
-                        f"Números capturados: {numbers}"
-                    )
-                else:
-                    _logger.warning(
-                        f"No se encontraron resultados para el sorteo {sorteo}"
-                    )
 
                 # Pausa aleatoria para evitar ser bloqueado por el servidor
                 time.sleep(wait_time)
