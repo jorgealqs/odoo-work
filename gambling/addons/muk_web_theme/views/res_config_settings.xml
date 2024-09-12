@@ -65,30 +65,30 @@
                      	<div class="w-50 row">
                             <label for="color_danger_light" string="Danger" class="d-block w-75 py-2"/>
                             <field name="color_danger_light" class="d-block w-25 p-0 m-0" widget="color"/>
-                        </div>                        
-                        <button 
-                            name="action_reset_theme_color_assets" 
-                            icon="oi-arrow-right" 
-                            type="object" 
-                            string="Reset Theme Colors" 
+                        </div>
+                        <button
+                            name="action_reset_theme_color_assets"
+                            icon="oi-arrow-right"
+                            type="object"
+                            string="Reset Theme Colors"
                             class="btn-link"
                         />
                     </setting>
-	    			<setting 
-	    				string="Background Image" 
-	    				company_dependent="1" 
+	    			<setting
+	    				string="Background Image"
+	    				company_dependent="1"
 	    				help="Set the background image for the apps menu"
 	    			>
 	    				<field name="theme_background_image" widget="image" class="ml-4 w-75"/>
                     </setting>
-                    <setting 
-                    	string="Favicon &amp; Logo" 
-                    	company_dependent="1" 
-                    	help="Set your own favicon and logo for the appsbar"
+                    <setting
+                    	string="Favicon"
+                    	company_dependent="1"
+                    	help="Set your own favicon for the appsbar"
                     >
 		    			<div class="w-50 row">
-	                    	<label for="appbar_image" string="Logo" class="o_light_label mb-1"/>
-	                        <field name="appbar_image" widget="image" class="ml-4 oe_avatar"/>
+	                    	<!-- <label for="appbar_image" string="Logo" class="o_light_label mb-1"/>
+	                        <field name="appbar_image" widget="image" class="ml-4 oe_avatar"/> -->
 	                        <div class="w-100 mt-1"/>
 	                    	<label for="theme_favicon" string="Favicon" class="o_light_label mb-1"/>
 	                        <field name="theme_favicon" widget="image" class="ml-4 oe_avatar"/>
@@ -98,5 +98,5 @@
 	    	</xpath>
 	    </field>
 	</record>
-	
+
 </odoo>
