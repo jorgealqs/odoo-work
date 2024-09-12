@@ -5,20 +5,56 @@
         <field name="name">lottery.baloto.wizard Form</field>
         <field name="model">lottery.baloto.wizard</field>
         <field name="arch" type="xml">
-            <form string="Sync">
+            <form string="Sync Results">
                 <sheet>
-                    <div class="oe_title">
-                        <h1 class="text-center mb-4">
-                            <span class="fa fa-globe"></span> Sync Results Baloto
+                    <!-- Title Section -->
+                    <div class="text-center my-4">
+                        <h1 class="display-4 text-primary">
+                            <i class="fa fa-globe"></i> Sync Results - Baloto &amp; MiLoto
                         </h1>
+                        <p class="lead text-muted">
+                            Synchronize lottery results from Baloto and MiLoto. Please select an option to proceed.
+                        </p>
                     </div>
-                    <div class="alert alert-info" role="alert">
-                        Download sessions data from the Baloto. Click "Sync" to start the process.
+
+                    <!-- Info Section -->
+                    <div class="alert alert-info shadow-sm rounded" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fa fa-info-circle"></i> Information
+                        </h5>
+                        <p>
+                            This tool allows you to download and synchronize session data for the Baloto and MiLoto lotteries.
+                            Click the appropriate button to start the synchronization process.
+                        </p>
+                        <hr />
+                        <p class="mb-0">
+                            <strong>Note:</strong> Ensure that you are connected to the internet before syncing.
+                        </p>
                     </div>
-                    <footer>
-                        <button string="Sync" type="object" name="action_sync_results" class="btn btn-success" icon="fa-download"/>
-                        <button string="Sync Miloto" type="object" name="action_sync_results_miloto" class="btn btn-success" icon="fa-download"/>
-                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+
+                    <!-- Action Buttons -->
+                    <footer class="d-flex justify-content-center mt-4">
+                        <button
+                            string="Sync Baloto"
+                            type="object"
+                            name="action_sync_results"
+                            class="btn-primary btn-md mx-3"
+                            icon="fa-download"
+                        />
+                        <button
+                            string="Sync Miloto"
+                            type="object"
+                            name="action_sync_results_miloto"
+                            class="btn-success btn-md mx-3"
+                            icon="fa-download"
+                        />
+                        <button
+                            string="Sync Frequency"
+                            type="object"
+                            name="action_calculate_number_frequency"
+                            class="btn-primary btn-md mx-3"
+                            icon="fa-download"
+                        />
                     </footer>
                 </sheet>
             </form>

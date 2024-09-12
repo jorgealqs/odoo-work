@@ -9,7 +9,12 @@
                 <!-- Add your fields here -->
                 <field name="lottery_type_id"/>
                 <group string="Group By">
+                    <!-- Agrupación por tipo de lotería -->
                     <filter string="Type" name="lottery_type_id_context" context="{'group_by':'lottery_type_id'}"/>
+                    <!-- Agrupar por Año de la fecha del sorteo -->
+                    <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year'}"/>
+                    <!-- Agrupar por Mes de la fecha del sorteo (requiere agrupar por Año también) -->
+                    <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
                 </group>
             </search>
         </field>
@@ -75,20 +80,20 @@
                                 <label for="lottery_type_id"/>
                             </div>
                             <h1 class="mb32">
-                                <field name="lottery_type_id"/>
+                                <field name="lottery_type_id" readonly="draw_date" options="{'no_create': True, 'no_open': True}"/>
                             </h1>
-                            <field name="draw_date"/>
+                            <field name="draw_date" readonly="draw_date"/>
                         </group>
                     </div>
                     <notebook>
                         <page string="Information">
                             <group>
-                                <field name="number_1"/>
-                                <field name="number_2"/>
-                                <field name="number_3"/>
-                                <field name="number_4"/>
-                                <field name="number_5"/>
-                                <field name="super_baloto"/>
+                                <field name="number_1" readonly="draw_date"/>
+                                <field name="number_2" readonly="draw_date"/>
+                                <field name="number_3" readonly="draw_date"/>
+                                <field name="number_4" readonly="draw_date"/>
+                                <field name="number_5" readonly="draw_date"/>
+                                <field name="super_baloto" readonly="draw_date"/>
                             </group>
                         </page>
                     </notebook>
@@ -99,14 +104,20 @@
 
     <!-- lottery.baloto action window -->
     <record id="lottery_baloto_action" model="ir.actions.act_window">
-        <field name="name">Result</field>
+        <field name="name">Historical</field>
         <field name="res_model">lottery.baloto</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="target">current</field>
         <!-- Activar el filtro por defecto -->
-        <field name="context">{'search_default_lottery_type_id_context': 1}</field>
+        <field name="context">
+            {
+                'search_default_lottery_type_id_context': 1,
+                'search_default_group_by_year': 1,
+                'search_default_group_by_month': 1,
+            }
+        </field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <strong>Note:</strong> Before you can add lottery results, you must first create the lottery types.

@@ -8,11 +8,19 @@
 
                 <menuitem id="lottery_baloto_type_menu_action" action="lottery_baloto_type_action" sequence="10"/>
 
-                <menuitem id="football_session_wizard_menu_action" action="lottery_baloto_wizard_action" sequence="20"/>
+                <menuitem id="football_session_wizard_menu_action" action="lottery_baloto_wizard_action" sequence="20" groups="base.group_system"/>
 
             </menuitem>
 
-            <menuitem id="lottery_baloto_menu_action" action="lottery_baloto_action" sequence="20"/>
+            <menuitem id="lottery_baloto_thirth_level_menu" name="Results" sequence="10">
+                <menuitem id="lottery_baloto_menu_action" action="lottery_baloto_action" sequence="10"/>
+            </menuitem>
+
+            <menuitem id="lottery_baloto_fourth_level_menu" name="Data Analysis" sequence="10">
+                <menuitem id="lottery_baloto_number_frequency_menu_action" action="lottery_baloto_number_frequency_action" sequence="10"/>
+            </menuitem>
+
+
 
         </menuitem>
 

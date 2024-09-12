@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- Cron job for syncing Baloto results -->
+    <record id="ir_cron_action_sync_results" model="ir.cron">
+        <field name="name">Sync Baloto Results</field>
+        <field name="model_id" ref="model_lottery_baloto_wizard"/>
+        <field name="code">model.action_sync_results()</field>
+        <field name="interval_number">1</field> <!-- Not used in this setup -->
+        <field name="interval_type">days</field> <!-- Not used in this setup -->
+        <field name="numbercall">-1</field> <!-- Run indefinitely -->
+        <field name="active">True</field> <!-- Initially disabled -->
+    </record>
+
+    <!-- Cron job for syncing MiLoto results -->
+    <record id="ir_cron_action_sync_results_miloto" model="ir.cron">
+        <field name="name">Sync MiLoto Results</field>
+        <field name="model_id" ref="model_lottery_baloto_wizard"/>
+        <field name="code">model.action_sync_results_miloto()</field>
+        <field name="interval_number">1</field> <!-- Not used in this setup -->
+        <field name="interval_type">days</field> <!-- Not used in this setup -->
+        <field name="numbercall">-1</field> <!-- Run indefinitely -->
+        <field name="active">True</field> <!-- Initially disabled -->
+    </record>
+
+</odoo>
