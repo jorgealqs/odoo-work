@@ -4,10 +4,18 @@ import { browser } from "@web/core/browser/browser"
 import { whenReady } from "@odoo/owl"
 import { mountComponent } from "@web/env"
 import { ApiFootball } from "./api_football"
+import { ApiFootballManual } from "./manual_football/manual"
 
+whenReady(() => {
+    const path = window.location.pathname
 
-whenReady( () => {
-    mountComponent(ApiFootball, document.body, { dev: true, name: "Api Football" })
+    if (path === '/games') {
+        // Mount the ApiFootball component for the '/games' route
+        mountComponent(ApiFootball, document.body, { dev: true, name: "Api Football" })
+    } else if (path === '/manual-football') {
+        // Mount the ApiFootballManual component for the '/manual-football' route
+        mountComponent(ApiFootballManual, document.body, { dev: true, name: "Api Football Manual" })
+    }
 })
 
 

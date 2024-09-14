@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="follow_up_football.ApiFootballManual">
+        <!-- Main Container with Background -->
+        <div class="container mt-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h1>Football Management User Manual</h1>
+                </div>
+                <div class="card-body p-5">
+                    <section class="mb-4">
+                        <h2 class="text-primary">1. Introduction</h2>
+                        <p>Welcome to the Football Management App. This application allows you to manage football leagues, teams, and fixtures efficiently.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">2. Accessing the Football API</h2>
+                        <p>To start using the app, ensure you have a valid API key. Access to the Football API is essential for fetching football data, including leagues, teams, and fixtures.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">3. Data Download Process</h2>
+                        <p>Follow these steps to download and set up the data:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item"><b>Download Countries:</b> Download the list of countries.</li>
+                            <li class="list-group-item"><b>Download Seasons:</b> After countries, download the football seasons available.</li>
+                            <li class="list-group-item"><b>Assign Countries and Seasons:</b> Select a country and choose a season. Each country can only have one active season at a time.</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">4. Download Leagues</h2>
+                        <p>Select 'Leagues' to fetch the available leagues. The system will prompt you to select which leagues to follow. Note that not all leagues are covered by betting houses.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">5. Download Teams</h2>
+                        <p>After setting up the leagues, proceed to download team information for the selected leagues.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">6. Download Standings</h2>
+                        <p>Download standings to view current positions and rankings for each league.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">7. Download Rounds</h2>
+                        <p>Fetch the rounds for the selected leagues to track fixtures and results.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="text-primary">8. Download Fixtures</h2>
+                        <p>Finally, download the fixtures for the selected leagues, providing detailed information on upcoming matches.</p>
+                    </section>
+
+                    <!-- Footer with Close Button -->
+                    <div class="text-center mt-5">
+                        <button class="btn btn-danger btn-lg" special="cancel">
+                            <i class="fa fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
