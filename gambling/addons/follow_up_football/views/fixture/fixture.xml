@@ -1,5 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
+
+    <record id="football_fixture_action_action_id" model="ir.actions.act_url">
+        <field name="name">Match Games</field>
+        <field name="url">/games</field>
+        <field name="target">self</field>
+    </record>
+
+    <menuitem
+        id="football_fixture_menu_action"
+        name="Match"
+        action="football_fixture_action_action_id"
+        parent="follow_up_football.football_country_first_level_menu"
+    />
+
+
     <!-- model.football.fixture tree view -->
     <record id="football_fixture_tree" model="ir.ui.view">
         <field name="name">football.fixture Tree</field>
