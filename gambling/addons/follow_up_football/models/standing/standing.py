@@ -220,7 +220,6 @@ class FootballStanding(models.Model):
         away_stats_data,
         update_date
     ):
-
         """Update an existing standing record with new data."""
         _logger.info(f"\nUpdating {existing_standing.team_id.name}\n")
         existing_standing.write({

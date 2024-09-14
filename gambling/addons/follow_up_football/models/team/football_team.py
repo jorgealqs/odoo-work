@@ -45,45 +45,16 @@ class FootballTeam(models.Model):
 
     def _sync_teams(self):
         """Sync football teams for leagues marked as 'follow'."""
-        _logger.info('Sync Teams started.')
-
         active_leagues = self._get_active_leagues()
-
         for league in active_leagues:
-            # if self._teams_exist(league):
-            #     _logger.info(
-            #         f"Teams already exist for League: {league.name} "
-            #         f"({league.country_id.name}, {league.session_id.year}). "
-            #         f"Skipping API request."
-            #     )
-            #     continue
-
             response = self._fetch_teams_from_api(league)
-
             if response and response.status_code == 200:
                 teams_data = response.json().get('response', [])
                 self._process_and_create_teams(teams_data, league)
-            else:
-                _logger.error(
-                    f"Failed to fetch teams for League: {league.name} "
-                    f"({league.country_id.name}, {league.session_id.year}). "
-                    "Status Code: "
-                    f"{response.status_code if response else 'No Response'}"
-                )
-
-        _logger.info('Sync Teams completed.')
 
     def _get_active_leagues(self):
         """Retrieve leagues marked as 'follow'."""
         return self.env['football.league'].search([('follow', '=', True)])
-
-    def _teams_exist(self, league):
-        """Check if teams already exist for a league, session, and country."""
-        return self.env['football.team'].search_count([
-            ('league_id', '=', league.id),
-            ('session_id', '=', league.session_id.id),
-            ('country_id', '=', league.country_id.id)
-        ]) > 0
 
     def _fetch_teams_from_api(self, league):
         """
@@ -118,20 +89,18 @@ class FootballTeam(models.Model):
     def _process_and_create_teams(self, teams_data, league):
         """Process and create teams based on API response."""
         for team_data in teams_data:
-            venue = self._create_or_get_venue(team_data.get('venue'))
-
-            if venue:
-                team_info = team_data.get('team', {})
-                # Crear el equipo solo si no existe
-                existing_team = self.env['football.team'].search(
-                    [
-                        ('id_team', '=', team_info.get('id')),
-                        ('league_id', '=', league.id),
-                        ('session_id', '=', league.session_id.id),
-                    ], limit=1
-                )
-
-                if not existing_team:
+            team_info = team_data.get('team', {})
+            # Crear el equipo solo si no existe
+            existing_team = self.env['football.team'].search(
+                [
+                    ('id_team', '=', team_info.get('id')),
+                    ('league_id', '=', league.id),
+                    ('session_id', '=', league.session_id.id),
+                ], limit=1
+            )
+            if not existing_team:
+                venue = self._create_or_get_venue(team_data.get('venue'))
+                if venue:
                     self._create_team_record(team_info, venue.id, league)
                     _logger.info(
                         f"Created team: {team_info.get('name')} "
@@ -140,10 +109,6 @@ class FootballTeam(models.Model):
 
     def _create_or_get_venue(self, venue_data):
         """Create or retrieve the venue based on venue data."""
-        if not venue_data or not venue_data.get('name'):
-            _logger.warning(f"Venue name missing for venue data: {venue_data}")
-            return None
-
         return self.env['football.venue'].create({
             'id_venue': venue_data.get('id'),
             'name': venue_data.get('name'),
