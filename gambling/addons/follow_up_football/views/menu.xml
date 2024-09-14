@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <menuitem id="football_country_menu_root" name="Sports">
-        <menuitem id="football_country_first_level_menu" name="Football" sequence="10">
-            <menuitem id="football_country_menu_action" action="football_country_action" sequence="10"/>
-            <menuitem id="football_league_menu_action" action="football_league_action" sequence="20"/>
+        <menuitem id="football_country_first_level_menu" name="Competitions" sequence="10">
+            <menuitem id="football_country_second_level_menu" name="Football" sequence="10">
+                <menuitem id="football_country_menu_action" action="football_country_action" sequence="10"/>
+                <menuitem id="football_league_menu_action" action="football_league_action" sequence="20"/>
+            </menuitem>
         </menuitem>
         <menuitem id="football_api_configuration_wizard_level_menu" name="Config" sequence="20" groups="base.group_system">
             <menuitem id="football_api_configuration_wizard_menu_action" action="football_api_configuration_wizard_action" sequence="10"/>
-        </menuitem>
-        <menuitem id="football_appi_manual_level_menu" name="Manual" sequence="40">
-            <menuitem id="football_appi_manual_menu_action" action="action_football_api_manual" sequence="10"/>
         </menuitem>
     </menuitem>
 </odoo>

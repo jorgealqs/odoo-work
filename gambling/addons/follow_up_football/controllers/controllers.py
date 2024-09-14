@@ -5,7 +5,18 @@ class ApiFootballController(Controller):
     @route(['/games'], type='http', auth='public')
     def api_football_games(self):
         return request.render(
-            'follow_up_football.api_football_games',
+            'follow_up_football.api_football',
+            {
+                'session_info': request.env[
+                    'ir.http'
+                ].get_frontend_session_info(),
+            }
+        )
+
+    @route(['/manual-football'], type='http', auth='public')
+    def api_football_manual(self):
+        return request.render(
+            'follow_up_football.api_football',
             {
                 'session_info': request.env[
                     'ir.http'
