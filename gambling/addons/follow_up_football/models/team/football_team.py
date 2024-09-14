@@ -50,13 +50,13 @@ class FootballTeam(models.Model):
         active_leagues = self._get_active_leagues()
 
         for league in active_leagues:
-            if self._teams_exist(league):
-                _logger.info(
-                    f"Teams already exist for League: {league.name} "
-                    f"({league.country_id.name}, {league.session_id.year}). "
-                    f"Skipping API request."
-                )
-                continue
+            # if self._teams_exist(league):
+            #     _logger.info(
+            #         f"Teams already exist for League: {league.name} "
+            #         f"({league.country_id.name}, {league.session_id.year}). "
+            #         f"Skipping API request."
+            #     )
+            #     continue
 
             response = self._fetch_teams_from_api(league)
 
@@ -122,11 +122,21 @@ class FootballTeam(models.Model):
 
             if venue:
                 team_info = team_data.get('team', {})
-                self._create_team_record(team_info, venue.id, league)
-                _logger.info(
-                    f"Created team: {team_info.get('name')} "
-                    f"in League: {league.name}"
+                # Crear el equipo solo si no existe
+                existing_team = self.env['football.team'].search(
+                    [
+                        ('id_team', '=', team_info.get('id')),
+                        ('league_id', '=', league.id),
+                        ('session_id', '=', league.session_id.id),
+                    ], limit=1
                 )
+
+                if not existing_team:
+                    self._create_team_record(team_info, venue.id, league)
+                    _logger.info(
+                        f"Created team: {team_info.get('name')} "
+                        f"in League: {league.name}"
+                    )
 
     def _create_or_get_venue(self, venue_data):
         """Create or retrieve the venue based on venue data."""

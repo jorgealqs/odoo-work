@@ -1,0 +1,20 @@
+<odoo>
+    <data>
+        <template id="follow_up_football.api_football_games" name="Api Football">
+            <html>
+                <head>
+                    <link type="image/x-icon" rel="shortcut icon" href="/web/static/img/favicon.ico"/>
+                    <script type="text/javascript">
+                        var odoo = {
+                            csrf_token: "<t t-nocache="The csrf token must always be up to date." t-esc="request.csrf_token(None)"/>",
+                            debug: "<t t-out="debug"/>",
+                            __session_info__: <t t-esc="json.dumps(session_info)"/>,
+                        };
+                    </script>
+                    <t t-call-assets="follow_up_football.assets_api_football"/>
+                </head>
+                <body />
+            </html>
+        </template>
+    </data>
+</odoo>

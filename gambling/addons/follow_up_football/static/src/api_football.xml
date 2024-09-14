@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<templates xml:space="preserve">
+    <t t-name="follow_up_football.games">
+        <!-- Main Container with Background -->
+        <div class="container mt-4 p-4" style="background-color: #f5f5f5; border-radius: 10px;">
+            <!-- Welcome Message -->
+            <div class="alert alert-info text-center" role="alert" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h4 class="alert-heading" style="font-family: 'Poppins', sans-serif; font-weight: bold;">Welcome to Today's Football Matches!</h4>
+                <p style="font-family: 'Poppins', sans-serif;">Stay updated with the latest matches happening today. Below you'll find all the fixtures for today, including the home and away teams. May the best team win!</p>
+                <hr />
+                <p class="mb-0" style="font-family: 'Poppins', sans-serif;">Ready to dive in? Scroll down to explore!</p>
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+                </div>
+            </div>
+
+            <!-- Matches Cards Section -->
+            <div class="row">
+                <t t-foreach="state.matches" t-as="match" t-key="match.id">
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm" style="border-radius: 15px; transition: transform 0.2s;">
+                            <div class="card-body" style="padding: 20px;">
+                                <!-- Match Date and Details -->
+                                <h6 class="card-subtitle mb-2 text-muted" style="font-family: 'Roboto', sans-serif; font-size: 14px;">
+                                    <span class="d-block">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <strong>Date:</strong> <t t-esc="match.date"/>
+                                    </span>
+
+                                    <span class="d-block">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <strong>Country:</strong> <t t-esc="match.country_id[1]"/>
+                                    </span>
+
+                                    <span class="d-block">
+                                        <i class="bi bi-trophy"></i>
+                                        <strong>League:</strong> <t t-esc="match.league_id[1]"/>
+                                    </span>
+                                </h6>
+
+                                <!-- Teams -->
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <div class="team">
+                                        <h5 class="text-primary mb-0 font-weight-bold" style="font-family: 'Roboto', sans-serif;">
+                                            <i class="bi bi-house-door-fill"></i> <t t-esc="match.home_team_id[1]"/>
+                                        </h5>
+                                    </div>
+                                    <span class="vs font-weight-bold" style="font-size: 18px;">VS</span>
+                                    <div class="team">
+                                        <h5 class="text-danger mb-0 font-weight-bold" style="font-family: 'Roboto', sans-serif;">
+                                            <i class="bi bi-truck"></i> <t t-esc="match.away_team_id[1]"/>
+                                        </h5>
+                                    </div>
+                                </div>
+
+                                <!-- View Details Button -->
+                                <div class="mt-4 text-center">
+                                    <button class="btn btn-sm btn-outline-secondary" style="border-radius: 20px;">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>
