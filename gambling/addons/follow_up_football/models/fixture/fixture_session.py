@@ -25,19 +25,13 @@ class FootballFixtureSessionRound(models.Model):
 
         if football_leagues:
             for league in football_leagues:
-                if not self._rounds_already_synced(league):
-                    try:
-                        rounds_data = self._fetch_rounds_data(league)
-                        self._process_rounds(league, rounds_data)
-                    except Exception as e:
-                        _logger.error(
-                            "Failed to sync rounds for league "
-                            f"{league.id_league}: {e}"
-                        )
-                else:
-                    _logger.info(
-                        f"Rounds for league {league.id_league} "
-                        "are already synced. Skipping."
+                try:
+                    rounds_data = self._fetch_rounds_data(league)
+                    self._process_rounds(league, rounds_data)
+                except Exception as e:
+                    _logger.error(
+                        "Failed to sync rounds for league "
+                        f"{league.id_league}: {e}"
                     )
 
     def _get_followed_leagues(self):

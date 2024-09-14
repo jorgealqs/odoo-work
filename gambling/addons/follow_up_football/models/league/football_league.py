@@ -83,11 +83,7 @@ class FootballLeague(models.Model):
                 {'ID': session.id, 'Year': session.year}
                 for session in active_sessions
             ]
-
             for session in sessions_info:
-                if self._leagues_exist(country.id, session['ID']):
-                    continue
-
                 leagues = self._fetch_leagues(
                     country.country_code,
                     session['Year']
@@ -98,13 +94,6 @@ class FootballLeague(models.Model):
                         session['ID'],
                         country.id
                     )
-
-    def _leagues_exist(self, country_id, session_id):
-        """Check if leagues already exist for a given country and session."""
-        return self.env['football.league'].search_count([
-            ('country_id', '=', country_id),
-            ('session_id', '=', session_id)
-        ]) > 0
 
     def _fetch_leagues(self, country_code, year):
         """Fetch leagues data from API for a given country and season."""
@@ -147,4 +136,13 @@ class FootballLeague(models.Model):
                     'start': season.get('start'),
                     'end': season.get('end')
                 }
-                self.env['football.league'].create(data)
+                # Check if league already exists in the database
+                existing_league = self.env['football.league'].search([
+                    ('id_league', '=', league_data.get('id')),
+                    ('session_id', '=', session_id),
+                    ('country_id', '=', country_id)
+                ], limit=1)
+
+                if not existing_league:
+                    # Create new league if it does not exist
+                    self.env['football.league'].create(data)
