@@ -1,13 +1,23 @@
 /** @odoo-module **/
 
-import { Component, useState } from "@odoo/owl"
+import { registry } from '@web/core/registry'
+import { Layout } from '@web/search/layout'
+import { getDefaultConfig } from '@web/views/view'
+import { Component, useSubEnv, useState } from '@odoo/owl'
 import { useService } from "@web/core/utils/hooks"
 
-export class ApiFootball extends Component {
-    static template = "follow_up_football.games"
-    static props = {}
+export class ApiFootballConfigOwl extends Component {
+    static template = "config.apiFootball"
+    static components = { Layout }
 
     setup() {
+        useSubEnv({
+            config: {
+                ...getDefaultConfig(),
+                ...this.env.config,
+            }
+        })
+
         this.state = useState({
             matches: [], // Aquí se almacenarán los resultados
             loading: true, // Indica si los datos están cargando
@@ -17,12 +27,15 @@ export class ApiFootball extends Component {
         this.orm = useService("orm") // Obtén el servicio orm
 
         if (!this.orm) {
-            console.error("ORM service is not available.")
             this.state.error = 'ORM service is not available.'
             this.state.loading = false
             return
         }
         this.loadMatches()
+        // Agregar el manejador de eventos
+        this.events = {
+            'click .card': this.handleCardClick.bind(this) // Asegúrate de vincular el contexto de `this`
+        }
     }
 
     async loadMatches() {
@@ -38,25 +51,30 @@ export class ApiFootball extends Component {
             const result = await this.orm.searchRead(
                 'football.fixture',
                 [
-                    ['date','>=',startOfDay],
-                    ['date','<=',endOfDay]
+                    ['date', '>=', startOfDay],
+                    ['date', '<=', endOfDay]
                 ],
                 [], // Campos a obtener
                 // Fields to retrieve (e.g. ['date', 'home_team_id', 'away_team_id', 'league_id'])
                 {
-                    order: 'league_id DESC'
+                    order: 'country_id, league_id, date'
                 }
             )
-            console.log(result)
             // Agrega esta línea para verificar el resultado
             // Actualiza el estado con los resultados
             this.state.matches = result
             this.state.loading = false
         } catch (error) {
             // Manejo de errores
-            console.error("Error in loadMatches:", error)
             this.state.error = error.message || 'An error occurred while fetching matches.'
             this.state.loading = false
         }
     }
+
+    handleCardClick(event) {
+        const fixtureId = event.currentTarget.dataset.fixtureId // Accede al atributo data-id
+        console.log('fixtureId:', fixtureId)
+    }
 }
+
+registry.category("actions").add("config.testAction", ApiFootballConfigOwl)
