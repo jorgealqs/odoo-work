@@ -12,11 +12,13 @@
         "views/baloto/view_baloto.xml",
         "views/baloto/view_baloto_type.xml",
         "views/baloto/view_baloto_number_frequency.xml",
+        "views/action_manual/manual.xml",
         "views/menu.xml",
     ],
     'assets': {
         'web.assets_backend': [
             "lottery_forecast/static/src/css/kanban_styles.css",
+            "lottery_forecast/static/src/**/*"
         ],
     },
     'installable': True,
