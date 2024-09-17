@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="manual.LotteryBaloto">
+        <div class="o_action">
+            <Layout display="{
+                'top-right': false,
+                'top-left': false,
+                'bottom-right': false,
+                'bottom-left': false
+            }">
+                <div class="container mt-4">
+                    <h2 class="text-center">Lottery Information</h2>
+
+                    <div class="row">
+                        <!-- Baloto Section -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white text-center">
+                                    <h3>Baloto</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Baloto</strong> is a lottery game where players choose 5 numbers from 1 to 43 and 1 Super Ball number from 1 to 16. With an initial jackpot of 4 billion Colombian pesos, the prize pool grows until a winner is found.</p>
+                                    <ul>
+                                        <li><strong>Cost:</strong> 5,700 COP</li>
+                                        <li><strong>Draw days:</strong> Wednesday and Saturday</li>
+                                        <li><strong>Initial jackpot:</strong> 4 billion COP</li>
+                                        <li><strong>Includes 19% VAT in most regions of Colombia</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Revancha Section -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white text-center">
+                                    <h3>Revancha</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Revancha</strong> gives players a second chance to win with the same numbers used in Baloto. For an additional 2,100 COP, you can compete for another jackpot, starting at 1 billion COP.</p>
+                                    <ul>
+                                        <li><strong>Cost:</strong> 2,100 COP (in addition to Baloto)</li>
+                                        <li><strong>Draw days:</strong> Wednesday and Saturday</li>
+                                        <li><strong>Initial jackpot:</strong> 1 billion COP</li>
+                                        <li><strong>Includes 19% VAT in most regions of Colombia</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MiLoto Section -->
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-warning text-white text-center">
+                                    <h3>MiLoto</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>MiLoto</strong> is another lottery option available in Colombia. It offers a quick and simple way to participate in frequent draws.</p>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Cost:</strong> 4,000 COP</li>
+                                        <li><strong>How to play:</strong> Simply choose 5 numbers from 1 to 39 without repeating them, and you're in the game.</li>
+                                        <li><strong>Draw days:</strong> Monday, Tuesday, Thursday, and Friday</li>
+                                        <li><strong>Initial jackpot:</strong> 120 million COP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        </div>
+    </t>
+</template>
