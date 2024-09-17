@@ -38,7 +38,7 @@
                                     <span class="super-ball"> <field name="super_baloto"/> </span>
                                 </div>
                                 <div class="kanban-date">
-                                    Result date:<field name="draw_date"/>
+                                    Date: <field name="draw_date"/>
                                 </div>
                             </div>
                         </div>
