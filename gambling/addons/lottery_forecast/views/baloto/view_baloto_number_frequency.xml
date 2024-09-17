@@ -6,9 +6,11 @@
         <field name="model">lottery.baloto.number.frequency</field>
         <field name="arch" type="xml">
             <graph string="Number Frequency by Date" type="line">
-                <field name="number" type="measure"/> <!-- Eje X: Números -->
+                <!-- <field name="number" type="measure"/>  -->
+                <!-- Eje X: Números -->
                 <field name="draw_date" interval="month" type="dimension"/> <!-- Eje Y: Fechas agrupadas por mes -->
-                <field name="lottery_type_id" type="dimension"/> <!-- Filtrar por tipo de lotería -->
+                <!-- <field name="lottery_type_id" type="dimension"/> -->
+                <!-- Filtrar por tipo de lotería -->
             </graph>
         </field>
     </record>
@@ -28,7 +30,7 @@
                     <filter string="Number" name="group_by_number" context="{'group_by':'number'}"/>
                     <filter string="Type" name="group_by_lottery_type_id" context="{'group_by':'lottery_type_id'}"/>
                     <!-- Agrupación por Año -->
-                    <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year'}"/>
+                    <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year', 'order_by':'draw_date ASC'}"/>
                     <!-- Agrupación por Mes dentro del Año -->
                     <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
                 </group>
@@ -81,5 +83,6 @@
                 Utilize this data to make more informed decisions and strategies based on historical draw data.
             </p>
         </field>
+
     </record>
 </odoo>
