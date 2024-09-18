@@ -9,6 +9,11 @@
                 <!-- Add your fields here -->
                 <field name="lottery_type_id"/>
                 <group string="Group By">
+
+                    <filter string="Baloto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
+                    <filter string="Revancha" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
+                    <filter string="MiLoto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'MiLoto')]"/>
+
                     <!-- Agrupación por tipo de lotería -->
                     <filter string="Type" name="lottery_type_id_context" context="{'group_by':'lottery_type_id'}"/>
                     <!-- Agrupar por Año de la fecha del sorteo -->
@@ -29,16 +34,29 @@
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="kanban-item">
+                                <!-- Campo lottery_type_name invisible para lógica interna -->
+                                <field name="lottery_type_name" invisible="1"/>
+
                                 <div class="kanban-numbers">
+                                    <!-- Números del 1 al 5 -->
                                     <span class="ball"> <field name="number_1"/> </span>
                                     <span class="ball"> <field name="number_2"/> </span>
                                     <span class="ball"> <field name="number_3"/> </span>
                                     <span class="ball"> <field name="number_4"/> </span>
                                     <span class="ball"> <field name="number_5"/> </span>
-                                    <span class="super-ball"> <field name="super_baloto"/> </span>
+
+                                    <!-- Mostrar Super Baloto o Sorteo # según el tipo de lotería -->
+                                    <t t-if="record.lottery_type_name.raw_value == 'Baloto' or record.lottery_type_name.raw_value == 'Revancha'">
+                                        <span class="super-ball"> <field name="super_baloto"/> </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span>Sorteo #: <field name="super_baloto"/></span>
+                                    </t>
                                 </div>
+
+                                <!-- Fecha del sorteo -->
                                 <div class="kanban-date">
-                                    Date: <field name="draw_date"/>
+                                    <span>Date: <field name="draw_date"/></span>
                                 </div>
                             </div>
                         </div>

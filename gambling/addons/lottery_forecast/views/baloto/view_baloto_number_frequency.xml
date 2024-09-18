@@ -20,18 +20,23 @@
         <field name="model">lottery.baloto.number.frequency</field>
         <field name="arch" type="xml">
             <search string="Search">
-                <!-- Campos de búsqueda directa -->
-                <field name="number"/>
-                <field name="lottery_type_id"/>
+                <!-- Filtros por tipo de lotería -->
+                <group expand="1" string="Lottery Type">
+                    <filter string="Baloto" name="lottery_type_id_baloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
+                    <filter string="Revancha" name="lottery_type_id_revancha" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
+                    <filter string="MiLoto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'MiLoto')]"/>
+                </group>
+
+                <!-- Filtros por años -->
+                <group expand="1" string="Year">
+                    <filter string="Current Year" name="current_year" domain="[('draw_date', '&gt;', context_today().strftime('%%Y-01-01')), ('draw_date', '&lt;=', context_today().strftime('%%Y-12-31'))]"/>
+                </group>
 
                 <!-- Opciones de agrupación -->
-                <group string="Group By">
-                    <!-- Agrupación por número de lotería -->
+                <group expand="1" string="Group By">
                     <filter string="Number" name="group_by_number" context="{'group_by':'number'}"/>
                     <filter string="Type" name="group_by_lottery_type_id" context="{'group_by':'lottery_type_id'}"/>
-                    <!-- Agrupación por Año -->
                     <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year', 'order_by':'draw_date ASC'}"/>
-                    <!-- Agrupación por Mes dentro del Año -->
                     <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
                 </group>
             </search>
