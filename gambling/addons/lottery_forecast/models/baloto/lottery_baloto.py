@@ -6,7 +6,7 @@ import random
 import requests
 import time
 from bs4 import BeautifulSoup
-from odoo import models, fields
+from odoo import models, fields, api
 # from odoo import models, fields, tools
 from requests.exceptions import RequestException
 
@@ -31,6 +31,17 @@ class LotteryBaloto(models.Model):
         required=True,
         ondelete='restrict'
     )
+    lottery_type_name = fields.Char(
+        compute='_compute_lottery_type_name',
+        store=True
+    )
+
+    @api.depends('lottery_type_id.name')
+    def _compute_lottery_type_name(self):
+        for record in self:
+            record.lottery_type_name = (
+                record.lottery_type_id.name if record.lottery_type_id else ''
+            )
 
     def _get_wednesday_and_saturday(self):
         """

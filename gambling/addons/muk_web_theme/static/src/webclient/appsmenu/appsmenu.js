@@ -23,20 +23,20 @@ export class AppsMenu extends Dropdown {
                 id: this.companyService.currentCompany.id,
             });
     	} else {
-    		this.backgroundImageUrl = '/muk_web_theme/static/src/img/background.png';
+    		this.backgroundImageUrl = '/muk_web_theme/static/src/img/leon.avif';
     	}
         useEffect(
             (open) => {
             	if (open) {
             		const openMainPalette = (ev) => {
             	    	if (
-            	    		!this.commandServiceOpen && 
+            	    		!this.commandServiceOpen &&
             	    		ev.key.length === 1 &&
             	    		!ev.ctrlKey &&
             	    		!ev.altKey
             	    	) {
 	            	        this.commandService.openMainPalette(
-            	        		{ searchValue: `/${ev.key}` }, 
+            	        		{ searchValue: `/${ev.key}` },
             	        		() => { this.commandPaletteOpen = false; }
             	        	);
 	            	    	this.commandPaletteOpen = true;
