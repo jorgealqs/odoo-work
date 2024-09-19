@@ -22,3 +22,8 @@ class LotteryBalotoWizard(models.TransientModel):
         model = self.env['lottery.baloto.number.frequency']
         model._calculate_number_frequency()
         return {'type': 'ir.actions.act_window_close'}
+
+    def action_calculate_number_frequency_1_16(self):
+        model = self.env['lottery.baloto.number.frequency.1.16']
+        model._calculate_number_frequency_1_16()
+        return {'type': 'ir.actions.act_window_close'}

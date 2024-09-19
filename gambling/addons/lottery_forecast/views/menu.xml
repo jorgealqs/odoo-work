@@ -18,6 +18,7 @@
 
             <menuitem id="lottery_baloto_fourth_level_menu" name="Data Analysis" sequence="10">
                 <menuitem id="lottery_baloto_number_frequency_menu_action" action="lottery_baloto_number_frequency_action" sequence="10"/>
+                <menuitem id="lottery_baloto_number_frequency_1_16_menu_action" action="lottery_baloto_number_frequency_1_16_action" sequence="20"/>
             </menuitem>
 
 

@@ -79,7 +79,7 @@
                 <field name="number_3" string="#3"/>
                 <field name="number_4" string="#4"/>
                 <field name="number_5" string="#5"/>
-                <field name="super_baloto" string="S/B"/>
+                <field name="super_baloto" string="S/B" optional="False"/>
                 <field name="draw_date" string="Date"/>
             </tree>
         </field>

@@ -34,7 +34,7 @@
 
                     <!-- Action Buttons -->
                     <footer class="d-flex justify-content-center mt-4">
-                        <button
+                        <!-- <button
                             string="Sync Baloto"
                             type="object"
                             name="action_sync_results"
@@ -47,11 +47,18 @@
                             name="action_sync_results_miloto"
                             class="btn-success btn-md mx-3"
                             icon="fa-download"
-                        />
+                        /> -->
                         <button
-                            string="Sync Frequency"
+                            string="Sync Frequency 1-46"
                             type="object"
                             name="action_calculate_number_frequency"
+                            class="btn-primary btn-md mx-3"
+                            icon="fa-download"
+                        />
+                        <button
+                            string="Sync Frequency 1-16"
+                            type="object"
+                            name="action_calculate_number_frequency_1_16"
                             class="btn-primary btn-md mx-3"
                             icon="fa-download"
                         />
