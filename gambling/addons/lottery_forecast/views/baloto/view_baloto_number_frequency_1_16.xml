@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="lottery_baloto_number_frequency_1_16_form" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.1.16 Form</field>
+        <field name="model">lottery.baloto.number.frequency.1.16</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <notebook>
+                        <page string="Information">
+                            <group>
+                                <field name="draw_date" readonly="draw_date" string="Date"/>
+                                <field name="number" readonly="draw_date" string="Number"/>
+                                <field name="lottery_type_id" readonly="draw_date" options="{'no_open':true, 'no_created':true}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_number_frequency_1_16_graph" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.1.16 Graph</field>
+        <field name="model">lottery.baloto.number.frequency.1.16</field>
+        <field name="arch" type="xml">
+            <graph string="Number Frequency by Date" type="line">
+                <!-- <field name="number" type="measure"/>  -->
+                <!-- Eje X: Números -->
+                <field name="draw_date" interval="month" type="dimension"/> <!-- Eje Y: Fechas agrupadas por mes -->
+                <!-- <field name="lottery_type_id" type="dimension"/> -->
+                <!-- Filtrar por tipo de lotería -->
+            </graph>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_number_frequency_1_16_search" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.1.16 Search</field>
+        <field name="model">lottery.baloto.number.frequency.1.16</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <!-- Filtros por tipo de lotería -->
+                <group expand="1" string="Lottery Type">
+                    <filter string="Baloto" name="lottery_type_id_baloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
+                    <filter string="Revancha" name="lottery_type_id_revancha" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
+                </group>
+
+                <!-- Filtros por años -->
+                <group expand="1" string="Year">
+                    <filter string="Current Year" name="current_year" domain="[('draw_date', '&gt;', context_today().strftime('%%Y-01-01')), ('draw_date', '&lt;=', context_today().strftime('%%Y-12-31'))]"/>
+                </group>
+
+                <!-- Opciones de agrupación -->
+                <group expand="1" string="Group By">
+                    <filter string="Number" name="group_by_number" context="{'group_by':'number'}"/>
+                    <filter string="Type" name="group_by_lottery_type_id" context="{'group_by':'lottery_type_id'}"/>
+                    <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year', 'order_by':'draw_date ASC'}"/>
+                    <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_lottery_number_frequency_1_16_by_date_tree" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.1.16 Tree</field>
+        <field name="model">lottery.baloto.number.frequency.1.16</field>
+        <field name="arch" type="xml">
+            <tree string="Number Frequency by Date" default_order="draw_date DESC">
+                <field name="number" optional="1"/>
+                <field name="draw_date"/>
+                <field name="lottery_type_id" optional="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="lottery_baloto_number_frequency_1_16_action" model="ir.actions.act_window">
+        <field name="name">Frequency 1-16</field>
+        <field name="res_model">lottery.baloto.number.frequency.1.16</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="domain">[]</field>
+        <field name="context">
+            {
+                'search_default_group_by_lottery_type_id': 1,
+                'search_default_group_by_number': 1,
+                'search_default_group_by_year': 1,
+                'search_default_group_by_month': 1
+            }
+        </field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <div class="container">
+                <div class="card" style="border: 2px solid #007bff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body" style="text-align: center;">
+                        <h2 class="card-title" style="color: #007bff;">
+                            <i class="fa fa-star" style="color: gold;"></i> Super Baloto Frequency Analysis <i class="fa fa-star" style="color: gold;"></i>
+                        </h2>
+                        <p class="card-text" style="font-size: 16px;">
+                            Welcome to the <strong>Super Baloto Analysis</strong> section, where we focus on the frequency of the Super Baloto numbers ranging from <strong>1 to 16</strong> in both <strong>Baloto</strong> and <strong>Revancha</strong> lottery draws.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card" style="border-radius: 10px; border: 1px solid #17a2b8;">
+                            <div class="card-body">
+                                <h4 class="card-title" style="color: #17a2b8;">
+                                    <i class="fa fa-chart-bar"></i> Baloto Analysis
+                                </h4>
+                                <p class="card-text">
+                                    Discover the frequency of Super Baloto numbers (1-16) drawn in <strong>Baloto</strong>. This detailed analysis helps you track the most and least frequent numbers over time.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card" style="border-radius: 10px; border: 1px solid #28a745;">
+                            <div class="card-body">
+                                <h4 class="card-title" style="color: #28a745;">
+                                    <i class="fa fa-chart-pie"></i> Revancha Analysis
+                                </h4>
+                                <p class="card-text">
+                                    Explore how often Super Baloto numbers (1-16) appear in <strong>Revancha</strong> draws. This analysis allows you to identify trends and plan your strategy based on historical data.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="card-text" style="font-size: 16px;">
+                        Use this tool to gain insights and make informed decisions based on the historical Super Baloto numbers for both <strong>Baloto</strong> and <strong>Revancha</strong>.
+                        <i class="fa fa-lightbulb" style="color: yellow;"></i>
+                    </p>
+                </div>
+            </div>
+        </field>
+
+    </record>
+</odoo>
