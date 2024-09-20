@@ -13,6 +13,7 @@
         "views/baloto/view_baloto_type.xml",
         "views/baloto/view_baloto_number_frequency.xml",
         "views/baloto/view_baloto_number_frequency_1_16.xml",
+        "views/baloto/view_analysis_pair.xml",
         "views/action_manual/manual.xml",
         "views/menu.xml",
     ],

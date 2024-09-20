@@ -62,6 +62,13 @@
                             class="btn-primary btn-md mx-3"
                             icon="fa-download"
                         />
+                        <button
+                        string="Analyze Frequency"
+                        type="object"
+                        name="action_analyze_pairs_frequency"
+                        class="btn-primary btn-md mx-3"
+                        icon="fa-download"
+                    />
                     </footer>
                 </sheet>
             </form>
