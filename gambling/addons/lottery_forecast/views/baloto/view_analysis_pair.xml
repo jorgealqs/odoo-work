@@ -1,11 +1,91 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-    <!-- model.name action window -->
+    <!-- model.name search view -->
+    <record id="lottery_baloto_number_frequency_pair_search" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.pair Search</field>
+        <field name="model">lottery.baloto.number.frequency.pair</field>
+        <field name="arch" type="xml">
+            <search string="Filter Pair Number">
+                <field name="last_draw_date"/>
+                <group expand="1" string="Lottery Type">
+                    <filter string="Baloto" name="lottery_type_id_baloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
+                    <filter string="Revancha" name="lottery_type_id_revancha" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
+                    <filter string="MiLoto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'MiLoto')]"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_number_frequency_pair_graph" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.pair Graph</field>
+        <field name="model">lottery.baloto.number.frequency.pair</field>
+        <field name="arch" type="xml">
+            <graph string="Pairs Frequency over Time" type="line">
+                <!-- Eje X: Fechas de los sorteos -->
+                <field name="last_draw_date" type="row" interval="month"/>
+
+                <!-- Eje Y: Frecuencia de los pares -->
+                <field name="frequency" type="measure"/>
+
+                <!-- Etiquetas adicionales: Parejas de números -->
+                <field name="pair" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_number_frequency_pair_form" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.pair Form</field>
+        <field name="model">lottery.baloto.number.frequency.pair</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="lottery_type_id" readonly="pair" options="{'no_open':true, 'no_created':true}"/>
+                    </group>
+                    <notebook>
+                        <page name="name" string="string">
+                            <group string="Information">
+                                <field name="pair" readonly="pair"/>
+                                <field name="frequency" readonly="pair"/>
+                                <field name="number_1" invisible="pair"/>
+                                <field name="number_2" invisible="pair"/>
+                                <field name="last_draw_date" readonly="pair"/>
+                                <field name="create_date" readonly="pair"/>
+                                <field name="update_date" readonly="pair"/>
+                                <field name="draw_dates" string="" readonly="pair">
+                                    <tree>
+                                        <field name="draw_date" string="Date"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="lottery_baloto_number_frequency_pair_tree" model="ir.ui.view">
+        <field name="name">lottery.baloto.number.frequency.pair Tree</field>
+        <field name="model">lottery.baloto.number.frequency.pair</field>
+        <field name="arch" type="xml">
+            <tree default_order="frequency DESC, last_draw_date DESC">
+                <!-- Add your fields here -->
+                <field name="pair"/>
+                <field name="frequency"/>
+                <field name="lottery_type_id"/>
+                <field name="last_draw_date"/>
+                <field name="create_date" optional="pair"/>
+                <field name="update_date" optional="pair"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="lottery_baloto_number_frequency_pair_action" model="ir.actions.act_window">
         <field name="name">Pair</field>
         <field name="res_model">lottery.baloto.number.frequency.pair</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,graph</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->

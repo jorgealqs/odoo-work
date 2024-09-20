@@ -21,17 +21,33 @@ class LotteryBalotoNumberFrequencyPair(models.Model):
         ondelete='restrict'
     )
     last_draw_date = fields.Date(string="Last Draw Date")
-    draw_dates = fields.Many2many('lottery.baloto.draw', string="Draw Dates")
-    create_date = fields.Date(string="Created On", default=fields.Date.today)
-    update_date = fields.Datetime(string="Last Updated", readonly=True)
-    is_active = fields.Boolean(string="Is Active", default=True)
+    draw_dates = fields.Many2many(
+        'lottery.baloto.draw',
+        string="Draw Dates"
+    )
+    # Campo añadido
+    create_date = fields.Date(
+        string="Created On",
+        default=fields.Date.today
+    )
+    update_date = fields.Datetime(
+        string="Last Updated",
+        readonly=True
+    )
+    # Campo añadido
+    is_active = fields.Boolean(
+        string="Is Active",
+        default=True
+    )
 
     def _analyze_pairs_frequency(self):
         """
         Analyze the frequency of pairs of numbers across lottery draws.
         """
-        # Obtener todos los sorteos
-        sorteos = self.env['lottery.baloto'].search([])
+        # Obtener todos los sorteos con el tipo de lotería "MiLoto"
+        sorteos = self.env['lottery.baloto'].search([
+            # ('lottery_type_id.name', '=', 'MiLoto')
+        ])
 
         # Iterar sobre cada sorteo
         for sorteo in sorteos:
@@ -52,35 +68,79 @@ class LotteryBalotoNumberFrequencyPair(models.Model):
                 numero_1, numero_2 = par
 
                 try:
-                    # Verificar si ya existe este par
+                    # Verificar si la fecha del sorteo ya existe en el
+                    # modelo `lottery.baloto.draw`
+                    draw_date_record = self.env['lottery.baloto.draw'].search([
+                        ('draw_date', '=', sorteo.draw_date)
+                    ], limit=1)
+
+                    if not draw_date_record:
+                        # Si no existe, crear la fecha del sorteo
+                        draw_date_record = self.env[
+                            'lottery.baloto.draw'
+                        ].create({
+                            'draw_date': sorteo.draw_date
+                        })
+
+                    # Verificar si ya existe este par con la misma lotería y
+                    # la misma fecha de sorteo
                     existing_pair = self.env[
                         'lottery.baloto.number.frequency.pair'
                     ].search([
                         ('number_1', '=', numero_1),
                         ('number_2', '=', numero_2),
-                        ('lottery_type_id', '=', sorteo.lottery_type_id.id)
+                        ('lottery_type_id', '=', sorteo.lottery_type_id.id),
+                        ('draw_dates', 'in', draw_date_record.id)
                     ], limit=1)
 
                     if existing_pair:
-                        # Si el par ya existe, incrementamos la frecuencia y
-                        # actualizamos las fechas
-                        existing_pair.frequency += 1
-                        if sorteo.draw_date > existing_pair.last_draw_date:
-                            existing_pair.last_draw_date = sorteo.draw_date
-                        existing_pair.draw_dates = [(4, sorteo.id)]
-                        existing_pair.update_date = fields.Datetime.now()
+                        # Si el par ya existe y está registrado para la misma
+                        # fecha, no incrementamos la frecuencia
+                        _logger.info(
+                            f"Pair {numero_1} - {numero_2} already exists for "
+                            f"draw date {sorteo.draw_date}. Frequency not "
+                            f"incremented."
+                        )
+                        continue
                     else:
-                        # Si no existe, creamos un nuevo registro
-                        self.create({
-                            'number_1': numero_1,
-                            'number_2': numero_2,
-                            'pair': f"{numero_1} - {numero_2}",
-                            'frequency': 1,
-                            'last_draw_date': sorteo.draw_date,
-                            'draw_dates': [(4, sorteo.id)],
-                            'lottery_type_id': sorteo.lottery_type_id.id,
-                            'update_date': fields.Datetime.now()
-                        })
+                        # Verificar si el par existe pero no para la misma
+                        # fecha
+                        existing_pair = self.env[
+                            'lottery.baloto.number.frequency.pair'
+                        ].search([
+                            ('number_1', '=', numero_1),
+                            ('number_2', '=', numero_2),
+                            ('lottery_type_id', '=', sorteo.lottery_type_id.id)
+                        ], limit=1)
+
+                        if existing_pair:
+                            # Si el par ya existe pero para una fecha
+                            # diferente, incrementamos la frecuencia y
+                            # actualizamos las fechas
+                            values = {
+                                'frequency': existing_pair.frequency + 1,
+                                'last_draw_date': max(
+                                    existing_pair.last_draw_date,
+                                    sorteo.draw_date
+                                ),
+                                'update_date': fields.Datetime.now(),
+                            }
+                            # Si el sorteo actual no está en las fechas del
+                            # par, lo añadimos
+                            values['draw_dates'] = [(4, draw_date_record.id)]
+                            existing_pair.write(values)
+                        else:
+                            # Si no existe, creamos un nuevo registro
+                            self.create({
+                                'number_1': numero_1,
+                                'number_2': numero_2,
+                                'pair': f"{numero_1} - {numero_2}",
+                                'frequency': 1,
+                                'last_draw_date': sorteo.draw_date,
+                                'draw_dates': [(4, draw_date_record.id)],
+                                'lottery_type_id': sorteo.lottery_type_id.id,
+                                'update_date': fields.Datetime.now()
+                            })
                 except Exception as e:
                     _logger.error(
                         f"Error processing pair {numero_1} - {numero_2}: {e}"
