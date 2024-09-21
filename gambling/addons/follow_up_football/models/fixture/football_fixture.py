@@ -84,7 +84,7 @@ class FootballFixture(models.Model):
         return self.env['football.league'].search(
             [
                 ("follow", "=", True),
-                ("country_id.name", "in", ['Brazil']),
+                # ("country_id.name", "in", ['Brazil']),
             ]
         )
 
