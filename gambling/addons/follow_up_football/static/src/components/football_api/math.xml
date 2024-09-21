@@ -10,6 +10,7 @@
                 'bottom-left': false,
             }">
                 <div class="container mt-4 p-4" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+
                     <!-- Welcome Message -->
                     <div class="alert alert-info text-center mb-5" role="alert" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                         <h4 class="alert-heading" style="font-family: 'Poppins', sans-serif; font-weight: 600;">Welcome to Today's Football Matches!</h4>
@@ -18,16 +19,37 @@
                         <p class="mb-0" style="font-family: 'Poppins', sans-serif;">Ready to get started? Let the games begin!</p>
                     </div>
 
-                    <!-- Matches Cards Section -->
-                    <div class="row">
+                    <!-- Matches Accordion Section -->
+                    <div class="accordion" id="accordionMatches">
                         <t t-foreach="state.matches" t-as="match" t-key="match.id">
-                            <div class="col-md-6 mb-4">
-                                <div class="card"
-                                    t-att-data-fixture-id="match.fixture_id"
-                                    style="border-radius: 12px; transition: transform 0.2s; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);cursor: pointer;"
-                                    t-on-click="handleCardClick">
-                                    <div class="card-body">
-                                        <!-- Match Date and Details -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" t-att-id="'heading_' + match.fixture_id">
+                                    <button
+                                        t-att-data-fixture-id="match.fixture_id"
+                                        t-att-data-home-id="match.home_team_id"
+                                        t-att-data-round-id="match.round_id"
+                                        t-att-data-league-id="match.league_id"
+                                        t-att-data-away-id="match.away_team_id"
+                                        class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        t-att-data-bs-target="'#collapse_' + match.fixture_id"
+                                        aria-expanded="false"
+                                        t-att-aria-controls="'collapse_' + match.fixture_id"
+                                        t-on-click="handleCardClick"
+                                    >
+                                        <t t-esc="match.country_id[1]"/> Date:  <t t-esc="match.date"/>
+                                        <br /><br />
+                                        <t t-esc="match.home_team_id[1]"/> vs <t t-esc="match.away_team_id[1]"/>
+                                    </button>
+                                </h2>
+
+                                <div
+                                    t-att-id="'collapse_' + match.fixture_id"
+                                    class="accordion-collapse collapse"
+                                    t-att-data-bs-parent="'#accordionMatches'"
+                                >
+                                    <div class="accordion-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3 text-muted" style="font-family: 'Roboto', sans-serif; font-size: 14px;">
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-calendar-event"></i>
@@ -49,25 +71,51 @@
                                             </div>
                                         </div>
 
-                                        <!-- Teams -->
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="team text-center">
-                                                <h5 class="text-primary font-weight-bold mb-0" style="font-family: 'Roboto', sans-serif;">
-                                                    <i class="bi bi-house-door-fill"></i> <t t-esc="match.home_team_id[1]"/>
-                                                </h5>
+                                        <!-- Results Section -->
+                                        <t t-if="state.resultHome.length || state.resultAway.length">
+                                            <div class="match-results mt-3">
+                                                <h5>Standings:</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Team</th>
+                                                            <th>Rank</th>
+                                                            <th>Points</th>
+                                                            <th>Played</th>
+                                                            <th>Win</th>
+                                                            <th>Draw</th>
+                                                            <th>Lose</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><strong>Home</strong></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].rank : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].points : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].played : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].win : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].draw : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].lose : 'No data available'"/></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Away</strong></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].rank : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].points : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].played : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].win : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].draw : 'No data available'"/></td>
+                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].lose : 'No data available'"/></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <span class="vs font-weight-bold text-secondary" style="font-size: 18px;">VS</span>
-                                            <div class="team text-center">
-                                                <h5 class="text-danger font-weight-bold mb-0" style="font-family: 'Roboto', sans-serif;">
-                                                    <i class="bi bi-truck"></i> <t t-esc="match.away_team_id[1]"/>
-                                                </h5>
-                                            </div>
-                                        </div>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
                         </t>
                     </div>
+
                 </div>
             </Layout>
         </div>

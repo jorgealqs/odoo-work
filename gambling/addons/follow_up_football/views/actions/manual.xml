@@ -11,7 +11,7 @@
     <menuitem
         id="action_manual_menu_act"
         name="Manual"
-        parent="follow_up_football.football_country_second_level_menu"
+        parent="follow_up_football.football_country_menu_root"
         action="action_manual_name"
         sequence="100"
     />

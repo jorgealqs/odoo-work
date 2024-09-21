@@ -1,14 +1,14 @@
 /** @odoo-module **/
 
-import { registry } from '@web/core/registry'
-import { Layout } from '@web/search/layout'
-import { getDefaultConfig } from '@web/views/view'
-import { Component, useSubEnv, useState } from '@odoo/owl'
-import { useService } from "@web/core/utils/hooks"
+import { registry } from '@web/core/registry';
+import { Layout } from '@web/search/layout';
+import { getDefaultConfig } from '@web/views/view';
+import { Component, useSubEnv, useState } from '@odoo/owl';
+import { useService } from "@web/core/utils/hooks";
 
 export class ApiFootballConfigOwl extends Component {
-    static template = "config.apiFootball"
-    static components = { Layout }
+    static template = "config.apiFootball";
+    static components = { Layout };
 
     setup() {
         useSubEnv({
@@ -16,65 +16,96 @@ export class ApiFootballConfigOwl extends Component {
                 ...getDefaultConfig(),
                 ...this.env.config,
             }
-        })
+        });
 
         this.state = useState({
-            matches: [], // Aquí se almacenarán los resultados
-            loading: true, // Indica si los datos están cargando
-            error: null // Aquí se almacenará cualquier error
-        })
+            matches: [],
+            loading: true,
+            error: null,
+            resultHome: [], // Estado para el standing del equipo local
+            resultAway: []  // Estado para el standing del equipo visitante
+        });
 
-        this.orm = useService("orm") // Obtén el servicio orm
+        this.orm = useService("orm");
 
         if (!this.orm) {
-            this.state.error = 'ORM service is not available.'
-            this.state.loading = false
-            return
+            this.state.error = 'ORM service is not available.';
+            this.state.loading = false;
+            return;
         }
-        this.loadMatches()
-        // Agregar el manejador de eventos
+
+        this.loadMatches();
+
         this.events = {
-            'click .card': this.handleCardClick.bind(this) // Asegúrate de vincular el contexto de `this`
-        }
+            'click .card': this.handleCardClick.bind(this)
+        };
     }
 
     async loadMatches() {
         try {
-            // Define la fecha de hoy en formato YYYY-MM-DD
-            const today = new Date().toISOString().split('T')[0]
+            const today = new Date().toISOString().split('T')[0];
+            const startOfDay = `${today} 00:00:00`;
+            const endOfDay = `${today} 23:59:59`;
 
-            // Define el inicio y fin del día
-            const startOfDay = `'${today} 00:00:00'`
-            const endOfDay = `'${today} 23:59:59'`
-
-            // Llama al método del modelo 'football.fixture' usando orm
             const result = await this.orm.searchRead(
                 'football.fixture',
                 [
                     ['date', '>=', startOfDay],
                     ['date', '<=', endOfDay]
                 ],
-                [], // Campos a obtener
-                // Fields to retrieve (e.g. ['date', 'home_team_id', 'away_team_id', 'league_id'])
+                [],
                 {
                     order: 'country_id, league_id, date'
                 }
-            )
-            // Agrega esta línea para verificar el resultado
-            // Actualiza el estado con los resultados
-            this.state.matches = result
-            this.state.loading = false
+            );
+
+            this.state.matches = result;
+            this.state.loading = false;
         } catch (error) {
-            // Manejo de errores
-            this.state.error = error.message || 'An error occurred while fetching matches.'
-            this.state.loading = false
+            this.state.error = error.message || 'An error occurred while fetching matches.';
+            this.state.loading = false;
         }
     }
 
-    handleCardClick(event) {
-        const fixtureId = event.currentTarget.dataset.fixtureId // Accede al atributo data-id
-        console.log('fixtureId:', fixtureId)
+    async handleCardClick(event) {
+        try {
+            const { fixtureId, homeId, awayId, roundId, leagueId } = event.currentTarget.dataset;
+            const homeIdValue = homeId.split(',')[0];
+            const awayIdValue = awayId.split(',')[0];
+            const roundIdValue = roundId.split(',')[0];
+            const leagueIdValue = leagueId.split(',')[0];
+
+            const [resultHome, resultAway] = await Promise.all([
+                this.fetchTeamStanding(homeIdValue, leagueIdValue),
+                this.fetchTeamStanding(awayIdValue, leagueIdValue)
+            ]);
+
+            // Almacenar los resultados en el estado
+            this.state.resultHome = resultHome;
+            this.state.resultAway = resultAway;
+
+            console.log({ fixtureId, resultHome, resultAway });
+        } catch (error) {
+            console.error('Error fetching team standings:', error);
+        }
+    }
+
+    async fetchTeamStanding(teamId, leagueIdValue) {
+        try {
+            return await this.orm.searchRead(
+                'football.standing',
+                [
+                    ["league_id.id", "=", leagueIdValue],
+                    ["team_id.id", "=", teamId]
+                ],
+                []
+            );
+        } catch (error) {
+            console.error('Error fetching team standing:', error);
+            return [];
+        }
     }
 }
 
-registry.category("actions").add("config.testAction", ApiFootballConfigOwl)
+// Registrar el componente en la categoría de acciones
+registry.category("actions").add("config.testAction", ApiFootballConfigOwl);
