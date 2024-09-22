@@ -46,9 +46,9 @@ class FootballCountry(models.Model):
                         data = response.json()
                         country.continent = data[0]['continents'][0]
                     else:
-                        country.continent = 'Unknown'
+                        country.continent = 'World'
                 except requests.RequestException:
-                    country.continent = 'Unknown'
+                    country.continent = 'World'
 
     @api.depends('session_ids.is_active')
     def _compute_has_active_session(self):
@@ -108,3 +108,8 @@ class FootballCountry(models.Model):
         except Exception as e:
             # Manejo de cualquier otra excepción
             raise Exception(f"Error updating or creating country: {str(e)}")
+
+    def get_countries_by_league(self):
+        country = self.name
+        model_football_league = self.env['football.league']
+        model_football_league._sync_leagues(country)
