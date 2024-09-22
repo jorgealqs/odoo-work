@@ -60,14 +60,20 @@ class FootballFixture(models.Model):
         # Puedes almacenar el valor en la base de datos si es necesario
     )
 
-    def _sync_fixtures(self):
+    def _sync_fixtures(self, id_league=None):
         """
         Synchronizes fixtures with the Football API for all leagues that
         are followed.
         """
 
+        if id_league:
+            model_football_fixture_session_round = self.env[
+                'football.fixture.session.round'
+            ]
+            model_football_fixture_session_round._sync_rounds(id_league)
+
         # Obtener ligas que se están siguiendo
-        football_leagues = self._get_followed_leagues()
+        football_leagues = self._get_followed_leagues(id_league)
 
         if not football_leagues:
             _logger.warning("No leagues found that are being followed.")
@@ -77,16 +83,16 @@ class FootballFixture(models.Model):
         for league in football_leagues:
             self._sync_league_fixtures(league, headers)
 
-    def _get_followed_leagues(self):
+    def _get_followed_leagues(self, id_league=None):
         """
         Retrieve the football leagues that are being followed.
         """
-        return self.env['football.league'].search(
-            [
-                ("follow", "=", True),
-                # ("country_id.name", "in", ['Brazil']),
-            ]
-        )
+        query = [("follow", "=", True)]
+        if id_league:
+            query.append(("id_league", "=", id_league))
+
+        # Buscar ligas seguidas o la liga específica
+        return self.env['football.league'].search(query)
 
     def _get_api_headers(self):
         """

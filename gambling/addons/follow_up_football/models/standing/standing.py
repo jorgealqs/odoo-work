@@ -96,12 +96,20 @@ class FootballStanding(models.Model):
         readonly=True,
     )
 
-    def _sync_standings(self):
+    def _sync_standings(self, country_name=None, id_league=None):
         """Sync standings data from the API and update or
         create records in the database."""
-        active_leagues = self.env['football.league'].search([
-            ('follow', '=', True),
-        ])
+        # Si se proporcionan country_name e id_league, buscar solo esa liga
+        if country_name and id_league:
+            leagues_to_sync = self.env['football.league'].search([
+                ('follow', '=', True),
+                ('id_league', '=', id_league),
+                ('country_id.name', '=', country_name),
+            ])
+        else:
+            leagues_to_sync = self.env['football.league'].search([
+                ('follow', '=', True),
+            ])
 
         base_url = os.getenv('API_FOOTBALL_URL')
         if not base_url:
@@ -117,7 +125,7 @@ class FootballStanding(models.Model):
 
         _logger.info("\n\nStarting Sync\n\n")
 
-        for league in active_leagues:
+        for league in leagues_to_sync:
             params = {
                 'league': league.id_league,
                 'season': league.session_id.year

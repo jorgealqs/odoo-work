@@ -36,27 +36,38 @@
         <field name="arch" type="xml">
             <form string="Countries">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            class="oe_stat_button btn btn-primary"
+                            name="get_countries_by_league"
+                            type="object"
+                            help="You can update the leagues, clicking the button"
+                            icon="fa-refresh"
+                            string="Sync Leagues"
+                            confirm="Are you sure you want to upgrade?"
+                        />
+                    </div>
                     <div class="oe_title">
                         <div class="oe_edit_only">
                             <label for="name"/>
                         </div>
                         <h1 class="mb32">
-                            <field name="name" class="mb16"/>
+                            <field name="name" class="mb16" readonly="id"/>
                         </h1>
                     </div>
                     <notebook>
                         <page string="Information">
                             <group>
                                 <group>
-                                    <field name="country_code"/>
+                                    <field name="country_code" readonly="id"/>
                                 </group>
                                 <group>
                                     <field name="flag" widget="image_url" options="{'size': [100, 100]}"/>
                                 </group>
                             </group>
                             <group string="Sessions">
-                                <field name="session_ids" string="" readonly="1" options="{'no_create': True, 'no_open': True}">
-                                    <tree limit="100">
+                                <field name="session_ids" string="" readonly="id">
+                                    <tree limit="100" editable="false">
                                         <field name="country_id" optional="1"/>
                                         <field name="year"/>
                                         <field name="is_active" widget="boolean_toggle"/>

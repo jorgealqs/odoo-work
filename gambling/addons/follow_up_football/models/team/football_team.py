@@ -43,20 +43,23 @@ class FootballTeam(models.Model):
         string='Country'
     )
 
-    def _sync_teams(self):
+    def _sync_teams(self, id_league=None):
         """Sync football teams for leagues marked as 'follow'."""
-        active_leagues = self._get_active_leagues()
+        active_leagues = self._get_active_leagues(id_league)
         for league in active_leagues:
-            response = self._fetch_teams_from_api(league)
+            response = self._fetch_teams_from_api(league, id_league)
             if response and response.status_code == 200:
                 teams_data = response.json().get('response', [])
                 self._process_and_create_teams(teams_data, league)
 
-    def _get_active_leagues(self):
+    def _get_active_leagues(self, id_league=None):
         """Retrieve leagues marked as 'follow'."""
-        return self.env['football.league'].search([('follow', '=', True)])
+        query = [('follow', '=', True)]
+        if id_league:
+            query.append(('id_league', '=', id_league))
+        return self.env['football.league'].search(query)
 
-    def _fetch_teams_from_api(self, league):
+    def _fetch_teams_from_api(self, league, id_league=None):
         """
         Make API request to fetch teams for a
         specific league and session.
@@ -73,10 +76,12 @@ class FootballTeam(models.Model):
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
         }
         params = {
-            'country': league.country_id.name,
-            'league': league.id_league,
             'season': league.session_id.year,
         }
+        # Añadir el campo 'league' a params desde el inicio
+        params['league'] = league.id_league
+        if not id_league:
+            params['country'] = league.country_id.name
 
         try:
             response = requests.get(url, headers=headers, params=params)

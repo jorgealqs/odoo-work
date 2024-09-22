@@ -3,6 +3,7 @@ import logging
 import requests
 from requests.exceptions import RequestException
 from odoo import models, fields
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -68,14 +69,19 @@ class FootballLeague(models.Model):
         store=True
     )
 
-    def _sync_leagues(self):
+    def _sync_leagues(self, country_option=None):
         """
         Sync football leagues for active countries and
         their active sessions.
         """
-        active_countries = self.env['football.country'].search([
-            ('session_ids.is_active', '=', True)
-        ])
+        query = [('session_ids.is_active', '=', True)]
+        if country_option:
+            query.append(('name', '=', country_option))
+        active_countries = self.env['football.country'].search(query)
+
+        # Validación: Si no hay países activos, lanzar un mensaje de error
+        if not active_countries:
+            raise UserError("No active countries found with active sessions.")
 
         for country in active_countries:
             active_sessions = country.session_ids.filtered('is_active')
@@ -86,7 +92,8 @@ class FootballLeague(models.Model):
             for session in sessions_info:
                 leagues = self._fetch_leagues(
                     country.country_code,
-                    session['Year']
+                    session['Year'],
+                    country_option
                 )
                 if leagues:
                     self._process_and_save_leagues(
@@ -95,7 +102,7 @@ class FootballLeague(models.Model):
                         country.id
                     )
 
-    def _fetch_leagues(self, country_code, year):
+    def _fetch_leagues(self, country_code, year, country_option=None):
         """Fetch leagues data from API for a given country and season."""
         base_url = os.getenv('API_FOOTBALL_URL')
         if not base_url:
@@ -103,7 +110,10 @@ class FootballLeague(models.Model):
                 "API_FOOTBALL_URL is not defined. Please configure "
                 "the environment variable."
             )
-        url = base_url + f'/leagues?code={country_code}&season={year}'
+        if (country_option and country_option == 'World'):
+            url = base_url + f'/leagues?country={country_option}&season={year}'
+        else:
+            url = base_url + f'/leagues?code={country_code}&season={year}'
         headers = {
             'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
             'x-rapidapi-key': os.getenv('API_FOOTBALL_KEY')
@@ -146,3 +156,72 @@ class FootballLeague(models.Model):
                 if not existing_league:
                     # Create new league if it does not exist
                     self.env['football.league'].create(data)
+
+    def update_standings_by_league(self):
+
+        # # Guardar en el log, buscar la forma de que solo se ejeucate una vez
+        # por dia
+        # self.env['ir.logging'].create({
+        #     'name': 'update_standings_by_league',
+        #     'type': 'server',
+        #     'dbname': self._cr.dbname,
+        #     'level': 'info',
+        #     'message': f'Update_standings_by_league fue ejecutada en '
+        #     f'{datetime.now()}',
+        #     'path': __file__,
+        #     'line': 'N/A',
+        #     'func': 'update_standings_by_league',
+        # })
+
+        country_id = self.country_id
+        id_league = self.id_league
+        model_football_standing = self.env['football.standing']
+        model_football_standing._sync_standings(country_id.name, id_league)
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'display_notification',
+        #     'params': {
+        #         'title': 'Éxito',
+        #         'message': 'Updated standings.',
+        #         'type': 'success',  # También puede ser 'warning' o 'info'
+        #         'sticky': False,
+        #         # Si es True, la notificación permanecerá hasta que el
+        # usuario
+        #         # la cierre
+        #     }
+        # }
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',  # Esto recargará la vista
+        }
+
+    def update_fixtures_by_league(self):
+        id_league = self.id_league
+        model_football_fixture = self.env['football.fixture']
+        model_football_fixture._sync_fixtures(id_league)
+        # Notificación de éxito
+        # notification_action = {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'display_notification',
+        #     'params': {
+        #         'title': 'Éxito',
+        #         'message': 'Updated fixtures.',
+        #         'type': 'success',
+        #         'sticky': False,
+        #     }
+        # }
+
+        # Retornar acción para recargar la vista actual
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',  # Esto recargará la vista
+        }
+
+    def update_teams_by_league(self):
+        id_league = self.id_league
+        model_football_team = self.env['football.team']
+        model_football_team._sync_teams(id_league)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',  # Esto recargará la vista
+        }

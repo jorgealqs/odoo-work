@@ -19,9 +19,9 @@ class FootballFixtureSessionRound(models.Model):
         required=True
     )
 
-    def _sync_rounds(self):
+    def _sync_rounds(self, id_league=None):
         """Sync fixture sessions (rounds) for leagues that are followed."""
-        football_leagues = self._get_followed_leagues()
+        football_leagues = self._get_followed_leagues(id_league)
 
         if football_leagues:
             for league in football_leagues:
@@ -34,11 +34,14 @@ class FootballFixtureSessionRound(models.Model):
                         f"{league.id_league}: {e}"
                     )
 
-    def _get_followed_leagues(self):
+    def _get_followed_leagues(self, id_league=None):
         """Retrieve leagues marked to be followed."""
-        return self.env['football.league'].search([
-            ('follow', '=', True),
-        ])
+        query = [("follow", "=", True)]
+        if id_league:
+            query.append(("id_league", "=", id_league))
+
+        # Buscar ligas seguidas o la liga específica
+        return self.env['football.league'].search(query)
 
     def _fetch_rounds_data(self, league):
         """Fetch rounds data from the API for a given league."""
