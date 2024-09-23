@@ -21,7 +21,9 @@
 
                     <!-- Matches Accordion Section -->
                     <div class="accordion" id="accordionMatches">
+                        <t t-set="isFirst" t-value="0"/>
                         <t t-foreach="state.matches" t-as="match" t-key="match.id">
+                            <t t-set="isFirst" t-value="isFirst + 1"/>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" t-att-id="'heading_' + match.fixture_id">
                                     <button
