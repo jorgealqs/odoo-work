@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="analysis.LotteryBaloto">
+        <div class="o_action">
+            <!-- Select Dropdown outside the Layout -->
+            <div class="container mt-4 text-center">
+                <h1 class="mb-4">Lottery Analysis</h1>
+                <div class="mb-4">
+                    <select t-on-change="changeAnalysis" class="form-select" aria-label="Select an analysis">
+                        <option value="">Select an option</option>
+                        <option value="frequency-MiLoto" data-option="MiLoto">Appearances by number, MiLoto</option>
+                        <option value="frequency-Revancha" data-option="Revancha">Appearances by number, Revancha</option>
+                        <option value="frequency-Baloto" data-option="Baloto">Appearances by number, Baloto</option>
+                    </select>
+                </div>
+            </div>
+
+            <Layout display="{
+                'top-right': false,
+                'top-left': false,
+                'bottom-right': false,
+                'bottom-left': false
+            }">
+                <div class="container mt-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title text-center">Results <strong> for <t t-esc="state.option" /></strong></h2>
+                            <div t-if="state.results &amp;&amp; state.results.length > 0">
+
+                                <!-- Botones de filtro por día -->
+                                <div class="container mt-4 text-center">
+                                    <h2>Filter by Day</h2>
+                                    <div class="filter-buttons d-flex justify-content-center mb-4 flex-wrap">
+                                        <t t-if="state.option == 'MiLoto'">
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Monday">Monday</button>
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Tuesday">Tuesday</button>
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Thursday">Thursday</button>
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Friday">Friday</button>
+                                        </t>
+                                        <t t-else="">
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Wednesday">Wednesday</button>
+                                            <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" data-day="Saturday">Saturday</button>
+                                        </t>
+                                        <button class="btn btn-outline-secondary m-2" t-on-click="clearFilter">Clear Filter</button>
+                                    </div>
+                                </div>
+
+                                <!-- Tabla de Resultados -->
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="text-primary">Number</h5>
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="text-primary">Appearances</h5>
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="text-primary">Details</h5>
+                                    </div>
+                                </div>
+
+                                <div class="list-group">
+                                    <t t-foreach="state.results" t-as="result" t-key="result.id">
+                                        <div class="row">
+                                            <div class="col">
+                                                <strong><t t-esc="result.number" /></strong>
+                                            </div>
+                                            <div class="col">
+                                                <t t-esc="result.frequency" />
+                                            </div>
+                                            <div class="col">
+                                                <ul class="list-unstyled">
+                                                    <t t-foreach="result.date_day_super" t-as="date_day" t-key="date_day.id">
+                                                        <t t-set="date_parts" t-value="date_day.split(':')" />
+                                                        <li t-attf-class="day-{{date_parts[1]}}">
+                                                            <span class="badge bg-primary">
+                                                                <t t-esc="date_parts[0]" /> <!-- Date -->
+                                                            </span>
+                                                            <span class="badge bg-secondary">
+                                                                <t t-esc="date_parts[1]" /> <!-- Day of the week -->
+                                                            </span>
+                                                            <span class="badge">
+                                                                <t t-if="state.option == 'MiLoto' " t-esc="'Sorteo #' + date_parts[2]" /> <!-- Super Baloto -->
+                                                            </span>
+                                                        </li>
+                                                    </t>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div t-else="">
+                                <p class="text-center">No results available. Perform an analysis to see the results.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        </div>
+    </t>
+</template>

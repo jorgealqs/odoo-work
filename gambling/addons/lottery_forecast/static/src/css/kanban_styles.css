@@ -25,3 +25,41 @@
     font-size: 14px;
     color: #6c757d;
 }
+
+li {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+li.hide {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none; /* Evita interacciones con elementos ocultos */
+}
+
+li.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.filter-buttons {
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    margin: 5px;
+    border-radius: 30px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.filter-buttons button.active {
+    background-color: #28a745; /* Verde cuando esté seleccionado */
+    color: #fff;
+}
+
+.filter-buttons button:hover {
+    background-color: #0069d9; /* Cambia a un azul claro cuando se pasa el cursor */
+    color: white;
+}
