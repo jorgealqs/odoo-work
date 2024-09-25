@@ -55,7 +55,7 @@ export class ApiFootballConfigOwl extends Component {
                 ],
                 [],
                 {
-                    order: 'country_id, league_id, date'
+                    order: 'date'
                 }
             )
 

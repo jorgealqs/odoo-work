@@ -1,5 +1,5 @@
 {
-    "name": "Sports",
+    "name": "Sports Betting",
     "version": "1.0",
     "author": "Jorge Alberto Quiroz Sierra",
     "category": "Sports/Leagues",
@@ -11,7 +11,7 @@
         sports enthusiasts and organizations needing a centralized
         platform for league management.
     """,
-    "sequence": -30,
+    "sequence": -100,
     "depends": ["base", "web"],
     "data": [
         "security/ir.model.access.csv",
