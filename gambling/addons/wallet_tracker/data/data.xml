@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bet_type_baloto" model="bet.type">
+        <field name="name">Baloto</field>
+    </record>
+    <record id="bet_type_rushbet" model="bet.type">
+        <field name="name">Rushbet</field>
+    </record>
+    <record id="bet_type_miloto" model="bet.type">
+        <field name="name">MiLoto</field>
+    </record>
+</odoo>
