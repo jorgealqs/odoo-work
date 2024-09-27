@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_wallet_main_bet" name="Wallet">
+
+        <menuitem id="menu_wallet_level_menu" name="Tracker" sequence="10" />
+
+    </menuitem>
+
+</odoo>

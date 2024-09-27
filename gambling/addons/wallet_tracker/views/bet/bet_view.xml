@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- model.name search view -->
+    <record id="bet_tracker_search" model="ir.ui.view">
+        <field name="name">bet.tracker Search</field>
+        <field name="model">bet.tracker</field>
+        <field name="arch" type="xml">
+            <search string="Search Description">
+                <!-- Add your fields here -->
+                <filter name="name" string="Baloto" domain="[('name', '=', 'Baloto')]" />
+                <filter name="name" string="Rushbet" domain="[('name', '=', 'Rushbet')]" />
+                <filter string="Type" name="bet_type_context" context="{'group_by':'name'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- model.name form view -->
+    <record id="bet_tracker_form" model="ir.ui.view">
+        <field name="name">bet.tracker Form</field>
+        <field name="model">bet.tracker</field>
+        <field name="arch" type="xml">
+            <form string="" duplicate="false">
+                <sheet>
+                    <header>
+                        <!-- Status bar for states -->
+                        <field name="state" widget="statusbar"/>
+
+                        <!-- Button with a 'check' icon for "Win" -->
+                        <button
+                            name="confirm_bet"
+                            type="object"
+                            string="Win"
+                            class="oe_highlight"
+                            icon="fa-check"
+                            invisible="state in ['win', 'lose'] or not id"
+                            confirm="Are you sure you want to mark this bet as a WIN?"
+                        />
+
+                        <!-- Button with a 'times' icon for "Lose" -->
+                        <button
+                            name="cancel_bet"
+                            type="object"
+                            string="Lose"
+                            class="oe_highlight btn-danger"
+                            icon="fa-times"
+                            invisible="state in ['win', 'lose'] or not id"
+                            confirm="Are you sure you want to mark this bet as a LOSS?"
+                        />
+                    </header>
+
+                    <notebook>
+                        <page name="name" string="Information">
+                            <group>
+                                <!-- Readonly fields for displaying information -->
+                                <field name="name" readonly="state in ['win', 'lose'] or id" options="{'no_open':True, 'no_created':True}"/>
+                                <field name="amount_invested" readonly="id"/>
+                                <field name="winnings" readonly="state in ['win', 'lose']"/>
+                                <field name="date" readonly="true"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- model.name tree view -->
+    <record id="bet_tracker_view_tree" model="ir.ui.view">
+        <field name="name">bet.tracker Tree</field>
+        <field name="model">bet.tracker</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="state == 'lose'" decoration-success="state == 'win'" decoration-info="state == 'pending'" delete="false" duplicate="false">
+                <field name="name"/>
+                <field name="amount_invested"/>
+                <field name="winnings"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="bet_tracker_action" model="ir.actions.act_window">
+        <field name="name">Bet tracker Action</field>
+        <field name="res_model">bet.tracker</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="context">
+            {
+                'search_default_bet_type_context': 1,
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Welcome to the Bet Tracker! Click on the <strong>Create</strong> button to add a new betting record.
+            </p>
+            <p>
+                This module allows you to track your betting activities efficiently. Here you can:
+            </p>
+            <ul>
+                <li><strong>Record</strong> your bets, including the type and amount.</li>
+                <li><strong>View</strong> past bets in a clear, organized list.</li>
+                <li><strong>Edit</strong> existing records to keep your tracking accurate.</li>
+            </ul>
+            <p>
+                Use the <strong>Filters</strong> to quickly find specific bets based on your criteria.
+            </p>
+        </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+
+    <menuitem id="bet_tracker_menu_act" action="bet_tracker_action" sequence="10" parent="wallet_tracker.menu_wallet_level_menu" name="Bet"/>
+</odoo>
