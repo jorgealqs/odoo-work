@@ -25,6 +25,7 @@
                     <header>
                         <!-- Status bar for states -->
                         <field name="state" widget="statusbar"/>
+                        <field name="state"/>
 
                         <!-- Button with a 'check' icon for "Win" -->
                         <button
@@ -63,8 +64,8 @@
                 </sheet>
                 <!-- Chatter -->
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" groups="base.group_user"/>
-                    <field name="activity_ids"/>
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                     <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
