@@ -159,62 +159,41 @@ class FootballLeague(models.Model):
 
     def update_standings_by_league(self):
 
-        # # Guardar en el log, buscar la forma de que solo se ejeucate una vez
-        # por dia
-        # self.env['ir.logging'].create({
-        #     'name': 'update_standings_by_league',
-        #     'type': 'server',
-        #     'dbname': self._cr.dbname,
-        #     'level': 'info',
-        #     'message': f'Update_standings_by_league fue ejecutada en '
-        #     f'{datetime.now()}',
-        #     'path': __file__,
-        #     'line': 'N/A',
-        #     'func': 'update_standings_by_league',
-        # })
-
+        """
+            Syncs standings, rounds, and fixtures for the specified league.
+        """
         country_id = self.country_id
         id_league = self.id_league
         model_football_standing = self.env['football.standing']
-        model_football_standing._sync_standings(country_id.name, id_league)
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'display_notification',
-        #     'params': {
-        #         'title': 'Éxito',
-        #         'message': 'Updated standings.',
-        #         'type': 'success',  # También puede ser 'warning' o 'info'
-        #         'sticky': False,
-        #         # Si es True, la notificación permanecerá hasta que el
-        # usuario
-        #         # la cierre
-        #     }
-        # }
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',  # Esto recargará la vista
-        }
-
-    def update_fixtures_by_league(self):
-        id_league = self.id_league
+        model_football_fixture_session_round = self.env[
+            'football.fixture.session.round'
+        ]
         model_football_fixture = self.env['football.fixture']
-        model_football_fixture._sync_fixtures(id_league)
-        # Notificación de éxito
-        # notification_action = {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'display_notification',
-        #     'params': {
-        #         'title': 'Éxito',
-        #         'message': 'Updated fixtures.',
-        #         'type': 'success',
-        #         'sticky': False,
-        #     }
-        # }
 
-        # Retornar acción para recargar la vista actual
+        try:
+            _logger.info(
+                f'Syncing standings for {country_id.name} (League ID: )'
+                f'{id_league})'
+            )
+            model_football_standing._sync_standings(country_id.name, id_league)
+        except Exception as e:
+            _logger.error(f"Error syncing standings: {e}")
+
+        try:
+            _logger.info(f'Syncing rounds for League ID: {id_league}')
+            model_football_fixture_session_round._sync_rounds(id_league)
+        except Exception as e:
+            _logger.error(f"Error syncing rounds: {e}")
+
+        try:
+            _logger.info(f'Syncing fixtures for League ID: {id_league}')
+            model_football_fixture._sync_fixtures(id_league)
+        except Exception as e:
+            _logger.error(f"Error syncing fixtures: {e}")
+
         return {
             'type': 'ir.actions.client',
-            'tag': 'reload',  # Esto recargará la vista
+            'tag': 'reload',  # Reloads the view
         }
 
     def update_teams_by_league(self):

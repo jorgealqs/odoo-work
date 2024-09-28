@@ -20,6 +20,16 @@
                         <p class="mb-0">¡Comencemos! ¡Qué gane el mejor equipo!</p>
                     </div>
 
+                    <!-- Search by Date -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" t-model="state.selectedDate" />
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary" t-on-click="searchMatchesByDate">Buscar Partidos</button>
+                        </div>
+                    </div>
+
                     <!-- Matches Accordion Section -->
                     <div class="accordion" id="accordionMatches">
                         <t t-set="isFirst" t-value="0"/>
@@ -42,7 +52,7 @@
                                         t-on-click="handleCardClick"
                                         style="font-family: 'Poppins', sans-serif; font-size: 16px;"
                                     >
-                                        <strong><t t-esc="match.country_id[1]"/></strong> <t t-esc="':'"/> <t t-esc="match.date"/> Equipos  <strong> <t t-esc=" ':' "/> <t t-esc="match.home_team_id[1]"/> vs <t t-esc="match.away_team_id[1]"/></strong>
+                                        <strong><t t-esc="match.country_id[1]"/></strong> <t t-esc="':'"/> <t t-esc="match.date"/> <strong> <t t-esc=" ':' "/> <t t-esc="match.home_team_id[1]"/> vs <t t-esc="match.away_team_id[1]"/></strong>
                                     </button>
                                 </h2>
 
@@ -52,58 +62,66 @@
                                     t-att-data-bs-parent="'#accordionMatches'"
                                 >
                                     <div class="accordion-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-3 text-muted" style="font-family: 'Roboto', sans-serif; font-size: 14px;">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-calendar-event"></i>
-                                                <span class="ml-2"><t t-esc="match.date"/></span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-geo-alt"></i>
-                                                <span class="ml-2"><t t-esc="match.country_id[1]"/></span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-trophy"></i>
-                                                <span class="ml-2"><t t-esc="match.league_id[1]"/></span>
-                                            </div>
-                                        </div>
-
-                                        <!-- Results Section -->
+                                        <!-- Match Results Section -->
                                         <t t-if="state.resultHome.length || state.resultAway.length">
                                             <div class="match-results mt-3">
-                                                <h5 style="font-family: 'Poppins', sans-serif;">Clasificación:</h5>
-                                                <table class="table table-bordered table-striped">
-                                                    <thead class="table-light">
-                                                        <tr>
-                                                            <th>Equipo</th>
-                                                            <th>Posición</th>
-                                                            <th>Puntos</th>
-                                                            <th>Jugados</th>
-                                                            <th>Ganados</th>
-                                                            <th>Empatados</th>
-                                                            <th>Perdidos</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><strong>Local</strong></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].rank : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].points : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].played : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].win : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].draw : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultHome[0] ? state.resultHome[0].lose : 'No disponible'"/></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><strong>Visitante</strong></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].rank : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].points : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].played : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].win : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].draw : 'No disponible'"/></td>
-                                                            <td><t t-esc="state.resultAway[0] ? state.resultAway[0].lose : 'No disponible'"/></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                <h5 style="font-family: 'Poppins', sans-serif;">Classification: <t t-esc="match.league_id[1]"/></h5>
+
+                                                <div class="row">
+                                                    <!-- Local Team Column -->
+                                                    <div class="col-md-6">
+                                                        <div class="card p-3 mb-3" style="border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                                            <h6 class="card-title" style="font-family: 'Poppins', sans-serif; text-align: center;">Home Team</h6>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <p><strong>Rank:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].rank : 'Unavailable'"/></p>
+                                                                    <p><strong>Points:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].points : 'Unavailable'"/></p>
+                                                                    <p><strong>Matches Played:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].played : 'Unavailable'"/></p>
+                                                                    <p><strong>Wins:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].win : 'Unavailable'"/></p>
+                                                                    <p><strong>Draws:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].draw : 'Unavailable'"/></p>
+                                                                    <p><strong>Losses:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].lose : 'Unavailable'"/></p>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <p><strong>Goals Scored:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].scored : 'Unavailable'"/></p>
+                                                                    <p><strong>Goals Conceded:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].conceded : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Played:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].home_played : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Wins:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].home_win : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Draws:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].home_draw : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Losses:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].home_lose : 'Unavailable'"/></p>
+                                                                    <p><strong>Away Played:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].away_played : 'Unavailable'"/></p>
+                                                                    <p><strong>Away Wins:</strong> <t t-esc="state.resultHome[0] ? state.resultHome[0].away_win : 'Unavailable'"/></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Away Team Column -->
+                                                    <div class="col-md-6">
+                                                        <div class="card p-3 mb-3" style="border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                                            <h6 class="card-title" style="font-family: 'Poppins', sans-serif; text-align: center;">Away Team</h6>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <p><strong>Rank:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].rank : 'Unavailable'"/></p>
+                                                                    <p><strong>Points:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].points : 'Unavailable'"/></p>
+                                                                    <p><strong>Matches Played:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].played : 'Unavailable'"/></p>
+                                                                    <p><strong>Wins:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].win : 'Unavailable'"/></p>
+                                                                    <p><strong>Draws:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].draw : 'Unavailable'"/></p>
+                                                                    <p><strong>Losses:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].lose : 'Unavailable'"/></p>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <p><strong>Goals Scored:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].scored : 'Unavailable'"/></p>
+                                                                    <p><strong>Goals Conceded:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].conceded : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Played:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].home_played : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Wins:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].home_win : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Draws:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].home_draw : 'Unavailable'"/></p>
+                                                                    <p><strong>Home Losses:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].home_lose : 'Unavailable'"/></p>
+                                                                    <p><strong>Away Played:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].away_played : 'Unavailable'"/></p>
+                                                                    <p><strong>Away Wins:</strong> <t t-esc="state.resultAway[0] ? state.resultAway[0].away_win : 'Unavailable'"/></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </t>
                                     </div>

@@ -66,12 +66,6 @@ class FootballFixture(models.Model):
         are followed.
         """
 
-        if id_league:
-            model_football_fixture_session_round = self.env[
-                'football.fixture.session.round'
-            ]
-            model_football_fixture_session_round._sync_rounds(id_league)
-
         # Obtener ligas que se están siguiendo
         football_leagues = self._get_followed_leagues(id_league)
 
