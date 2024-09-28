@@ -25,7 +25,7 @@
         <field name="name">football.league Form</field>
         <field name="model">football.league</field>
         <field name="arch" type="xml">
-            <form string="League" class="o_sale_order">
+            <form string="League" class="o_sale_order" duplicate="false" delete="false">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
 
@@ -51,7 +51,7 @@
                             invisible="not id_league"
                         />
 
-                        <button
+                        <!-- <button
                             class="oe_stat_button btn btn-success"
                             name="update_fixtures_by_league"
                             type="object"
@@ -60,7 +60,7 @@
                             string="Update Fixtures"
                             confirm="Are you sure you want to upgrade?"
                             invisible="not id_league"
-                        />
+                        /> -->
                     </div>
                     <div class="oe_title">
                         <div class="row mb-4">
@@ -112,6 +112,14 @@
                                         <field name="lose" string="Lost"/>
                                         <field name="scored" string="Goals Scored"/>
                                         <field name="conceded" string="Goals Conceded"/>
+                                        <field name="home_played" string="H/P" optional="id"/>
+                                        <field name="home_win" string="H/W" optional="id"/>
+                                        <field name="home_draw" string="H/D" optional="id"/>
+                                        <field name="home_lose" string="H/L" optional="id"/>
+                                        <field name="away_played" string="A/P" optional="id"/>
+                                        <field name="away_win" string="A/W" optional="id"/>
+                                        <field name="away_draw" string="A/D" optional="id"/>
+                                        <field name="away_lose" string="A/L" optional="id"/>
                                         <field name="rank" string="Rank"/>
                                     </tree>
                                 </field>
@@ -133,6 +141,7 @@
                                         name="follow"
                                         widget="boolean_toggle"
                                         string="Following"
+                                        invisible="follow"
                                     />
                                 </group>
                             </group>
@@ -145,6 +154,8 @@
                                         <field name="logo" widget="image_url" options="{'size': [50, 50]}" string="Logo"/>
                                         <field name="venue_id" string="Stadium"/>
                                         <field name="founded" string="Founded" optional="1"/>
+                                        <field name="id" string="Id" optional="1"/>
+                                        <field name="id_team" string="Id team" optional="1"/>
                                     </tree>
                                 </field>
                             </group>
@@ -194,7 +205,7 @@
         <field name="name">football.league Tree</field>
         <field name="model">football.league</field>
         <field name="arch" type="xml">
-            <tree limit="30">
+            <tree limit="30" duplicate="false" delete="false">
                 <field name="name"/>
                 <field name="logo" widget="image_url" options="{'size': [50, 50]}" string="Logo"/>
                 <field name="season_year" optional="true"/>

@@ -41,12 +41,18 @@ export class ApiFootballConfigOwl extends Component {
         }
     }
 
-    async loadMatches() {
+    async loadMatches(date = false) {
         try {
-            const nowInBogota = new Date().toLocaleString('en-CA', { timeZone: 'America/Bogota', hour12: false })
-            const [date, time] = nowInBogota.split(', ')
-            const startOfDay = `${date} ${time}`
-            const endOfDay = `${date} 23:59:59`
+            let startOfDay, endOfDay;
+            if (date){
+                startOfDay = `${date} 00:00:00`;
+                endOfDay = `${date} 23:59:59`;
+            }else{
+                const nowInBogota = new Date().toLocaleString('en-CA', { timeZone: 'America/Bogota', hour12: false })
+                const [date, time] = nowInBogota.split(', ')
+                startOfDay = `${date} ${time}`
+                endOfDay = `${date} 23:59:59`
+            }
             const result = await this.orm.searchRead(
                 'football.fixture',
                 [
@@ -81,6 +87,8 @@ export class ApiFootballConfigOwl extends Component {
                 this.fetchTeamStanding(awayIdValue, leagueIdValue)
             ])
 
+            console.log({ fixtureId, homeId, awayId, roundId, leagueId },{resultHome, resultAway})
+
             // Almacenar los resultados en el estado
             this.state.resultHome = resultHome
             this.state.resultAway = resultAway
@@ -91,6 +99,7 @@ export class ApiFootballConfigOwl extends Component {
 
     async fetchTeamStanding(teamId, leagueIdValue) {
         try {
+            console.log('Entro:', {teamId, leagueIdValue})
             return await this.orm.searchRead(
                 'football.standing',
                 [
@@ -104,6 +113,12 @@ export class ApiFootballConfigOwl extends Component {
             return []
         }
     }
+
+    searchMatchesByDate() {
+        const selectedDate = this.state.selectedDate
+        this.loadMatches(selectedDate)
+    }
+
 }
 
 // Registrar el componente en la categoría de acciones

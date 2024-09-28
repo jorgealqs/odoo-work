@@ -77,6 +77,46 @@ class FootballStanding(models.Model):
         string='Goals Conceded',
         store=True
     )
+    home_played = fields.Integer(
+        related='home_stats_id.played',
+        string='Home Played',
+        store=True
+    )
+    home_win = fields.Integer(
+        related='home_stats_id.win',
+        string='Home Played',
+        store=True
+    )
+    home_draw = fields.Integer(
+        related='home_stats_id.draw',
+        string='Home Draw',
+        store=True
+    )
+    home_lose = fields.Integer(
+        related='home_stats_id.lose',
+        string='Home Lose',
+        store=True
+    )
+    away_played = fields.Integer(
+        related='away_stats_id.played',
+        string='A/P',
+        store=True
+    )
+    away_win = fields.Integer(
+        related='away_stats_id.win',
+        string='Home Played',
+        store=True
+    )
+    away_draw = fields.Integer(
+        related='away_stats_id.draw',
+        string='Home Draw',
+        store=True
+    )
+    away_lose = fields.Integer(
+        related='away_stats_id.lose',
+        string='Home Lose',
+        store=True
+    )
 
     home_stats_id = fields.Many2one(
         comodel_name='football.home.stats',
