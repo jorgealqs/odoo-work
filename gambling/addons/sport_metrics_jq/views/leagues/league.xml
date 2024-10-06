@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- model.name form view -->
+    <record id="sport_metrics_jq_league_form" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.league Form</field>
+        <field name="model">sport.metrics.jq.league</field>
+        <field name="arch" type="xml">
+            <form string="League Form" create="false" duplicate="false" delete="false">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="sync_standigs" type="object" string="Sync" class="oe_stat_button btn btn-primary me-2" icon="fa-refresh" confirm="Are you sure you want to upgrade?" invisible="not follow"/>
+                    </div>
+                    <!-- League Logo -->
+                    <field name="logo" widget="image_url" options="{'size': [100, 100]}" string="" readonly="id" class="oe_avatar"/>
+
+                    <!-- League Title -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="id"/>
+                        </h1>
+                    </div>
+
+                    <!-- Notebook for Details and Follow Status -->
+                    <notebook colspan="4">
+                        <page string="Standings">
+                            <group string="Standings">
+                                <field name="standing_ids" string="" readonly="id"/>
+                            </group>
+                        </page>
+                        <!-- Details Page -->
+                        <page string="Details">
+                            <group>
+                                <group>
+                                    <field name="start" string="Start Date" readonly="id"/>
+                                    <field name="end" string="End Date" readonly="id"/>
+                                </group>
+                                <group>
+                                    <field name="type" string="Type" readonly="id"/>
+                                    <field name="id_league" readonly="1" string="League ID"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="country_id" string="Country" readonly="id" options="{'no_create':True, 'no_open':True}"/>
+                                    <field name="continent" readonly="1" string="Continent"/>
+                                </group>
+                                <group>
+                                    <field name="session_id" string="Session" options="{'no_create':True, 'no_open':True}" readonly="id"/>
+                                </group>
+                            </group>
+                            <group string="Teams">
+                                <field name="team_ids" string="" readonly="follow or id" options="{'no_open':false, 'no_create':false}"/>
+                            </group>
+                        </page>
+
+                        <page string="Rounds">
+                            <field name="round_ids" readonly="1" options="{'no_create':True, 'no_open':True}"/>
+                        </page>
+
+                        <page string="All fixtures">
+                            <field name="fixtures_ids" readonly="1" options="{'no_create':True, 'no_open':True}"/>
+                        </page>
+
+                        <page string="Now Match">
+                            <div class="container">
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h5>Predictions</h5>
+                                        <p>Get predictions about a fixture.</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            The predictions are made using several algorithms including the Poisson distribution,
+                                            comparison of team statistics, last matches, players, etc. Bookmakers odds are not used
+                                            to make these predictions. The following predictions are available:
+                                        </p>
+                                        <ul class="list-group mb-3">
+                                            <li class="list-group-item">
+                                                <strong>Match Winner:</strong> ID of the team that can potentially win the fixture.
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Win or Draw:</strong> Indicates whether the designated team can win or draw.
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Under / Over:</strong> Possible values are -1.5 / -2.5 / -3.5 / -4.5 / +1.5 / +2.5 / +3.5 / +4.5.
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Goals Home:</strong> Predicted goals for the home team, e.g., -1.5 / -2.5 / -3.5 / -4.5.
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Goals Away:</strong> Predicted goals for the away team, e.g., -1.5 / -2.5 / -3.5 / -4.5.
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>Advice:</strong> Example: Deportivo Santani or draw and -3.5 goals.
+                                            </li>
+                                        </ul>
+                                        <p>
+                                            * -1.5 means that there will be a maximum of 1.5 goals in the fixture, i.e., 1 goal.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h5>Available Fixtures</h5>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <field name="filtered_fixtures_ids" readonly="1" options="{'no_create':True, 'no_open':True}">
+                                            <tree>
+                                                <field name="home_team_id"/>
+                                                <field name="away_team_id"/>
+                                                <field name="round_id" optional="1"/>
+                                                <field name="fixture_id" optional="1"/>
+                                                <field name="referee" optional="1"/>
+                                                <field name="home_goals" optional="1"/>
+                                                <field name="away_goals" optional="1"/>
+                                                <button icon="fa-refresh" name="sync_predictions" type="object" class="oe_highlight"/>
+                                            </tree>
+                                        </field>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+
+                        <!-- Follow Status Page -->
+                        <page string="Follow Status">
+                            <group>
+                                <field name="follow" string="Follow This League" widget="boolean_toggle"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- model.name tree view -->
+    <record id="sport_metrics_jq_league_tree" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.league Tree</field>
+        <field name="model">sport.metrics.jq.league</field>
+        <field name="arch" type="xml">
+            <tree create="false" duplicate="false" delete="false">
+                <!-- Add your fields here -->
+                <field name="id_league" optional="1"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="start"/>
+                <field name="end"/>
+                <field name="logo" widget="image_url" options="{'size': [25, 25]}"/>
+                <field name="follow" optional="1"/>
+                <field name="country_id" optional="1"/>
+                <field name="continent" optional="1"/>
+                <field name="session_id" optional="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name search view -->
+    <record id="sport_metrics_jq_league_search" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.league Search</field>
+        <field name="model">sport.metrics.jq.league</field>
+        <field name="arch" type="xml">
+            <search string="Search Description">
+                <!-- Add your fields here -->
+                <filter name="group_continent" string="Continent" context="{'group_by': 'continent'}" />
+                <filter name="group_country" string="Country" context="{'group_by': 'country_id'}" />
+                <filter name="group_follow" string="Follow" domain="[('follow', '=', True)]" />
+            </search>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="sport_metrics_jq_league_action" model="ir.actions.act_window">
+        <field name="name">Leagues</field>
+        <field name="res_model">sport.metrics.jq.league</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Start by grouping leagues by continent to analyze data based on regions.
+            </p>
+            <p>
+                You can filter leagues by continent or country using the search bar.
+            </p>
+        </field>
+        <field name="context">
+            {
+                'search_default_group_continent': 1,
+                'search_default_group_country': 1,
+                'search_default_group_follow': 1,
+            }
+        </field>
+    </record>
+
+    <menuitem
+        id="sport_metrics_jq_league_act_one"
+        name="Leagues"
+        parent="sport_metrics_jq.sport_metrics_jq_country_act" action="sport_metrics_jq_league_action"
+        sequence="20"
+    />
+
+</odoo>

@@ -1,0 +1,22 @@
+.o_dashboard {
+    background-color: rgb(255, 255, 255);
+}
+
+.match-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.team-name {
+    font-weight: bold;
+    font-size: 1.005rem;
+    color: #333;
+}
+
+.match-date {
+    font-size: 0.9rem;
+    color: #5a5858;
+    margin-top: 5px;
+}

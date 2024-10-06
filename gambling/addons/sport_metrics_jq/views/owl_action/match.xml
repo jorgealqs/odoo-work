@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record model="ir.actions.client" id="metrics_match_action">
+        <field name="name">Matchs</field>
+        <field name="tag">metrics.Match</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem
+        id="metrics_match_menu"
+        name="Matchs"
+        action="metrics_match_action"
+        parent="sport_metrics_jq.sport_metrics_jq_country_act"
+        sequence="1"
+    />
+
+</odoo>

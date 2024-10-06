@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sport_metrics_jq_country_click" model="sport.metrics.jq.country">
+        <field name="name">Click</field>
+    </record>
+
+    <record id="sport_metrics_jq_country_world" model="sport.metrics.jq.country">
+        <field name="name">World</field>
+        <field name="country_code">World</field>
+    </record>
+
+    <record id="sport_metrics_jq_country_gb" model="sport.metrics.jq.country">
+        <field name="name">England</field>
+        <field name="country_code">GB-ENG</field>
+        <field name="continent">Europe</field>
+    </record>
+</odoo>
