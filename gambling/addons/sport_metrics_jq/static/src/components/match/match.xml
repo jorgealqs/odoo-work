@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="metrics.MatchView">
+        <Layout display="display" className="'o_dashboard h-100'">
+            <!-- Header for today's matches -->
+            <div class="text-center my-3">
+                <h2>Today's Matches</h2>
+                <p>Here are the matches scheduled for today.</p>
+                <!-- Date selector and button -->
+                <div class="d-flex justify-content-center align-items-center my-3 mb-4">
+                    <input type="date" id="match_date" class="form-control w-25"
+                        t-att-min="new Date().toISOString().split('T')[0]"
+                        t-att-max="new Date(Date.now() + 86400000).toISOString().split('T')[0]"
+                    />
+                    <button class="btn btn-primary ml-3" t-on-click="filterMatchesByDate">
+                        Show Matches
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <t t-set-slot="layout-buttons">
+                <button class="btn btn-primary" t-on-click="openLeaguesView">Leagues</button>
+            </t>
+
+            <!-- Mensaje de carga -->
+            <div t-if="state.loading">
+                Loading matches...
+            </div>
+
+            <!-- Mensaje de error -->
+            <div t-if="state.error" class="alert alert-danger">
+                <t t-esc="state.error"/>
+            </div>
+
+            <!-- Contenedor de partidos -->
+            <div class="container-fluid d-flex justify-content-center mb-4 mt-4">
+                <div class="row d-flex flex-wrap justify-content-center" t-if="!state.loading &amp;&amp; !state.error" style="max-height: calc(100vh - 200px); overflow-y: auto; width: 100; max-width: 1200px;">
+                    <!-- Mostrar cada partido -->
+                    <t t-foreach="state.matches" t-as="match" t-key="match.id">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-4"> <!-- Change to col-lg-4 -->
+                            <div class="match-info card border-light" style="border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                                <div class="card-body text-center">
+                                    <!-- Display league badge on the left and country badge on the right -->
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge badge-info mx-1" style="background-color: #17a2b8; color: #fff;">
+                                            <t t-esc="match.league_name ? match.league_name : 'Unknown League'"/>
+                                        </span>
+                                        <span class="badge badge-secondary mx-1" style="background-color: #6c757d; color: #fff;">
+                                            <t t-esc="match.country_name ? match.country_name : 'Unknown Country'"/>
+                                        </span>
+                                    </div>
+
+                                    <div t-attf-class="teams text-center vs-#{match.fixture_id}" style="display: flex; justify-content: center; align-items: center;">
+                                        <span class="team-name font-weight-bold text-primary" style="margin-right: 20px;">
+                                            <t t-esc="match.home_team_name ? match.home_team_name : 'Unknown Home Team'"/>
+                                            <div style="font-size: 0.8em; margin-top: 5px;">
+                                                (<t t-esc="match.home_team_rank ? match.home_team_rank : 'N/A'"/>)
+                                            </div>
+                                        </span>
+                                        <span class="vs font-weight-bold text-secondary mx-2">vs</span>
+                                        <span class="team-name font-weight-bold text-primary" style="margin-left: 20px;">
+                                            <t t-esc="match.away_team_name ? match.away_team_name : 'Unknown Away Team'"/>
+                                            <div style="font-size: 0.8em; margin-top: 5px;">
+                                                (<t t-esc="match.away_team_rank ? match.away_team_rank : 'N/A'"/>)
+                                            </div>
+                                        </span>
+                                    </div>
+
+                                    <!-- Formateo de la fecha del partido -->
+                                    <div class="match-date text-center text-muted mt-3">
+                                        <small><t t-esc="formatDate(match.date)"/></small>
+                                    </div>
+                                    <button class="btn btn-primary mt-3 click btn-card" t-on-click="fetchMatchDetails.bind(this, match.id, match.fixture_id)">
+                                        Show Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Modal para mostrar detalles del partido -->
+            <div class="modal fade" id="matchDetailsModal" tabindex="-1" aria-labelledby="matchDetailsLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="container text-center">
+                                <h5 class="modal-title" id="matchDetailsLabel">
+                                    <t t-esc="state.teams_vs"/>
+                                </h5>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Contenido dinámico del modal -->
+                            <div t-if="state.selectedMatch">
+                                <!-- Fecha del partido -->
+                                <p><strong>Date:</strong> <t t-esc="formatDate(state.selectedMatch.fixture_date)"/></p>
+
+                                <!-- Comparación de equipos -->
+                                <div class="comparison-section mt-4">
+                                    <h5 class="text-center">Team Comparison</h5>
+                                    <div class="row">
+                                        <!-- Columna de equipo local -->
+                                        <div class="col-6">
+                                            <h6 class="text-center text-primary">Home Team</h6>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"><strong>Goals:</strong> <t t-esc="state.selectedMatch.comparison_goals_home"/></li>
+                                                <li class="list-group-item"><strong>Attack:</strong> <t t-esc="state.selectedMatch.comparison_att_home"/></li>
+                                                <li class="list-group-item"><strong>Defense:</strong> <t t-esc="state.selectedMatch.comparison_def_home"/></li>
+                                                <li class="list-group-item"><strong>Form:</strong> <t t-esc="state.selectedMatch.comparison_form_home"/></li>
+                                                <li class="list-group-item"><strong>Total Strength:</strong> <t t-esc="state.selectedMatch.comparison_total_home"/></li>
+                                                <li class="list-group-item"><strong>Poisson Distribution:</strong> <t t-esc="state.selectedMatch.comparison_poisson_distribution_home"/></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Columna de equipo visitante -->
+                                        <div class="col-6">
+                                            <h6 class="text-center text-success">Away Team</h6>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"><strong>Goals:</strong> <t t-esc="state.selectedMatch.comparison_goals_away"/></li>
+                                                <li class="list-group-item"><strong>Attack:</strong> <t t-esc="state.selectedMatch.comparison_att_away"/></li>
+                                                <li class="list-group-item"><strong>Defense:</strong> <t t-esc="state.selectedMatch.comparison_def_away"/></li>
+                                                <li class="list-group-item"><strong>Form:</strong> <t t-esc="state.selectedMatch.comparison_form_away"/></li>
+                                                <li class="list-group-item"><strong>Total Strength:</strong> <t t-esc="state.selectedMatch.comparison_total_away"/></li>
+                                                <li class="list-group-item"><strong>Poisson Distribution:</strong> <t t-esc="state.selectedMatch.comparison_poisson_distribution_away"/></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Porcentaje de victoria y doble oportunidad -->
+                                <div class="mt-4">
+                                    <h6><strong>Winning Probability:</strong></h6>
+                                    <p>Home Win: <strong><t t-esc="state.selectedMatch.percent_home"/></strong></p>
+                                    <p>Draw: <strong><t t-esc="state.selectedMatch.percent_draw"/></strong></p>
+                                    <p>Away Win: <strong><t t-esc="state.selectedMatch.percent_away"/></strong></p>
+                                </div>
+
+                                <!-- Consejos y Comentarios (Advice y Comment) -->
+                                <div class="advice-section mt-4">
+                                    <h6>Opportunity: <t t-esc="state.selectedMatch.advice"/></h6>
+                                    <p><strong>Comment:</strong> <t t-esc="state.selectedMatch.comment"/></p>
+                                </div>
+
+                                <!-- Predicción de Goles (Goals Home y Goals Away) -->
+                                <div class="goals-section mt-4">
+                                    <h6><strong>Goals Prediction:</strong></h6>
+                                    <p>Home Team Goals: <strong><t t-esc="state.selectedMatch.goals_home"/></strong></p>
+                                    <p>Away Team Goals: <strong><t t-esc="state.selectedMatch.goals_away"/></strong></p>
+                                </div>
+
+                            </div>
+
+                            <!-- Si no hay detalles del partido -->
+                            <div t-if="!state.selectedMatch">
+                                <p>No details available.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </Layout>
+    </t>
+</template>

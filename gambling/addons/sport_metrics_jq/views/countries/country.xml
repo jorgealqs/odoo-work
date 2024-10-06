@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- model.name search view -->
+    <record id="sport_metrics_jq_country_search" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.country Search</field>
+        <field name="model">sport.metrics.jq.country</field>
+        <field name="arch" type="xml">
+            <search string="Search Description">
+                <!-- Add your fields here -->
+                <field name="name"/>
+                <field name="country_code"/>
+                <filter string="Active session" name="group_session" domain="[('session', '!=', False)]"/>
+                <!-- Default group by country -->
+                <group expand="1" string="Group By">
+                    <filter string="Continents" name="group_continent" context="{'group_by':'continent'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <!-- model.name form view -->
+    <record id="sport_metrics_jq_country_form" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.country Form</field>
+        <field name="model">sport.metrics.jq.country</field>
+        <field name="arch" type="xml">
+            <form string="" duplicate="false" create="false" delete="false">
+                <sheet>
+                    <!-- League Logo -->
+                    <field name="flag" widget="image_url" options="{'size': [100, 100]}" string="" readonly="id" class="oe_avatar"/>
+
+                    <!-- League Title -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="id"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="sync_countries"
+                            type="object"
+                            string="Sync countries"
+                            class="oe_stat_button btn btn-primary me-2"
+                            icon="fa-refresh" confirm="Are you sure you want to upgrade?"
+                            invisible="name != 'Click'"
+                        />
+                        <button
+                            name="sync_leagues"
+                            type="object"
+                            string="Sync leagues"
+                            class="oe_stat_button btn btn-primary me-2"
+                            icon="fa-refresh" confirm="Are you sure you want to upgrade?"
+                            invisible="not session"
+                        />
+                    </div>
+                    <notebook>
+                        <page string="Country">
+                            <group string="Information">
+                                <field name="country_code" readonly="name != 'World'"/>
+                                <field name="continent" readonly="id"/>
+                                <field name="session" readonly="name == 'Click'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- model.name tree view -->
+    <record id="sport_metrics_jq_country_tree" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.country Tree</field>
+        <field name="model">sport.metrics.jq.country</field>
+        <field name="arch" type="xml">
+            <tree duplicate="false" delete="false" create="false">
+                <!-- Add your fields here -->
+                <field name="name"/>
+                <field name="country_code"/>
+                <field name="continent"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="sport_metrics_jq_country_action" model="ir.actions.act_window">
+        <field name="name">Countries</field>
+        <field name="res_model">sport.metrics.jq.country</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                ¡Bienvenido a la gestión de países para SportMetricsJQ!
+                Aquí podrás visualizar y administrar la lista de países relacionados con los resultados deportivos.
+                Si no tienes países creados, puedes sincronizarlos desde un servidor externo para mantener tu información actualizada.
+            </p>
+            <p>
+                Asegúrate de configurar correctamente los parámetros de sincronización antes de realizar la importación.
+                Puedes hacer clic en el botón "Sincronizar Países" para cargar automáticamente la lista de países.
+                Esto te permitirá tener acceso a datos precisos y actualizados para tus análisis deportivos.
+            </p>
+        </field>
+        <field name="context">
+            {
+                'search_default_group_continent': 1,
+                'search_default_group_session': 1
+            }
+        </field>
+    </record>
+
+    <menuitem
+        id="sport_metrics_jq_country_act"
+        name="Football"
+        parent="sport_metrics_jq.sport_metrics_jq_first_level_menu" sequence="10"
+    />
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem
+        id="sport_metrics_jq_country_act_one"
+        name="Countries"
+        parent="sport_metrics_jq.sport_metrics_jq_country_act" action="sport_metrics_jq_country_action"
+        sequence="10"
+    />
+
+</odoo>

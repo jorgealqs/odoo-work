@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- model.name form view -->
+    <record id="sport_metrics_jq_standing_form" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.standing Form</field>
+        <field name="model">sport.metrics.jq.standing</field>
+        <field name="arch" type="xml">
+            <form string="Form standings" create="false" duplicate="false" delete="false">
+                <sheet>
+                    <group>
+                        <!-- Section for Team Info -->
+                        <group string="Team Information" colspan="2" class="oe_title">
+                            <group>
+                                <field name="team_id" readonly="1" class="oe_inline" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="rank" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="goals_diff" readonly="1"/>
+                                <field name="points" string="Total Points" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Comparison Section for Stats -->
+                        <group string="Statistics Comparison" colspan="2">
+
+
+                            <group string="Home Stats" class="oe_title">
+                                <group>
+                                    <field name="home_goals_id_played" string="Home Matches Played" readonly="1"/>
+                                    <field name="home_goals_id_win" string="Home Wins" readonly="1"/>
+                                    <field name="home_goals_id_draw" string="Home Draws" readonly="1"/>
+                                    <field name="home_goals_id_lose" string="Home Losses" readonly="1"/>
+                                    <field name="home_goals_id_goals_for" string="Home Goals For" readonly="1"/>
+                                    <field name="home_goals_id_goals_against" string="Home Goals Against" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <group string="Away Stats" class="oe_title">
+                                <group>
+                                    <field name="away_goals_id_played" string="Away Matches Played" readonly="1"/>
+                                    <field name="away_goals_id_win" string="Away Wins" readonly="1"/>
+                                    <field name="away_goals_id_draw" string="Away Draws" readonly="1"/>
+                                    <field name="away_goals_id_lose" string="Away Losses" readonly="1"/>
+                                    <field name="away_goals_id_goals_for" string="Away Goals For" readonly="1"/>
+                                    <field name="away_goals_id_goals_against" string="Away Goals Against" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <group string="All Stats" class="oe_title">
+                                <group>
+                                    <field name="all_goals_id_played" string="Total Matches Played" readonly="1"/>
+                                    <field name="all_goals_id_win" string="Total Wins" readonly="1"/>
+                                    <field name="all_goals_id_draw" string="Total Draws" readonly="1"/>
+                                    <field name="all_goals_id_lose" string="Total Losses" readonly="1"/>
+                                    <field name="all_goals_id_goals_for" string="Total Goals For" readonly="1"/>
+                                    <field name="all_goals_id_goals_against" string="Total Goals Against" readonly="1"/>
+                                </group>
+                            </group>
+
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- model.name tree view -->
+    <record id="sport_metrics_jq_standing_tree" model="ir.ui.view">
+        <field name="name">sport.metrics.jq.standing Tree</field>
+        <field name="model">sport.metrics.jq.standing</field>
+        <field name="arch" type="xml">
+            <tree create="false" duplicate="false" delete="false">
+                <field name="team_id"/>
+                <field name="rank"/>
+                <field name="status" optional="1"/>
+                <field name="description" optional="1"/>
+                <field name="update" optional="1"/>
+                <field name="session_id" optional="1"/>
+                <field name="league_id" optional="1"/>
+                <field name="points" string="Points"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bet_type_2023" model="sport.metrics.jq.session">
+        <field name="year">2023</field>
+    </record>
+    <record id="bet_type_2024" model="sport.metrics.jq.session">
+        <field name="year">2024</field>
+    </record>
+    <record id="bet_type_2025" model="sport.metrics.jq.session">
+        <field name="year">2025</field>
+    </record>
+    <record id="bet_type_2026" model="sport.metrics.jq.session">
+        <field name="year">2026</field>
+    </record>
+    <record id="bet_type_2027" model="sport.metrics.jq.session">
+        <field name="year">2027</field>
+    </record>
+    <record id="bet_type_2028" model="sport.metrics.jq.session">
+        <field name="year">2028</field>
+    </record>
+    <record id="bet_type_2029" model="sport.metrics.jq.session">
+        <field name="year">2029</field>
+    </record>
+    <record id="bet_type_2030" model="sport.metrics.jq.session">
+        <field name="year">2030</field>
+    </record>
+</odoo>
