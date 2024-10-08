@@ -4,7 +4,7 @@
     'author': 'Jorge Alberto Quiroz Sierra',
     'depends': ['base', "web"],
     "category": "Lottery/Creations",
-    "sequence": -40,
+    "sequence": -1002,
     'data': [
         "security/ir.model.access.csv",
         'data/ir_cron_baloto.xml',  # Include your cron job XML file here

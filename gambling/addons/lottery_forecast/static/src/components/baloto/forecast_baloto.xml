@@ -1,0 +1,24 @@
+<templates xml:space="preserve">
+    <t t-name="baloto.BalotoForecast">
+        <div class="o_action">
+            <Layout display="display" className="'h-100'">
+                <div class="container">
+                    <div class="row">
+                        <div class="col mb-3 mt-3">
+                            <HistoricalButton label="'Historical'" option="" openHistoricalView.bind="openHistoricalView"/>
+                        </div>
+                        <div class="col mb-3 mt-3">
+                            <HistoricalButton label="'Historical baloto'" option="'baloto'" openHistoricalView.bind="openHistoricalView" />
+                        </div>
+                        <div class="col mb-3 mt-3">
+                            <HistoricalButton label="'Historical revancha'" option="'revancha'" openHistoricalView.bind="openHistoricalView"/>
+                        </div>
+                        <div class="col mb-3 mt-3">
+                            <HistoricalButton label="'Historical miloto'" option="'miloto'" openHistoricalView.bind="openHistoricalView"/>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        </div>
+    </t>
+</templates>

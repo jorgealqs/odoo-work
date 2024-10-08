@@ -10,8 +10,8 @@
                 <field name="lottery_type_id"/>
                 <group string="Group By">
 
-                    <filter string="Baloto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
-                    <filter string="Revancha" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
+                    <filter string="Baloto" name="lottery_type_id_baloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
+                    <filter string="Revancha" name="lottery_type_id_revancha" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
                     <filter string="MiLoto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'MiLoto')]"/>
 
                     <!-- Agrupación por tipo de lotería -->
