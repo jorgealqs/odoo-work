@@ -36,6 +36,13 @@ class LotteryBaloto(models.Model):
         store=True
     )
 
+    @api.model
+    def test(self):
+        model_wizard = self.env['lottery.baloto.wizard']
+        model_wizard.action_calculate_number_frequency()
+        model_wizard.action_calculate_number_frequency_1_16()
+        model_wizard.action_analyze_pairs_frequency()
+
     @api.depends('lottery_type_id.name')
     def _compute_lottery_type_name(self):
         for record in self:

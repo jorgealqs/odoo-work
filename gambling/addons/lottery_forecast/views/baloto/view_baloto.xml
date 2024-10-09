@@ -1,6 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
+    <!-- model.name action server -->
+    <record id="action_lottery_baloto" model="ir.actions.server">
+        <field name="name">Sync</field>
+        <field name="model_id" ref="model_lottery_baloto"/>
+        <field name="binding_model_id" ref="model_lottery_baloto"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+            for record in records:
+                record.test()
+        </field>
+    </record>
+
     <record id="lottery_baloto_search" model="ir.ui.view">
         <field name="name">lottery.baloto Search</field>
         <field name="model">lottery.baloto</field>
@@ -29,7 +42,7 @@
         <field name="name">lottery.baloto Kanban</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="lottery_type_id" drag_drop="false">
+            <kanban default_group_by="lottery_type_id" drag_drop="false" duplicate="false" delete="false" create="false">
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
@@ -71,7 +84,7 @@
         <field name="name">lottery.baloto Tree</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree duplicate="false" delete="false" create="false">
                 <!-- Add your fields here -->
                 <field name="lottery_type_id" string="Type"/>
                 <field name="number_1" string="#1"/>
@@ -90,7 +103,7 @@
         <field name="name">lottery.baloto Form</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
-            <form string="Lottery Results">
+            <form string="Lottery Results" duplicate="false" delete="false" create="false">
                 <sheet>
                     <div class="oe_title">
                         <group>

@@ -38,7 +38,7 @@
         <field name="name">lottery.baloto.number.frequency.pair Form</field>
         <field name="model">lottery.baloto.number.frequency.pair</field>
         <field name="arch" type="xml">
-            <form>
+            <form duplicate="false" delete="false" create="false">
                 <sheet>
                     <group>
                         <field name="lottery_type_id" readonly="pair" options="{'no_open':true, 'no_created':true}"/>
@@ -70,7 +70,7 @@
         <field name="name">lottery.baloto.number.frequency.pair Tree</field>
         <field name="model">lottery.baloto.number.frequency.pair</field>
         <field name="arch" type="xml">
-            <tree default_order="frequency DESC, last_draw_date DESC">
+            <tree default_order="frequency DESC, last_draw_date DESC" duplicate="false" delete="false" create="false">
                 <!-- Add your fields here -->
                 <field name="pair"/>
                 <field name="frequency"/>
