@@ -3,7 +3,7 @@
     <!-- model.name action client -->
     <record id="action_lottery_baloto_analysis" model="ir.actions.client">
         <field name="name">Analisys</field>
-        <field name="tag">action.LotteryBalotoAnalysis</field>
+        <field name="tag">action.BalotoForecast</field>
         <field name="target">current</field>
     </record>
 

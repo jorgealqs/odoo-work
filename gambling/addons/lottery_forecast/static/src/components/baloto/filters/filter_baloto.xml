@@ -1,0 +1,21 @@
+<templates xml:space="preserve">
+    <t t-name="baloto.BalotoFilter">
+        <h2>Filter by Day</h2>
+        <div class="filter-buttons d-flex justify-content-center mb-4 flex-wrap">
+            <!-- Array de días para MiLoto -->
+            <t t-if="props.option == 'MiLoto'">
+                <t t-foreach="['Monday', 'Tuesday', 'Thursday', 'Friday']" t-as="day" t-key="day">
+                    <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" t-att-data-day="day" t-esc="day" aria-label="Filter by day: [[day]]"/>
+                </t>
+            </t>
+            <!-- Días para otras opciones -->
+            <t t-else="">
+                <t t-foreach="['Wednesday', 'Saturday']" t-as="day" t-key="day">
+                    <button class="btn btn-outline-primary m-2" t-on-click="filterByDay" t-att-data-day="day" t-esc="day" aria-label="Filter by day: [[day]]"/>
+                </t>
+            </t>
+            <!-- Botón para limpiar el filtro -->
+            <button class="btn btn-outline-secondary m-2" t-on-click="clearFilter" aria-label="Clear Filter">Clear Filter</button>
+        </div>
+    </t>
+</templates>

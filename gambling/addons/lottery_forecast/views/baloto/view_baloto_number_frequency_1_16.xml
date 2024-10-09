@@ -5,7 +5,7 @@
         <field name="name">lottery.baloto.number.frequency.1.16 Form</field>
         <field name="model">lottery.baloto.number.frequency.1.16</field>
         <field name="arch" type="xml">
-            <form string="">
+            <form string="" duplicate="false" delete="false" create="false">
                 <sheet>
                     <notebook>
                         <page string="Information">
@@ -66,7 +66,7 @@
         <field name="name">lottery.baloto.number.frequency.1.16 Tree</field>
         <field name="model">lottery.baloto.number.frequency.1.16</field>
         <field name="arch" type="xml">
-            <tree string="Number Frequency by Date" default_order="draw_date DESC">
+            <tree string="Number Frequency by Date" default_order="draw_date DESC" duplicate="false" delete="false" create="false">
                 <field name="number" optional="1"/>
                 <field name="draw_date"/>
                 <field name="lottery_type_id" optional="1"/>

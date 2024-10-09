@@ -1,0 +1,74 @@
+<templates xml:space="preserve">
+    <t t-name="baloto.ResultsTable">
+        <div t-if="props.results &amp;&amp; props.results.length > 0">
+            <!-- Tabla de Resultados -->
+            <div class="table-responsive">
+                <table class="table table-striped table-hover text-center">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Number</th>
+                            <th>Appearances</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="props.results" t-as="result" t-key="result.id">
+                            <tr>
+                                <td><strong><t t-esc="result.number" /></strong></td>
+                                <td><t t-esc="result.frequency" /></td>
+                                <td>
+                                    <ul class="list-unstyled">
+                                        <!-- Obtener la última fecha -->
+                                        <t t-set="last_date_day" t-value="result.date_day_super[0]" />
+                                        <t t-set="last_date_parts" t-value="last_date_day.split(':')" />
+
+                                        <!-- Mostrar última fecha y detalles principales -->
+                                        <li class="mb-2 p-2 border-bottom">
+                                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                                <t t-esc="last_date_parts[0]" /> <!-- Última Fecha -->
+                                            </span>
+                                            <span class="badge bg-info rounded-pill px-3 py-2">
+                                                <t t-esc="last_date_parts[1]" /> <!-- Día de la semana -->
+                                            </span>
+                                            <span class="badge bg-warning rounded-pill px-3 py-2">
+                                                <t t-if="props.option == 'MiLoto'" t-esc="'Sorteo #' + last_date_parts[2]" />
+                                            </span>
+
+                                            <!-- Botón para mostrar más detalles -->
+                                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" data-bs-toggle="collapse" t-attf-data-bs-target="#details-{{result.number}}" aria-expanded="false" aria-controls="details-{{result.id}}">
+                                                Show more
+                                            </button>
+                                        </li>
+
+                                        <!-- Acordeón que muestra todas las fechas excepto la última -->
+                                        <div t-attf-id="details-{{result.number}}" class="collapse mt-3">
+                                            <ul class="list-unstyled">
+                                                <t t-foreach="result.date_day_super.slice(1)" t-as="date_day" t-key="date_day.id">
+                                                    <t t-set="date_parts" t-value="date_day.split(':')" />
+                                                    <li t-attf-class="day-{{date_parts[1]}} mb-2 p-2 border rounded">
+                                                        <span class="badge bg-light text-dark border px-3 py-2">
+                                                            <t t-esc="date_parts[0]" /> <!-- Fecha -->
+                                                        </span>
+                                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                                            <t t-esc="date_parts[1]" /> <!-- Día de la semana -->
+                                                        </span>
+                                                        <span class="badge bg-dark text-light rounded-pill px-3 py-2">
+                                                            <t t-if="props.option == 'MiLoto'" t-esc="'Sorteo #' + date_parts[2]" />
+                                                        </span>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </div>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div t-else="">
+            <p class="text-center">No results available. Perform an analysis to see the results.</p>
+        </div>
+    </t>
+</templates>
