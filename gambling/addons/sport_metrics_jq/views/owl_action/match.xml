@@ -2,8 +2,8 @@
 <odoo>
 
     <record model="ir.actions.client" id="metrics_match_action">
-        <field name="name">Matchs</field>
-        <field name="tag">metrics.Match</field>
+        <field name="name">Matches</field>
+        <field name="tag">metrics.GamesFootball</field>
         <field name="target">current</field>
     </record>
 

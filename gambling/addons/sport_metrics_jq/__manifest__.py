@@ -11,7 +11,7 @@
         sports enthusiasts and organizations needing a centralized
         platform for league management.
     """,
-    "sequence": -1001,
+    "sequence": -1003,
     "depends": ["base", "web"],
     "data": [
         "security/ir.model.access.csv",
