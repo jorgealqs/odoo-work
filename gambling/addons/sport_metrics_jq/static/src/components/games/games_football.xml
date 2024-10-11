@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="games.FootballMatches">
+        <Layout display="display" className="'o_dashboard h-100'">
+            <t t-set-slot="layout-buttons">
+                <button class="btn btn-primary" t-on-click="openLeaguesView">Leagues</button>
+            </t>
+
+            <!-- Mensaje de carga -->
+            <div t-if="state.loading" class="container justify-content-center mt-4">
+                <div class="row justify-content-center">
+                    Loading matches...
+                </div>
+            </div>
+
+            <!-- Contenedor de partidos -->
+            <div class="container-fluid d-flex justify-content-center mb-4 mt-4">
+                <div class="row d-flex flex-wrap justify-content-center"
+                    t-if="!state.loading &amp;&amp; !state.error"
+                    style="max-height: calc(100vh - 200px); width: 100%; max-width: 1200px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none;">
+                    <MatchesFilter onClickShowMatches="filterMatchesByDate.bind(this)"/>
+                    <t t-foreach="state.games" t-as="game" t-key="game.id">
+                        <MatchesItem data="game" onClickFetchFixture="fetchFixture.bind(this)"/>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Modal para mostrar detalles del partido -->
+            <div class="modal fade" id="matchDetailsModal" tabindex="-1" aria-labelledby="matchDetailsLabel" aria-hidden="true" t-ref="modalRef">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content shadow-lg border-0">
+                        <!-- Header del Modal -->
+                        <div class="modal-header bg-primary text-white w-100">
+                            <div class="w-100 text-center">
+                                <h5 class="modal-title" id="matchDetailsLabel">
+                                    <t t-esc="state.teamsVs"/>
+                                </h5>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Cuerpo del Modal -->
+                        <div class="modal-body p-4">
+                            <!-- Verifica si existe la predicción -->
+                            <div t-if="state.prediction.id">
+
+                                <!-- Fecha del partido -->
+                                <div class="mb-3">
+                                    <p class="mb-0"><strong>Fixture Date:</strong></p>
+                                    <p class="text-muted"><t t-esc="state.prediction.fixture_date or 'N/A'"/></p>
+                                </div>
+
+                                <!-- Comparación de equipos -->
+                                <div class="team-comparison mb-4">
+                                    <h5 class="text-center">Team Comparison</h5>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="card shadow-sm border-0">
+                                                <div class="card-body">
+                                                    <h6 class="text-center text-primary">Home Team</h6>
+                                                    <p><strong>Goals:</strong> <t t-esc="state.prediction.comparison_goals_home or 'N/A'"/></p>
+                                                    <p><strong>Attack:</strong> <t t-esc="state.prediction.comparison_att_home or 'N/A'"/></p>
+                                                    <p><strong>Defense:</strong> <t t-esc="state.prediction.comparison_def_home or 'N/A'"/></p>
+                                                    <p><strong>Form:</strong> <t t-esc="state.prediction.comparison_form_home or 'N/A'"/></p>
+                                                    <p><strong>Total Strength:</strong> <t t-esc="state.prediction.comparison_total_home or 'N/A'"/></p>
+                                                    <p><strong>Poisson Distribution:</strong> <t t-esc="state.prediction.comparison_poisson_distribution_home or 'N/A'"/></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card shadow-sm border-0">
+                                                <div class="card-body">
+                                                    <h6 class="text-center text-danger">Away Team</h6>
+                                                    <p><strong>Goals:</strong> <t t-esc="state.prediction.comparison_goals_away or 'N/A'"/></p>
+                                                    <p><strong>Attack:</strong> <t t-esc="state.prediction.comparison_att_away or 'N/A'"/></p>
+                                                    <p><strong>Defense:</strong> <t t-esc="state.prediction.comparison_def_away or 'N/A'"/></p>
+                                                    <p><strong>Form:</strong> <t t-esc="state.prediction.comparison_form_away or 'N/A'"/></p>
+                                                    <p><strong>Total Strength:</strong> <t t-esc="state.prediction.comparison_total_away or 'N/A'"/></p>
+                                                    <p><strong>Poisson Distribution:</strong> <t t-esc="state.prediction.comparison_poisson_distribution_away or 'N/A'"/></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Probabilidades de victoria -->
+                                <div class="winning-probabilities mb-4">
+                                    <h5 class="text-center">Winning Probability</h5>
+                                    <div class="d-flex justify-content-around mt-3">
+                                        <div>
+                                            <p class="text-center mb-0"><strong>Home Win</strong></p>
+                                            <p class="text-muted text-center"><t t-esc="state.prediction.percent_home or 'N/A'"/></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-center mb-0"><strong>Draw</strong></p>
+                                            <p class="text-muted text-center"><t t-esc="state.prediction.percent_draw or 'N/A'"/></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-center mb-0"><strong>Away Win</strong></p>
+                                            <p class="text-muted text-center"><t t-esc="state.prediction.percent_away or 'N/A'"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Consejos y comentarios -->
+                                <div class="expert-advice mb-4">
+                                    <h5 class="text-center">Expert Advice</h5>
+                                    <p class="text-center"><em><t t-esc="state.prediction.advice or 'No advice available'"/></em></p>
+                                    <p class="text-center"><strong>Comment:</strong> <t t-esc="state.prediction.comment or 'No comments available'"/></p>
+                                </div>
+
+                                <!-- Predicción de goles -->
+                                <div class="goals-prediction">
+                                    <h5 class="text-center">Goals Prediction</h5>
+                                    <div class="d-flex justify-content-around mt-3">
+                                        <div>
+                                            <p class="text-center mb-0"><strong>Home Goals</strong></p>
+                                            <p class="text-muted text-center"><t t-esc="state.prediction.goals_home or 'N/A'"/></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-center mb-0"><strong>Away Goals</strong></p>
+                                            <p class="text-muted text-center"><t t-esc="state.prediction.goals_away or 'N/A'"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </Layout>
+    </t>
+</template>

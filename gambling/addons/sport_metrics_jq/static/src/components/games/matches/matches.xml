@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<templates xml:space="preserve">
+    <t t-name="games.MatchesItem">
+        <div class="card m-2 border-shadow shadow" t-on-click="onClickFetchFixture" style="cursor:pointer;">
+            <div class="card-body">
+                <!-- Fecha y Liga -->
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold text-muted"><t t-esc="props.data.league_name"/> - <t t-esc="props.data.country_name"/></span>
+                    <span class="text-muted"><t t-esc="props.data.date"/></span>
+                </div>
+
+                <!-- Equipos -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-center">
+                        <!-- Equipo local -->
+                        <span class="fw-bold" t-ref="homeTeamSpan"><t t-esc="props.data.home_team_name"/></span><br/>
+                        <small class="text-muted">Rank: <t t-esc="props.data.home_team_rank"/> | Points: <t t-esc="props.data.home_team_points"/></small>
+                    </div>
+                    <div class="text-center mx-3">
+                        <!-- "VS" -->
+                        <span class="fs-3">VS</span>
+                    </div>
+                    <div class="text-center">
+                        <!-- Equipo visitante -->
+                        <span class="fw-bold" t-ref="awayTeamSpan"><t t-esc="props.data.away_team_name"/></span><br/>
+                        <small class="text-muted">Rank: <t t-esc="props.data.away_team_rank"/> | Points: <t t-esc="props.data.away_team_points"/></small>
+                    </div>
+                </div>
+
+                <!-- Fixture ID o algún dato adicional si es necesario -->
+                <div class="text-end mt-3">
+                    <small class="text-muted">Fixture ID: <t t-esc="props.data.fixture_id"/></small>
+                </div>
+
+            </div>
+        </div>
+
+    </t>
+</templates>
