@@ -1,30 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <menuitem id="lottery_menu_root" name="Lotteries">
-
         <menuitem id="lottery_baloto_first_level_menu" name="Baloto" sequence="10">
-
             <menuitem id="lottery_baloto_second_level_menu" name="Configuration" sequence="100">
-
                 <menuitem id="lottery_baloto_type_menu_action" action="lottery_baloto_type_action" sequence="10"/>
-
                 <menuitem id="football_session_wizard_menu_action" action="lottery_baloto_wizard_action" sequence="20" groups="base.group_system"/>
-
             </menuitem>
-
-            <menuitem id="lottery_baloto_thirth_level_menu" name="Results" sequence="1">
-                <menuitem id="lottery_baloto_menu_action" action="lottery_baloto_action" sequence="10"/>
-            </menuitem>
-
             <menuitem id="lottery_baloto_fourth_level_menu" name="Data Analysis" sequence="10">
                 <menuitem id="lottery_baloto_number_frequency_menu_action" action="lottery_baloto_number_frequency_action" sequence="10"/>
                 <menuitem id="lottery_baloto_number_frequency_1_16_menu_action" action="lottery_baloto_number_frequency_1_16_action" sequence="20"/>
                 <menuitem id="lottery_baloto_number_frequency_pair_menu_action" action="lottery_baloto_number_frequency_pair_action" sequence="30"/>
             </menuitem>
-
-
-
         </menuitem>
-
     </menuitem>
 </odoo>

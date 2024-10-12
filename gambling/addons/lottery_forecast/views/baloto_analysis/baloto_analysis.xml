@@ -13,7 +13,7 @@
         name="Analisys"
         parent="lottery_forecast.lottery_baloto_fourth_level_menu"
         action="action_lottery_baloto_analysis"
-        sequence="100"
+        sequence="1"
     />
 
 </odoo>

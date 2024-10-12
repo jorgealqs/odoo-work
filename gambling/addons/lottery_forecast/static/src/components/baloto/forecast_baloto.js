@@ -47,37 +47,53 @@ export class BalotoForecast extends Component {
         })
     }
 
-    async analisysBalotoPandas(analysisType=null, option=null){
-        switch (
-            analysisType
-        ) {
+    async analisysBalotoPandas(analysisType = null, option = null) {
+        const successNotification = () => {
+            this.env.services.notification.add("Success!!!", {
+                title: "Amazing Creations",
+                type: "success",
+            });
+        };
+
+        const errorNotification = (error) => {
+            console.error('Error fetching data:', error);
+            this.env.services.notification.add("Failed to fetch data!", {
+                title: "Error",
+                type: "danger",
+            });
+        };
+
+        const callBackendMethod = async (model, method) => {
+            try {
+                this.state.results = await this.env.services.orm.call(model, method, [option]);
+                this.state.option = option;
+                this.render(); // Renderizar los resultados actualizados
+                successNotification();
+            } catch (error) {
+                errorNotification(error);
+            }
+        };
+
+        switch (analysisType) {
             case 'frequency-MiLoto':
             case 'frequency-Revancha':
             case 'frequency-Baloto':
-                try {
-                    // Llamada al método del backend enviando el option (tipo de lotería) como parámetro
-                    this.state.results = await this.env.services.orm.call('lottery.baloto', 'analyze_frequencies_pandas', [option])
-                    // Procesar los datos recibidos del backend
-                    this.state.option = option
-                    console.log(this.state.results)
-                    this.render() // Renderizar los resultados actualizados
-                    this.env.services.notification.add("Success!!!", {
-                        title: "Amazing Creations",
-                        type: "success",
-                    })
-                } catch (error) {
-                    console.error('Error fetching frequency data:', error)
-                }
-                break
+                await callBackendMethod('lottery.baloto', 'analyze_frequencies_pandas');
+                break;
+
+            case 'frequency-Baloto116':
+            case 'frequency-Revancha116':
+                await callBackendMethod('lottery.baloto', 'frequency_1_16_pandas');
+                break;
 
             default:
                 this.env.services.notification.add("Select an option!", {
                     title: "Error",
                     type: "danger",
-                })
-                this.state.results = []
-                this.state.option = ""
-                break
+                });
+                this.state.results = [];
+                this.state.option = "";
+                break;
         }
     }
 }

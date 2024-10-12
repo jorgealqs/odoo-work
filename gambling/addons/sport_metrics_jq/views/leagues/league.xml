@@ -193,4 +193,11 @@
         </field>
     </record>
 
+    <menuitem
+        id="sport_metrics_jq_league_act_one"
+        name="Leagues"
+        parent="sport_metrics_jq.sport_metrics_jq_country_act" action="sport_metrics_jq_league_action"
+        sequence="20"
+    />
+
 </odoo>

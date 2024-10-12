@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 class LotteryBalotoNumberFrequency116(models.Model):
     _name = 'lottery.baloto.number.frequency.1.16'
     _description = 'Lottery Number Frequency Analysis 1-16'
-    _order = "draw_date ASC, number ASC"
+    _order = "draw_date DESC"
 
     number = fields.Integer(string="Super Baloto Number", required=True)
     draw_date = fields.Date(string="Draw Date", required=True)
