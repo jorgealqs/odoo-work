@@ -4,14 +4,20 @@
         <div class="mb-4">
             <select class="form-select" aria-label="Select an analysis" t-on-change="onChangeAnslisys">
                 <option>Select an option</option>
-                <option value="frequency-MiLoto" data-option="MiLoto">
-                    Appearances by number, MiLoto
+                <option value="frequency-Baloto" data-option="Baloto">
+                    Appearances by number, Baloto
+                </option>
+                <option value="frequency-Baloto116" data-option="Baloto">
+                    Appearances by number, Baloto 1-16
                 </option>
                 <option value="frequency-Revancha" data-option="Revancha">
                     Appearances by number, Revancha
                 </option>
-                <option value="frequency-Baloto" data-option="Baloto">
-                    Appearances by number, Baloto
+                <option value="frequency-Revancha116" data-option="Revancha">
+                    Appearances by number, Revancha 1-16
+                </option>
+                <option value="frequency-MiLoto" data-option="MiLoto">
+                    Appearances by number, MiLoto
                 </option>
             </select>
         </div>
