@@ -86,6 +86,12 @@ export class BalotoForecast extends Component {
                 await callBackendMethod('lottery.baloto', 'frequency_1_16_pandas');
                 break;
 
+            case 'pair-Baloto':
+            case 'pair-Revancha':
+            case 'pair-MiLoto':
+                await callBackendMethod('lottery.baloto', 'analyze_frequency_pairs_pandas');
+                break;
+
             default:
                 this.env.services.notification.add("Select an option!", {
                     title: "Error",

@@ -1,5 +1,5 @@
 import logging
-# import os
+import itertools
 import pandas as pd
 from datetime import datetime, timedelta
 import random
@@ -350,13 +350,75 @@ class LotteryBaloto(models.Model):
         return None
 
     @api.model
+    def _create_dataframe(self, records, columns):
+        """
+        Método auxiliar para crear un DataFrame y agregar la columna de día de
+        la semana.
+        """
+        # Inicializar la lista para almacenar los datos recolectados
+        data = []
+
+        # Procesar cada registro
+        for record in records:
+            for col in columns:
+                data.append({
+                    'number': record.get(col),
+                    'draw_date': record.get('draw_date'),
+                    'super_baloto': record.get('super_baloto')
+                })
+
+        # Crear el DataFrame con los datos recolectados
+        df = pd.DataFrame(data)
+
+        # Convertir la columna 'draw_date' a formato datetime y agregar
+        # columna de día de la semana
+        df['draw_date'] = pd.to_datetime(df['draw_date'])
+        df['day_of_week'] = df['draw_date'].dt.day_name()
+        return df
+
+    @api.model
+    def _process_frequency_analysis(self, df):
+        """
+        Método auxiliar para realizar el análisis de frecuencia.
+        """
+        # Concatenar la fecha, el día de la semana y el super_baloto en un
+        # solo valor
+        df['date_day_super'] = (
+            df['draw_date'].dt.strftime('%Y-%m-%d') + ':' +
+            df['day_of_week'] + ':' +
+            df['super_baloto'].fillna('N/A').astype(str)
+        )
+
+        # Obtener la frecuencia de cada número
+        frequency_df = df.groupby(
+            'number'
+        ).size().reset_index(name='frequency')
+
+        # Agrupar las fechas (junto con el día y super_baloto) y sorteos por
+        # número
+        dates_sorteos_df = df.groupby('number').agg({
+            'date_day_super': lambda x: list(x),
+            'draw_date': 'max'  # Obtener la fecha más reciente
+        }).reset_index()
+
+        # Unir ambos DataFrames (frecuencia y detalles de fechas/sorteos)
+        result_df = pd.merge(frequency_df, dates_sorteos_df, on='number')
+
+        # Ordenar por la columna 'frequency' en orden descendente
+        result_df = result_df.sort_values(by='frequency', ascending=False)
+
+        return result_df.to_dict(orient='records')
+
+    @api.model
     def analyze_frequencies_pandas(self, option=None):
         _logger.info("Analyzing frequencies using pandas...")
 
         try:
-            # Obtener los registros
+            # Obtener los registros filtrados
             records = self.search_read(
-                [("lottery_type_id.name", "=", option)],
+                [
+                    ("lottery_type_id.name", "=", option)
+                ],
                 []
             )
 
@@ -364,55 +426,13 @@ class LotteryBaloto(models.Model):
                 _logger.warning("No records found for analysis.")
                 return []
 
-            # Inicializar una lista para almacenar la información
-            numbers_data = []
-
-            # Recorrer cada registro para almacenar los números junto con la
-            # fecha y el sorteo
-            for record in records:
-                for i in range(1, 6):  # Procesar number_1 a number_5
-                    numbers_data.append({
-                        'number': record.get(f'number_{i}'),
-                        'draw_date': record.get('draw_date'),
-                        'super_baloto': record.get('super_baloto')
-                    })
-
-            # Crear un DataFrame con los datos recolectados
-            df = pd.DataFrame(numbers_data)
-
-            # Convertir la columna 'draw_date' a formato datetime para extraer
-            # el día de la semana
-            df['draw_date'] = pd.to_datetime(df['draw_date'])
-            df['day_of_week'] = df['draw_date'].dt.day_name()
-            # Obtener el día de la semana
-
-            # Concatenar la fecha, el día de la semana y el super_baloto en
-            # un solo valor
-            df['date_day_super'] = (
-                df['draw_date'].dt.strftime('%Y-%m-%d') + ':' +
-                df['day_of_week'] + ':' +
-                df['super_baloto'].fillna('N/A').astype(str)
+            # Crear el DataFrame para number_1 a number_5
+            df = self._create_dataframe(
+                records, [f'number_{i}' for i in range(1, 6)]
             )
 
-            # Obtener la frecuencia de cada número
-            frequency_df = df.groupby(
-                'number'
-            ).size().reset_index(name='frequency')
-
-            # Agrupar las fechas (junto con el día y super_baloto) y sorteos
-            # por número
-            dates_sorteos_df = df.groupby('number').agg({
-                'date_day_super': lambda x: list(x),
-            }).reset_index()
-
-            # Unir ambos DataFrames (frecuencia y detalles de fechas/sorteos)
-            result_df = pd.merge(frequency_df, dates_sorteos_df, on='number')
-
-            # Ordenar por la columna 'frequency' en orden descendente
-            result_df = result_df.sort_values(by='frequency', ascending=False)
-
-            # Convertir el resultado a una lista de diccionarios
-            result = result_df.to_dict(orient='records')
+            # Procesar el análisis de frecuencia
+            result = self._process_frequency_analysis(df)
 
             _logger.info("Frequencies analysis completed using pandas.")
             return result
@@ -423,67 +443,103 @@ class LotteryBaloto(models.Model):
 
     @api.model
     def frequency_1_16_pandas(self, option):
+        _logger.info("Analyzing super_baloto frequencies...")
+
         try:
             # Obtener los registros filtrados por tipo de lotería
             records = self.search_read(
+                [
+                    ("lottery_type_id.name", "=", option)
+                ],
+                ['super_baloto', 'draw_date'])
+
+            if not records:
+                _logger.warning("No records found for analysis.")
+                return []
+
+            # Crear el DataFrame para 'super_baloto'
+            df = self._create_dataframe(records, ['super_baloto'])
+
+            # Procesar el análisis de frecuencia
+            result = self._process_frequency_analysis(df)
+
+            _logger.info(
+                "Super_baloto frequencies analysis completed using pandas."
+            )
+            return result
+
+        except Exception as e:
+            _logger.error(f"Error during super_baloto frequency analysis: {e}")
+            return []
+
+    @api.model
+    def analyze_frequency_pairs_pandas(self, option=None):
+        _logger.info("Analyzing number pairs using pandas...")
+
+        try:
+            # Fetch the records
+            records = self.search_read(
                 [("lottery_type_id.name", "=", option)],
-                ['super_baloto', 'draw_date'],
+                []
             )
 
             if not records:
                 _logger.warning("No records found for analysis.")
                 return []
 
-            # Lista para almacenar la información recolectada
-            numbers_data = []
+            # Initialize a list to store the pair information
+            pairs_data = []
 
-            # Recorrer cada registro y obtener el número junto con la fecha
+            # Loop through each record to collect number pairs
             for record in records:
-                numbers_data.append({
-                    'number': record.get('super_baloto'),
-                    'draw_date': record.get('draw_date')
-                })
+                numbers = [record.get(f'number_{i}') for i in range(1, 6)]
 
-            # Crear un DataFrame con los datos recolectados
-            df = pd.DataFrame(numbers_data)
+                # Create all possible pairs (combinations of 2 numbers)
+                for pair in itertools.combinations(sorted(numbers), 2):
+                    pairs_data.append({
+                        'number': f"{pair[0]}-{pair[1]}",
+                        'draw_date': record.get('draw_date'),
+                        'super_baloto': record.get('super_baloto')
+                    })
 
-            # Convertir la columna 'draw_date' a formato datetime
+            # Create a DataFrame from the collected pairs data
+            df = pd.DataFrame(pairs_data)
+
+            # Convert the 'draw_date' column to datetime to extract the day
+            # of the week
             df['draw_date'] = pd.to_datetime(df['draw_date'])
-
-            # Crear una columna con el día de la semana (opcional)
             df['day_of_week'] = df['draw_date'].dt.day_name()
 
-            # Concatenar la fecha y el día de la semana en un solo valor
-            # (opcional)
-            df['date_day_super'] = df[
-                'draw_date'
-            ].dt.strftime('%Y-%m-%d') + ':' + df['day_of_week']
+            # Concatenate date, day of the week, and super_baloto into a
+            # single value
+            df['date_day_super'] = (
+                df['draw_date'].dt.strftime('%Y-%m-%d') + ':' +
+                df['day_of_week'] + ':' +
+                df['super_baloto'].fillna('N/A').astype(str)
+            )
 
-            # Obtener la frecuencia de aparición de cada número
+            # Get the frequency of each pair
             frequency_df = df.groupby(
                 'number'
             ).size().reset_index(name='frequency')
 
-            # Agrupar las fechas por número y también obtener la fecha más
-            # reciente
+            # Group the draw dates by pair
             dates_sorteos_df = df.groupby('number').agg({
                 'date_day_super': lambda x: list(x),
-                'draw_date': 'max'  # Obtener la fecha más reciente por número
             }).reset_index()
 
-            # Unir los DataFrames de frecuencia y fechas
+            # Merge the frequency and draw date details
             result_df = pd.merge(frequency_df, dates_sorteos_df, on='number')
 
-            # Ordenar los resultados por la columna 'draw_date' en orden
-            # descendente
+            # Sort by 'frequency' in descending order
             result_df = result_df.sort_values(by='frequency', ascending=False)
 
-            # Convertir el DataFrame en una lista de diccionarios
+            # Convert the result to a list of dictionaries
             result = result_df.to_dict(orient='records')
 
-            _logger.info("Frequencies analysis completed using pandas.")
+            _logger.info("Number pair analysis completed using pandas.")
             return result
 
         except Exception as e:
-            _logger.error(f"Error during frequency analysis: {e}")
+            _logger.error(f"Error during number pair analysis: {e}")
             return []
