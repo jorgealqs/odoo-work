@@ -7,18 +7,27 @@ export class AnalisysBaloto extends Component {
 
     static props = {
         option: { type: String },
-        analisysBalotoPandas:{
+        analisysBalotoPandas: {
             type: Function,
-            optional: true
+            optional: true,
+        },
+        gameOptions: {
+            type: Object,
+            optional: true,
         }
     }
 
-    onChangeAnslisys(event){
-        const selectedOption = event.target.value
-        const option = event.target.options[event.target.selectedIndex].dataset.option
-        if (this.props.analisysBalotoPandas) {
+    /**
+     * Maneja el cambio en el análisis seleccionado
+     * @param {Event} event - El evento de cambio
+     */
+    onChangeAnalysis(event) {
+        const select = event.target
+        const selectedOption = select.value
+        const option = select.options[select.selectedIndex].dataset.option
+
+        if (typeof this.props.analisysBalotoPandas === 'function') {
             this.props.analisysBalotoPandas(selectedOption, option)
         }
     }
-
 }

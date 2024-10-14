@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="container mt-4 text-center">
-                    <AnalisysBaloto option="'Lottery Analysis!!!'" analisysBalotoPandas.bind="analisysBalotoPandas"/>
+                    <AnalisysBaloto option="'Lottery Analysis!!!'" analisysBalotoPandas.bind="analisysBalotoPandas" gameOptions="gameOptions"/>
                 </div>
                 <div class="container mt-4">
                     <div class="card shadow-sm">
