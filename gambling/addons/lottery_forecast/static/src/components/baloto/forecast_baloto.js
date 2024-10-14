@@ -7,7 +7,6 @@ import { HistoricalButton } from "./button_historical/button"
 import { AnalisysBaloto } from "./analisys/analisys_baloto"
 import { TablaResultBaloto } from "./tabla_result/tabla_result"
 
-
 export class BalotoForecast extends Component {
     static template = "baloto.BalotoForecast"
     static components = { Layout, HistoricalButton, AnalisysBaloto, TablaResultBaloto }
@@ -21,18 +20,47 @@ export class BalotoForecast extends Component {
         }
         this.state = useState({
             results: [],
-            loading: true,
+            loading: false,
             error: null,
             selectedAnalysis: "",
             option: "",
         })
+        this.gameOptions = this.getGameOptions()
+    }
+
+    getGameOptions() {
+        return [
+            {
+                name: 'Baloto',
+                options: this.getOptionsForGame('Baloto')
+            },
+            {
+                name: 'Revancha',
+                options: this.getOptionsForGame('Revancha')
+            },
+            {
+                name: 'MiLoto',
+                options: this.getOptionsForGame('MiLoto', false)
+            }
+        ]
+    }
+
+    getOptionsForGame(gameName, includeFrequency116 = true) {
+        const options = [
+            { value: `frequency-${gameName}`, label: 'Appearances by number' },
+            { value: `pair-${gameName}`, label: `Pair more frequency, ${gameName}` },
+            { value: `three-${gameName}`, label: `Three numbers more frequency, ${gameName}` },
+            { value: `four-${gameName}`, label: `Four numbers more frequency, ${gameName}` },
+            { value: `five-${gameName}`, label: `Five numbers more frequency, ${gameName}` },
+        ]
+        if (includeFrequency116) {
+            options.splice(1, 0, { value: `116-frequency`, label: 'Appearances by number, 1-16' })
+        }
+        return options
     }
 
     openHistoricalView(lotteryType = "") {
-        const context = {}
-        if (lotteryType) {
-            context[`search_default_lottery_type_id_${lotteryType}`] = 1
-        }
+        const context = lotteryType ? { [`search_default_lottery_type_id_${lotteryType}`]: 1 } : {}
 
         this.env.services.action.doAction({
             name: `Historical ${lotteryType}`,
@@ -48,59 +76,71 @@ export class BalotoForecast extends Component {
     }
 
     async analisysBalotoPandas(analysisType = null, option = null) {
-        const successNotification = () => {
-            this.env.services.notification.add("Success!!!", {
-                title: "Amazing Creations",
-                type: "success",
-            });
-        };
-
-        const errorNotification = (error) => {
-            console.error('Error fetching data:', error);
-            this.env.services.notification.add("Failed to fetch data!", {
-                title: "Error",
-                type: "danger",
-            });
-        };
-
-        const callBackendMethod = async (model, method) => {
-            try {
-                this.state.results = await this.env.services.orm.call(model, method, [option]);
-                this.state.option = option;
-                this.render(); // Renderizar los resultados actualizados
-                successNotification();
-            } catch (error) {
-                errorNotification(error);
-            }
-        };
-
-        switch (analysisType) {
-            case 'frequency-MiLoto':
-            case 'frequency-Revancha':
-            case 'frequency-Baloto':
-                await callBackendMethod('lottery.baloto', 'analyze_frequencies_pandas');
-                break;
-
-            case 'frequency-Baloto116':
-            case 'frequency-Revancha116':
-                await callBackendMethod('lottery.baloto', 'frequency_1_16_pandas');
-                break;
-
-            case 'pair-Baloto':
-            case 'pair-Revancha':
-            case 'pair-MiLoto':
-                await callBackendMethod('lottery.baloto', 'analyze_frequency_pairs_pandas');
-                break;
-
-            default:
-                this.env.services.notification.add("Select an option!", {
-                    title: "Error",
-                    type: "danger",
-                });
-                this.state.results = [];
-                this.state.option = "";
-                break;
+        if (!analysisType || !option) {
+            this.showNotification("Select an option!", "Error", "danger")
+            this.resetState()
+            return
         }
+
+        this.state.loading = true
+        this.state.error = null
+
+        const method = this.getMethodForAnalysis(analysisType)
+
+        if (!method) {
+            this.showNotification("Invalid analysis type!", "Error", "danger")
+            this.resetState()
+            return
+        }
+
+        try {
+            const data = this.prepareDataForAnalysis(analysisType, option)
+            this.state.results = await this.env.services.orm.call('lottery.baloto', method, data)
+            this.state.option = option
+            this.showNotification("Success!!!", "Amazing Creations", "success")
+        } catch (error) {
+            console.error('Error fetching data:', error)
+            this.state.error = error.message || "An error occurred"
+            this.showNotification("Failed to fetch data!", "Error", "danger")
+        } finally {
+            this.state.loading = false
+            this.render()
+        }
+    }
+
+    getMethodForAnalysis(analysisType) {
+        const methodMap = {
+            'frequency': 'analyze_frequencies_pandas',
+            'pair': 'analyze_frequency_numbers_pandas',
+            'three': 'analyze_frequency_numbers_pandas',
+            'four': 'analyze_frequency_numbers_pandas',
+            'five': 'analyze_frequency_numbers_pandas',
+        }
+        const type = analysisType.split('-')[0]
+        return type.endsWith('116') ? 'frequency_1_16_pandas' : methodMap[type]
+    }
+
+    prepareDataForAnalysis(analysisType, option) {
+        const data = [option]
+        const type = analysisType.split('-')[0]
+        if (['three', 'four', 'five'].includes(type)) {
+            data.push(parseInt(type === 'three' ? 3 : type === 'four' ? 4 : 5))
+        }
+        return data
+    }
+
+    showNotification(message, title, type) {
+        this.env.services.notification.add(message, {
+            title: title,
+            type: type,
+        })
+    }
+
+    resetState() {
+        this.state.results = []
+        this.state.option = ""
+        this.state.loading = false
+        this.state.error = null
     }
 }
 

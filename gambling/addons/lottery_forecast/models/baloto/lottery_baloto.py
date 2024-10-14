@@ -74,89 +74,17 @@ class LotteryBaloto(models.Model):
         return wednesday.date(), saturday.date()
 
     def _sync_results(self):
-        """
-        Synchronizes Baloto lottery results from an Excel file and, if
-        necessary, from a web scraping API. It only syncs results for the next
-        Wednesday and Saturday of the week.
-
-        The process includes:
-        1. Reading an XLSX file using pandas, where the Baloto lottery results
-        are extracted.
-        2. Checking if the lottery type already exists in the system. If it
-        doesn't exist, the creation is skipped.
-        3. Checking if a record with the same date already exists. If the
-        record already exists, creation is skipped.
-        4. If the record does not exist, a new one is created with the data
-        read from the file.
-        5. Then, it fetches results for the upcoming Wednesday and Saturday,
-        if they don't already exist, via a web scraping API.
-        """
-
-        # Get the file path within the module
-        # module_path = tools.config['addons_path'].split(',')[0]
-        # file_path = os.path.join(
-        #     module_path,
-        #     'lottery_forecast',
-        #     'data_baloto',
-        #     'baloto_results.xlsx'
-        # )
-
         try:
-            # Read the XLSX file using pandas
-            # df = pd.read_excel(file_path)
-
-            # for _, row in df.iterrows():
-            #     lottery_type_name = row['Type']
-            #     numbers = [row[f'# {i}'] for i in range(1, 6)]
-            #     super_baloto = row['Super Baloto']
-            #     draw_date = row['Fecha de Creación']
-
-            #     # Get the ID of the lottery type based on the name
-            #     lottery_type = self.env['lottery.baloto.type'].search(
-            #         [('name', '=', lottery_type_name)], limit=1
-            #     )
-            #     if not lottery_type:
-            #         continue
-
-            #     # Check if a record with the same date already exists
-            #     existing_record = self.search([
-            #         ('draw_date', '=', draw_date),
-            #         ('lottery_type_id', '=', lottery_type.id)
-            #     ], limit=1)
-            #     if existing_record:
-            #         continue
-
-            #     # Create new record
-            #     self.create({
-            #         'number_1': numbers[0],
-            #         'number_2': numbers[1],
-            #         'number_3': numbers[2],
-            #         'number_4': numbers[3],
-            #         'number_5': numbers[4],
-            #         'super_baloto': super_baloto,
-            #         'draw_date': draw_date,
-            #         'lottery_type_id': lottery_type.id,
-            #     })
-
-            # Calculate upcoming Wednesday and Saturday
             next_wednesday, next_saturday = self._get_wednesday_and_saturday()
             dates_to_fetch = [next_wednesday, next_saturday]
-
-            # wait_time = random.uniform(8, 12)
             for date in dates_to_fetch:
-                # Format the date to YYYY-MM-DD
                 formatted_date = date.strftime('%Y-%m-%d')
-
-                existing_record = self.search(
+                if not self.search(
                     [
                         ('draw_date', '=', formatted_date)
                     ], limit=1
-                )
-                if not existing_record:
-                    # Only make the request if no record exists
+                ):
                     self._fetch_and_log_results(formatted_date)
-                    # time.sleep(wait_time)
-
         except Exception as e:
             _logger.error(f"Error syncing results: {str(e)}")
 
@@ -177,46 +105,47 @@ class LotteryBaloto(models.Model):
             soup = BeautifulSoup(response.content, 'html.parser')
             table = soup.find('table', id='results-table')
 
-            if table:
-                headers, rows = self._parse_table(table)
-                _logger.info(f"Encabezados de la tabla: {headers}")
+            if not table:
+                _logger.warning(f"No 'results-table' found for date: {date}")
+                return
 
-                tipos = ['Baloto', 'Revancha']
+            headers, rows = self._parse_table(table)
+            _logger.info(f"Table headers: {headers}")
 
-                for idx, row in enumerate(rows):
-                    numeros = row[2].split(" - ")
-                    if len(numeros) == 6:
-                        numeros = [int(n) for n in numeros]
-                        lottery_type = self.env[
-                            'lottery.baloto.type'
-                        ].search([('name', '=', tipos[idx])], limit=1)
-                        if not lottery_type:
-                            _logger.warning(
-                                f"Tipo de lotería '{tipos[idx]}' no "
-                                "encontrado. Omite el registro."
-                            )
-                            continue
+            tipos = ['Baloto', 'Revancha']
 
-                        # Guardar los resultados en el modelo lottery.baloto
-                        self.create({
-                            'number_1': numeros[0],
-                            'number_2': numeros[1],
-                            'number_3': numeros[2],
-                            'number_4': numeros[3],
-                            'number_5': numeros[4],
-                            'super_baloto': numeros[5],
-                            'draw_date': date,
-                            'lottery_type_id': lottery_type.id,
-                        })
-            else:
-                _logger.warning(
-                    "No se encontró la tabla con el ID 'results-table'."
-                )
+            for idx, row in enumerate(rows):
+                numeros = row[2].split(" - ")
+                if len(numeros) != 6:
+                    _logger.warning(
+                        f"Unexpected number format for date: {date}"
+                    )
+                    continue
+
+                lottery_type = self.env[
+                    'lottery.baloto.type'
+                ].search([('name', '=', tipos[idx])], limit=1)
+                if not lottery_type:
+                    _logger.warning(
+                        f"Lottery type '{tipos[idx]}' not found."
+                    )
+                    continue
+
+                self.create({
+                    'number_1': int(numeros[0]),
+                    'number_2': int(numeros[1]),
+                    'number_3': int(numeros[2]),
+                    'number_4': int(numeros[3]),
+                    'number_5': int(numeros[4]),
+                    'super_baloto': int(numeros[5]),
+                    'draw_date': date,
+                    'lottery_type_id': lottery_type.id,
+                })
 
         except requests.RequestException as e:
-            _logger.error(f"Error en la solicitud: {e}")
+            _logger.error(f"Request error for date {date}: {e}")
         except Exception as e:
-            _logger.error(f"Error inesperado: {e}")
+            _logger.error(f"Unexpected error for date {date}: {e}")
 
     def _parse_table(self, table):
         headers = [header.text for header in table.find_all('th')]
@@ -351,63 +280,37 @@ class LotteryBaloto(models.Model):
 
     @api.model
     def _create_dataframe(self, records, columns):
-        """
-        Método auxiliar para crear un DataFrame y agregar la columna de día de
-        la semana.
-        """
-        # Inicializar la lista para almacenar los datos recolectados
-        data = []
+        data = [{
+            'number': record[col],
+            'draw_date': record['draw_date'],
+            'super_baloto': record['super_baloto']
+        } for record in records for col in columns]
 
-        # Procesar cada registro
-        for record in records:
-            for col in columns:
-                data.append({
-                    'number': record.get(col),
-                    'draw_date': record.get('draw_date'),
-                    'super_baloto': record.get('super_baloto')
-                })
-
-        # Crear el DataFrame con los datos recolectados
         df = pd.DataFrame(data)
-
-        # Convertir la columna 'draw_date' a formato datetime y agregar
-        # columna de día de la semana
         df['draw_date'] = pd.to_datetime(df['draw_date'])
         df['day_of_week'] = df['draw_date'].dt.day_name()
         return df
 
     @api.model
     def _process_frequency_analysis(self, df):
-        """
-        Método auxiliar para realizar el análisis de frecuencia.
-        """
-        # Concatenar la fecha, el día de la semana y el super_baloto en un
-        # solo valor
         df['date_day_super'] = (
             df['draw_date'].dt.strftime('%Y-%m-%d') + ':' +
             df['day_of_week'] + ':' +
             df['super_baloto'].fillna('N/A').astype(str)
         )
 
-        # Obtener la frecuencia de cada número
-        frequency_df = df.groupby(
+        frequency_df = df[
             'number'
-        ).size().reset_index(name='frequency')
-
-        # Agrupar las fechas (junto con el día y super_baloto) y sorteos por
-        # número
+        ].value_counts().reset_index(name='frequency')
         dates_sorteos_df = df.groupby('number').agg({
-            'date_day_super': lambda x: list(x),
-            'draw_date': 'max'  # Obtener la fecha más reciente
+            'date_day_super': list,
+            'draw_date': 'max'
         }).reset_index()
 
-        # Unir ambos DataFrames (frecuencia y detalles de fechas/sorteos)
         result_df = pd.merge(frequency_df, dates_sorteos_df, on='number')
-
-        # Ordenar por la columna 'frequency' en orden descendente
-        result_df = result_df.sort_values(by='frequency', ascending=False)
-
-        return result_df.to_dict(orient='records')
+        return result_df.sort_values(
+            by='frequency', ascending=False
+        ).to_dict(orient='records')
 
     @api.model
     def analyze_frequencies_pandas(self, option=None):
@@ -442,7 +345,7 @@ class LotteryBaloto(models.Model):
             return []
 
     @api.model
-    def frequency_1_16_pandas(self, option):
+    def frequency_1_16_pandas(self, option=None):
         _logger.info("Analyzing super_baloto frequencies...")
 
         try:
@@ -473,8 +376,10 @@ class LotteryBaloto(models.Model):
             return []
 
     @api.model
-    def analyze_frequency_pairs_pandas(self, option=None):
-        _logger.info("Analyzing number pairs using pandas...")
+    def analyze_frequency_numbers_pandas(self, option=None, default_number=2):
+        _logger.info(
+            f"Analyzing number combinations of {default_number} using pandas."
+        )
 
         try:
             # Fetch the records
@@ -487,43 +392,42 @@ class LotteryBaloto(models.Model):
                 _logger.warning("No records found for analysis.")
                 return []
 
-            # Initialize a list to store the pair information
-            pairs_data = []
+            # Initialize a list to store the combination information
+            combinations_data = []
 
-            # Loop through each record to collect number pairs
+            # Loop through each record to collect number combinations
             for record in records:
                 numbers = [record.get(f'number_{i}') for i in range(1, 6)]
 
-                # Create all possible pairs (combinations of 2 numbers)
-                for pair in itertools.combinations(sorted(numbers), 2):
-                    pairs_data.append({
-                        'number': f"{pair[0]}-{pair[1]}",
-                        'draw_date': record.get('draw_date'),
-                        'super_baloto': record.get('super_baloto')
+                # Create all possible combinations of 'default_number' numbers
+                for combination in itertools.combinations(sorted(
+                    numbers
+                ), default_number):
+                    combinations_data.append({
+                        'number': "-".join(map(str, combination)),
+                        'draw_date': record.get('draw_date')
                     })
 
-            # Create a DataFrame from the collected pairs data
-            df = pd.DataFrame(pairs_data)
+            # Create a DataFrame from the collected combinations data
+            df = pd.DataFrame(combinations_data)
 
             # Convert the 'draw_date' column to datetime to extract the day
             # of the week
             df['draw_date'] = pd.to_datetime(df['draw_date'])
             df['day_of_week'] = df['draw_date'].dt.day_name()
 
-            # Concatenate date, day of the week, and super_baloto into a
-            # single value
+            # Concatenate date, day of the week
             df['date_day_super'] = (
                 df['draw_date'].dt.strftime('%Y-%m-%d') + ':' +
-                df['day_of_week'] + ':' +
-                df['super_baloto'].fillna('N/A').astype(str)
+                df['day_of_week'].astype(str)
             )
 
-            # Get the frequency of each pair
+            # Get the frequency of each combination
             frequency_df = df.groupby(
                 'number'
             ).size().reset_index(name='frequency')
 
-            # Group the draw dates by pair
+            # Group the draw dates by combination
             dates_sorteos_df = df.groupby('number').agg({
                 'date_day_super': lambda x: list(x),
             }).reset_index()
@@ -537,9 +441,11 @@ class LotteryBaloto(models.Model):
             # Convert the result to a list of dictionaries
             result = result_df.to_dict(orient='records')
 
-            _logger.info("Number pair analysis completed using pandas.")
+            _logger.info(
+                f"Number combination analysis of {default_number} completed."
+            )
             return result
 
         except Exception as e:
-            _logger.error(f"Error during number pair analysis: {e}")
+            _logger.error(f"Error during number combination analysis: {e}")
             return []

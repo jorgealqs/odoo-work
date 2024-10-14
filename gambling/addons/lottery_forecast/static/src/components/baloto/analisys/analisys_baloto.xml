@@ -2,45 +2,19 @@
     <t t-name="baloto.BalotoAnalisys">
         <h1 class="mb-4"><t t-esc="props.option"/></h1>
         <div class="mb-4">
-            <select class="form-select" aria-label="Select an analysis" t-on-change="onChangeAnslisys">
-                <option>Select an option</option>
+            <select class="form-select" aria-label="Select an analysis" t-on-change="onChangeAnalysis">
+                <option value="">Select an option</option>
 
-                <!-- Sección Baloto -->
-                <optgroup label="Baloto">
-                    <option value="frequency-Baloto" data-option="Baloto">
-                        Appearances by number, Baloto
-                    </option>
-                    <option value="frequency-Baloto116" data-option="Baloto">
-                        Appearances by number, Baloto 1-16
-                    </option>
-                    <option value="pair-Baloto" data-option="Baloto">
-                        Appearances by number pair, Baloto
-                    </option>
-                </optgroup>
-
-                <!-- Sección Revancha -->
-                <optgroup label="Revancha">
-                    <option value="frequency-Revancha" data-option="Revancha">
-                        Appearances by number, Revancha
-                    </option>
-                    <option value="frequency-Revancha116" data-option="Revancha">
-                        Appearances by number, Revancha 1-16
-                    </option>
-                    <option value="pair-Revancha" data-option="Revancha">
-                        Appearances by number pair, Revancha
-                    </option>
-                </optgroup>
-
-                <!-- Sección MiLoto -->
-                <optgroup label="MiLoto">
-                    <option value="frequency-MiLoto" data-option="MiLoto">
-                        Appearances by number, MiLoto
-                    </option>
-                    <option value="pair-MiLoto" data-option="MiLoto">
-                        Appearances by pair, MiLoto
-                    </option>
-                </optgroup>
-
+                <!-- Secciones de opciones -->
+                <t t-foreach="props.gameOptions" t-as="game" t-key="game.name">
+                    <optgroup t-att-label="game.name">
+                        <t t-foreach="game.options" t-as="option" t-key="option.value">
+                            <option t-att-value="option.value" t-att-data-option="game.name">
+                                <t t-esc="option.label"/>
+                            </option>
+                        </t>
+                    </optgroup>
+                </t>
             </select>
         </div>
     </t>
