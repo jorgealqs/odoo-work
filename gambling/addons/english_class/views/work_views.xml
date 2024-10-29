@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_word_form" model="ir.ui.view">
+        <field name="name">english.word Form</field>
+        <field name="model">english.word</field>
+        <field name="arch" type="xml">
+            <form string="Word">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Word"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pronunciation"/>
+                            <field name="difficulty"/>
+                        </group>
+                        <group>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition" name="definition">
+                            <field name="definition" placeholder="Enter the word definition..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_word_tree" model="ir.ui.view">
+        <field name="name">english.word Tree</field>
+        <field name="model">english.word</field>
+        <field name="arch" type="xml">
+            <tree string="Words">
+                <field name="name"/>
+                <field name="definition"/>
+                <field name="difficulty"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tag_form" model="ir.ui.view">
+        <field name="name">english.word.tag Form</field>
+        <field name="model">english.word.tag</field>
+        <field name="arch" type="xml">
+            <form string="Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tag_tree" model="ir.ui.view">
+        <field name="name">english.word.tag Tree</field>
+        <field name="model">english.word.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Tags" editable="top" sample="1" multi_edit="1" default_order="name">
+                <field name="name"/>
+                <field name="color" widget="color_picker" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_words" model="ir.actions.act_window">
+        <field name="name">Words</field>
+        <field name="res_model">english.word</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_tags" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">english.word.tag</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_word_catalog" name="Word Catalog" sequence="20" parent="english_class.menu_english_learning"/>
+    <menuitem id="menu_words" name="Words" parent="menu_word_catalog" action="action_words"/>
+    <menuitem id="menu_tags" name="Tags" parent="menu_word_catalog" action="action_tags"/>
+
+</odoo>
