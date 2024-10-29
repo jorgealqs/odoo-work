@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<odoo>
+    <menuitem id="menu_english_learning" name="English Learning" sequence="10"           web_icon="english_class,static/description/icon.png"
+    />
+    <menuitem id="menu_lessons" name="Lessons" parent="menu_english_learning" action="action_lessons"/>
+
+</odoo>

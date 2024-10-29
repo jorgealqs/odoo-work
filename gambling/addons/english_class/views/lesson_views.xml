@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_lesson_form" model="ir.ui.view">
+        <field name="name">english.lesson.form</field>
+        <field name="model">english.lesson</field>
+        <field name="arch" type="xml">
+            <form string="Lesson">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="content"/>
+                        <field name="audio"/>
+                        <field name="video"/>
+                    </group>
+                    <notebook>
+                        <page string="Exercises">
+                            <field name="exercise_ids">
+                                <tree editable="bottom">
+                                    <field name="question"/>
+                                    <field name="correct_answer"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_lesson_tree" model="ir.ui.view">
+        <field name="name">english.lesson.tree</field>
+        <field name="model">english.lesson</field>
+        <field name="arch" type="xml">
+            <tree string="Lessons">
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_lessons" model="ir.actions.act_window">
+        <field name="name">Lessons</field>
+        <field name="res_model">english.lesson</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

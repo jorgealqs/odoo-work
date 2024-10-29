@@ -24,6 +24,7 @@
             "lottery_forecast/static/src/**/*"
         ],
     },
+    'images': ['static/description/icon.png'],
     'installable': True,
     'application': True,
     'auto_install': False,
