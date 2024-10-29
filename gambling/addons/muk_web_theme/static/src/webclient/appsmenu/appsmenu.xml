@@ -9,7 +9,8 @@
 	>
 		<xpath expr="//div[@t-ref='menuRef']" position="attributes">
 			<attribute name="t-attf-style">
-	        	background-image: url("{{ backgroundImageUrl }}");
+	        	<!-- background-image: url("{{ backgroundImageUrl }}"); -->
+				background-color: #243642;
 		    </attribute>
 	    </xpath>
 	</t>
