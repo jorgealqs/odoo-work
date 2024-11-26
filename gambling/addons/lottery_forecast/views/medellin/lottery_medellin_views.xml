@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_lottery_medellin_kanban" model="ir.ui.view">
+        <field name="name">lottery.medellin.kanban</field>
+        <field name="model">lottery.medellin</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_example" delete="false" duplicate="false" create="false">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click card border-0 shadow-lg mb-4">
+                            <!-- Card Header with the Lottery Draw Title -->
+                            <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: rgb(36, 54, 66)">
+                                <h5 class="card-title mb-0 text-white"><field name="name"/></h5>
+                                <span class="badge">Sorteo: <field name="number_sorteo"/></span>
+                            </div>
+                            <!-- Card Body with Lottery Details -->
+                            <div class="card-body bg-light">
+                                <hr class="my-2" />
+                                <div>
+                                    <strong>Draw Date:</strong>
+                                    <span class="text-muted fs-6"><field name="draw_date"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_lottery_medellin_form" model="ir.ui.view">
+        <field name="name">lottery.medellin.form</field>
+        <field name="model">lottery.medellin</field>
+        <field name="arch" type="xml">
+            <form string="Lottery Medellín" delete="false" duplicate="false" create="false">
+                <sheet>
+
+                    <notebook>
+                        <page string="Information">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" readonly="1" placeholder="Referencia"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="number" placeholder="Número ganador"/>
+                                    <field name="series" placeholder="Serie"/>
+                                </group>
+                                <group>
+                                    <field name="draw_date"/>
+                                    <field name="create_date" string="Fecha de registro" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_lottery_medellin_tree" model="ir.ui.view">
+        <field name="name">lottery.medellin.tree</field>
+        <field name="model">lottery.medellin</field>
+        <field name="arch" type="xml">
+            <tree string="Lottery Medellin" delete="false" duplicate="false" create="false">
+                <field name="name" string="Result"/>
+                <field name="number_sorteo" string="# Sorteo"/>
+                <field name="draw_date" string="Date"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_lottery_medellin" model="ir.actions.act_window">
+        <field name="name">Lottery Medellin</field>
+        <field name="res_model">lottery.medellin</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <menuitem
+        id="menu_lottery_medellin_root"
+        name="Lottery Medellin"
+        sequence="10"
+        parent="lottery_forecast.lottery_menu_root"
+    />
+
+    <menuitem
+        id="menu_lottery_medellin"
+        name="Historical"
+        parent="menu_lottery_medellin_root"
+        action="action_lottery_medellin"
+    />
+
+
+</odoo>

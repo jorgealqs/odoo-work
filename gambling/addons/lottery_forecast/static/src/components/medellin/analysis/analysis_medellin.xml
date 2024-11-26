@@ -1,0 +1,21 @@
+<templates xml:space="preserve">
+    <t t-name="lottery.LotteryMedellinAnalysis">
+        <h1 class="mb-4"><t t-esc="props.option"/></h1>
+        <div class="mb-4">
+            <select class="form-select" aria-label="Select an analysis" t-on-change="onChangeAnalysis">
+                <option value="">Select an option</option>
+
+                <!-- Secciones de opciones -->
+                <t t-foreach="props.getAnalysisMedellin" t-as="game" t-key="game.name">
+                    <optgroup t-att-label="game.name">
+                        <t t-foreach="game.options" t-as="option" t-key="option.value">
+                            <option t-att-value="option.value" t-att-data-option="game.name">
+                                <t t-esc="option.label"/>
+                            </option>
+                        </t>
+                    </optgroup>
+                </t>
+            </select>
+        </div>
+    </t>
+</templates>

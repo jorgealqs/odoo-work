@@ -8,6 +8,7 @@
     'data': [
         "security/ir.model.access.csv",
         'data/ir_cron_baloto.xml',  # Include your cron job XML file here
+        'data/ir_cron_medellin.xml',  # Include your cron job XML file here
         "wizards/baloto/view_baloto_wizard.xml",
         "views/baloto/view_baloto.xml",
         "views/baloto/view_baloto_type.xml",
@@ -16,6 +17,8 @@
         "views/baloto/view_analysis_pair.xml",
         "views/action_manual/manual.xml",
         "views/baloto_analysis/baloto_analysis.xml",
+        "views/medellin_analysis/lottery_medellin_analisys.xml",
+        "views/medellin/lottery_medellin_views.xml",
         "views/menu.xml",
     ],
     'assets': {

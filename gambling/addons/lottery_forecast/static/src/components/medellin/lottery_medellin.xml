@@ -1,0 +1,15 @@
+<templates xml:space="preserve">
+    <t t-name="lottery.LotteryMedellin">
+        <div class="o_action">
+            <Layout display="display" className="'h-100'">
+                <div class="container">
+                    <div class="row">
+                        <div class="container mt-4 text-center">
+                            <AnalisysLotteryMedellin option="'Lottery Medellín Analysis!!!'" getAnalysisMedellin="gameOptions" analysisMedellinPandas.bind="analysisMedellinPandas"/>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        </div>
+    </t>
+</templates>
