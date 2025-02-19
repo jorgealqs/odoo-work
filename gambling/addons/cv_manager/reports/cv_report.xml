@@ -1,0 +1,70 @@
+<odoo>
+
+    <template id="report_cv">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, sans-serif; padding: 20px;">
+                    <t t-foreach="docs" t-as="doc">
+                        <!-- Sección de cabecera con imagen y datos personales -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex: 1;">
+                                <h1 style="margin: 0;"><span t-field="doc.name"/></h1>
+                                <p><strong>Email:</strong> <span t-field="doc.email"/></p>
+                                <p><strong>Phone:</strong> <span t-field="doc.phone"/></p>
+                            </div>
+                            <div>
+                                <img t-if="doc.image_1920"
+                                    t-att-src="image_data_uri(doc.image_1920)"
+                                    style="max-width: 120px; border-radius: 10px;"/>
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <h2>Address</h2>
+                        <t t-if="doc.address_id">
+                            <p><span t-field="doc.address_id.street"/></p>
+                            <p><span t-field="doc.address_id.city"/>, <span t-field="doc.address_id.state"/></p>
+                            <p><span t-field="doc.address_id.country"/></p>
+                        </t>
+
+                        <!-- Educación y Experiencia -->
+                        <h2>Education</h2>
+                        <p t-field="doc.education"/>
+
+                        <h2>Experience</h2>
+                        <p t-field="doc.experience"/>
+
+                        <!-- Habilidades -->
+                        <h2>Skills</h2>
+                        <ul>
+                            <t t-foreach="doc.skill_ids" t-as="skill">
+                                <li>
+                                    <span t-field="skill.name"/> (<span t-field="skill.level"/>)
+                                </li>
+                            </t>
+                        </ul>
+
+                        <hr/>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Acción del reporte -->
+    <record id="report_cv_action" model="ir.actions.report">
+        <field name="name">Curriculum Vitae</field>
+        <field name="model">cv.manager</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cv_manager.report_cv</field>
+        <field name="report_file">cv_manager.report_cv</field>
+        <field name="binding_model_id" ref="model_cv_manager"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Modelo vinculado al reporte -->
+    <record id="model_cv_manager" model="ir.model">
+        <field name="name">cv.manager</field>
+        <field name="model">cv.manager</field>
+    </record>
+</odoo>

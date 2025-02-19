@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_hr_cv_form" model="ir.ui.view">
+        <field name="name">hr.cv Form</field>
+        <field name="model">hr.cv</field>
+        <field name="arch" type="xml">
+            <form string="Resume">
+                <sheet>
+                    <group>
+                        <field name="photo" widget="image" class="oe_avatar"/>
+                        <field name="name"/>
+                        <field name="job_title"/>
+                    </group>
+                    <notebook>
+                        <page string="Education">
+                            <field name="education"/>
+                        </page>
+                        <page string="Experience">
+                            <field name="experience"/>
+                        </page>
+                        <page string="Skills">
+                            <field name="skills"/>
+                        </page>
+                        <page string="Languages">
+                            <field name="languages"/>
+                        </page>
+                    </notebook>
+                    <group>
+                        <field name="language"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="%(resume_cv.report_hr_cv_pdf)d" string="Descargar PDF" type="action" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_cv_form_action" model="ir.actions.act_window">
+        <field name="name">Resume</field>
+        <field name="res_model">hr.cv</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                There is no resume.
+            </p>
+        </field>
+    </record>
+
+</odoo>

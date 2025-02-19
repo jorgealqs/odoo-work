@@ -1,0 +1,20 @@
+{
+    'name': 'CV Manager JQS',
+    'version': '1.0',
+    'summary': 'Manage and download CVs in PDF',
+    'description': 'A module to manage CVs and download them in PDF format.',
+    'author': 'Jorge Alberto Quiroz Sierra',
+    'category': 'OWN APPS/CV',
+    'sequence': -100,
+    'depends': ['base', 'web'],
+    'data': [
+        'security/ir.model.access.csv',
+        'reports/cv_report.xml',
+        'views/curriculum_views.xml',
+        'views/menu.xml',
+    ],
+    "installable": True,
+    "auto_install": False,
+    "application": True,
+    'license': 'LGPL-3',
+}

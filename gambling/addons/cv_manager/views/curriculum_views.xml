@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+
+    <!-- model.name form view -->
+    <record id="cv_manager_view_form" model="ir.ui.view">
+        <field name="name">cv.manager Form</field>
+        <field name="model">cv.manager</field>
+        <field name="arch" type="xml">
+            <form string="Curriculum Vitae">
+                <sheet>
+                    <group>
+                        <!-- <widget name="web_ribbon" title="Success" bg_color="text-bg-success"/> -->
+                        <!-- <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"/> -->
+                        <group>
+                            <field name="name" placeholder="Full name" string=""/>
+                            <field name="email" widget="email" placeholder="example@gmail.com" string=""/>
+                            <field name="phone" widget="phone" placeholder="Phone" string=""/>
+                        </group>
+                        <group>
+                            <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920'}" style="max-width: 128px; max-height: 128px; border-radius: 10px;" string=""/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Manager">
+                            <group>
+                                <field name="address_id"/>
+                                <field name="education"/>
+                                <field name="experience"/>
+                            </group>
+                        </page>
+                        <page string="About Me">
+                            <group>
+                                <field name="about_me" widget="html"/>
+                            </group>
+                        </page>
+                        <page string="Skills">
+                            <group>
+                                <field name="skill_ids" string=""/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- model.name tree view -->
+    <record id="cv_manager_view_tree" model="ir.ui.view">
+        <field name="name">cv.manager Tree</field>
+        <field name="model">cv.manager</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- model.name action window -->
+    <record id="cv_manager_action" model="ir.actions.act_window">
+        <field name="name">CVs</field>
+        <field name="res_model">cv.manager</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK -->
+
+            </p>
+        </field>
+    </record>
+
+</odoo>
