@@ -1,7 +1,7 @@
 import logging
 import os
-import requests
-from requests.exceptions import RequestException
+import requests  # type:ignore
+from requests.exceptions import RequestException  # type:ignore
 from odoo import models, fields, api
 
 # Configuring the logger to record relevant information in Odoo logs

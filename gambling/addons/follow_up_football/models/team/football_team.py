@@ -1,8 +1,8 @@
 import logging
-import requests
+import requests  # type:ignore
 import os
 from odoo import models, fields
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException  # type:ignore
 
 _logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import os
 import logging
-import requests
+import requests  # type:ignore
 from datetime import datetime
 from odoo import models, fields
 
