@@ -157,7 +157,8 @@ class SportMetricsJQTeamStanding(models.Model):
                     for standing in standings:
                         team_data = standing.get('team', {})
                         team_id = team_data.get('id')
-                        # Validate if this standing already exists for the team,
+                        # Validate if this standing already exists for the
+                        # team,
                         # league, and session
                         existing_standing = self.search([
                             ('team_id.id_team', '=', team_id),
