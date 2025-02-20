@@ -1,9 +1,9 @@
 {
-    'name': 'Lottery Forecast Project',
+    'name': 'Lottery Forecast',
     'version': '1.0',
     'author': 'Jorge Alberto Quiroz Sierra',
     'depends': ['base', "web"],
-    "category": "Lottery/Creations",
+    "category": "OWN APPS/Lottery",
     "sequence": -1005,
     'data': [
         "security/ir.model.access.csv",

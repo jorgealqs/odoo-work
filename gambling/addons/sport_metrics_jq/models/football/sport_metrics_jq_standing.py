@@ -151,30 +151,31 @@ class SportMetricsJQTeamStanding(models.Model):
             data = response.json().get('response', [])
             for standings_data in data:
                 league_data = standings_data.get('league', {})
-                standings_data = league_data.get('standings', [[]])[0]
+                standings_data = league_data.get('standings', [[]])
                 # Process each team in the standings
-                for standing in standings_data:
-                    team_data = standing.get('team', {})
-                    team_id = team_data.get('id')
-                    # Validate if this standing already exists for the team,
-                    # league, and session
-                    existing_standing = self.search([
-                        ('team_id.id_team', '=', team_id),
-                        ('league_id.id', '=', id_league_table),
-                        ('session_id.id', '=', id_session),
-                    ], limit=1)
-                    if existing_standing:
-                        # Update the existing standing
-                        self._update_standing(existing_standing, standing)
-                    else:
-                        # Create a new standing
-                        self._create_standing(
-                            standing,
-                            team_id,
-                            id_league,
-                            id_session,
-                            id_league_table
-                        )
+                for standings in standings_data:
+                    for standing in standings:
+                        team_data = standing.get('team', {})
+                        team_id = team_data.get('id')
+                        # Validate if this standing already exists for the team,
+                        # league, and session
+                        existing_standing = self.search([
+                            ('team_id.id_team', '=', team_id),
+                            ('league_id.id', '=', id_league_table),
+                            ('session_id.id', '=', id_session),
+                        ], limit=1)
+                        if existing_standing:
+                            # Update the existing standing
+                            self._update_standing(existing_standing, standing)
+                        else:
+                            # Create a new standing
+                            self._create_standing(
+                                standing,
+                                team_id,
+                                id_league,
+                                id_session,
+                                id_league_table
+                            )
 
         except requests.exceptions.HTTPError as http_err:
             _logger.error(f"HTTP error occurred: {http_err}")

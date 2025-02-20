@@ -1,8 +1,8 @@
 {
-    "name": "Sports Metrics JQ",
+    "name": "Sports Metrics",
     "version": "1.0",
     "author": "Jorge Alberto Quiroz Sierra",
-    "category": "Sports/Leagues",
+    "category": "OWN APPS/Sports Metrics",
     "description": """
         This module allows users to manage and follow
         up on various football leagues. It includes features

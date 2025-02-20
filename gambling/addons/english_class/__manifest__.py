@@ -5,7 +5,7 @@
     'description':
     'Management of lessons and exercises to learn English in Odoo.',
     'author': 'Jorge Alberto Quiroz Sierra',
-    'category': 'Education/English',
+    'category': 'OWN APPS/English',
     'depends': ['base', "web"],
     'data': [
         'security/ir.model.access.csv',
@@ -16,4 +16,5 @@
     'images': ['static/description/icon.png'],
     'installable': True,
     'application': True,
+    "license": "LGPL-3",
 }

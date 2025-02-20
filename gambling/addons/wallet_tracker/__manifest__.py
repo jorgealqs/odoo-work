@@ -3,7 +3,7 @@
     'version': '1.0',
     'author': 'Jorge Alberto Quiroz Sierra',
     'depends': ['base', 'account', 'web', 'mail'],
-    "category": "Wallet/Tracker",
+    "category": "OWN APPS/Wallet Tracker",
     "sequence": -150,
     'data': [
         'security/ir.model.access.csv',
@@ -16,5 +16,6 @@
     'auto_install': False,
     'description': """
         This module tracks betting investments and profits.
-    """
+    """,
+    "license": "LGPL-3",
 }
