@@ -34,11 +34,11 @@
                             <label for="color_danger_light" string="Danger" class="d-block w-75 py-2"/>
                             <field name="color_danger_light" class="d-block w-25 p-0 m-0" widget="color"/>
                         </div>
-                        <button
-                            name="action_reset_light_color_assets"
-                            icon="oi-arrow-right"
-                            type="object"
-                            string="Reset Light Colors"
+                        <button 
+                            name="action_reset_light_color_assets" 
+                            icon="oi-arrow-right" 
+                            type="object" 
+                            string="Reset Light Colors" 
                             class="btn-link"
                         />
                     </setting>
@@ -67,11 +67,11 @@
                             <label for="color_danger_dark" string="Danger" class="d-block w-75 py-2"/>
                             <field name="color_danger_dark" class="d-block w-25 p-0 m-0" widget="color"/>
                         </div>
-                        <button
-                            name="action_reset_dark_color_assets"
-                            icon="oi-arrow-right"
-                            type="object"
-                            string="Reset Dark Colors"
+                        <button 
+                            name="action_reset_dark_color_assets" 
+                            icon="oi-arrow-right" 
+                            type="object" 
+                            string="Reset Dark Colors" 
                             class="btn-link"
                         />
                     </setting>
@@ -79,5 +79,5 @@
 	    	</xpath>
 	    </field>
 	</record>
-
+	
 </odoo>
