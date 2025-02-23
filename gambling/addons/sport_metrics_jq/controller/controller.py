@@ -28,7 +28,7 @@ class MatchController(http.Controller):
         prediction = http.request.env.cr.dictfetchall()
 
         # Imprimir el resultado de la consulta para depuración
-        _logger.info("Query result: %s", prediction)
+        # _logger.info("Query result: %s", prediction)
 
         return {
             'fixture': prediction,
@@ -39,13 +39,14 @@ class MatchController(http.Controller):
         # Extract startOfDay and endOfDay from the request parameters
         start_of_day = kw.get('startOfDay')
         end_of_day = kw.get('endOfDay')
-        _logger.info(f"\n\n errro {start_of_day}, {end_of_day} \n\n")
 
         # Ensure both start and end date are provided
         if not start_of_day or not end_of_day:
             return {"error": "Start and end dates are required"}
 
-        query = '''SELECT f.id as id, f.fixture_id as fixture_id, f.date,
+        query = '''SELECT
+                f.id as id, f.fixture_id as fixture_id,
+                f.date, f.session_id,
                 home_team.id as home_team_id,
                 home_team.name as home_team_name,
                 away_team.id as away_team_id,
@@ -55,6 +56,7 @@ class MatchController(http.Controller):
                 away_standing.rank as away_team_rank,
                 away_standing.points as away_team_points,
                 league.name as league_name,
+                league.id as id_league,
                 country.name as country_name
             FROM sport_metrics_jq_fixture f
             JOIN sport_metrics_jq_team home_team

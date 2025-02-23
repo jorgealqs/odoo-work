@@ -74,6 +74,18 @@ class SportMetricsJQPrediction(models.Model):
         if not kw.get('fixture_id'):
             _logger.error('Fixture ID is missing')
             return
+
+        # Buscar el registro del fixture basado en fixture_id
+        fixture = self.env['sport.metrics.jq.fixture'].search([
+            ('fixture_id', '=', kw.get('fixture_id'))
+        ], limit=1)
+
+        if not fixture:
+            _logger.warning(
+                'Fixture not found for fixture_id: %s', kw.get('fixture_id')
+            )
+            return
+
         data = {
             'headers': self._get_api_headers(),
             'fixture_id': kw.get('fixture_id'),
@@ -81,7 +93,11 @@ class SportMetricsJQPrediction(models.Model):
             'league_id': kw.get('league_id'),
             'session_id': kw.get('session_id'),
         }
-        self._sync_predictions_process(**data)
+        existing_prediction = self.search([
+            ('fixture_id', '=', fixture.id)
+        ], limit=1)
+        if not existing_prediction:
+            self._sync_predictions_process(**data)
 
     def _get_api_headers(self):
         """

@@ -1,8 +1,8 @@
 import os
-import requests
+import requests  # type: ignore
 import logging
 from odoo import models, fields, api  # noqa: F401
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException  # type: ignore
 
 _logger = logging.getLogger(__name__)
 

@@ -4,6 +4,10 @@
         <Layout display="display" className="'o_dashboard h-100'">
             <t t-set-slot="layout-buttons">
                 <button class="btn btn-primary" t-on-click="openLeaguesView">Leagues</button>
+                <button class="btn btn-primary" t-on-click="openCountries">Countries</button>
+                <div t-if="state.games.length">
+                    <button class="btn btn-primary" t-on-click="syncFixtures">Sync</button>
+                </div>
             </t>
 
             <!-- Mensaje de carga -->

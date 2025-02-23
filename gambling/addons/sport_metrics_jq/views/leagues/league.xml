@@ -59,48 +59,12 @@
                             <field name="round_ids" readonly="1" options="{'no_create':True, 'no_open':True}"/>
                         </page>
 
-                        <page string="All fixtures">
+                        <page string="All fixtures" invisible="id">
                             <field name="fixtures_ids" readonly="1" options="{'no_create':True, 'no_open':True}"/>
                         </page>
 
                         <page string="Now Match">
                             <div class="container">
-                                <div class="card mt-3">
-                                    <div class="card-header">
-                                        <h5>Predictions</h5>
-                                        <p>Get predictions about a fixture.</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>
-                                            The predictions are made using several algorithms including the Poisson distribution,
-                                            comparison of team statistics, last matches, players, etc. Bookmakers odds are not used
-                                            to make these predictions. The following predictions are available:
-                                        </p>
-                                        <ul class="list-group mb-3">
-                                            <li class="list-group-item">
-                                                <strong>Match Winner:</strong> ID of the team that can potentially win the fixture.
-                                            </li>
-                                            <li class="list-group-item">
-                                                <strong>Win or Draw:</strong> Indicates whether the designated team can win or draw.
-                                            </li>
-                                            <li class="list-group-item">
-                                                <strong>Under / Over:</strong> Possible values are -1.5 / -2.5 / -3.5 / -4.5 / +1.5 / +2.5 / +3.5 / +4.5.
-                                            </li>
-                                            <li class="list-group-item">
-                                                <strong>Goals Home:</strong> Predicted goals for the home team, e.g., -1.5 / -2.5 / -3.5 / -4.5.
-                                            </li>
-                                            <li class="list-group-item">
-                                                <strong>Goals Away:</strong> Predicted goals for the away team, e.g., -1.5 / -2.5 / -3.5 / -4.5.
-                                            </li>
-                                            <li class="list-group-item">
-                                                <strong>Advice:</strong> Example: Deportivo Santani or draw and -3.5 goals.
-                                            </li>
-                                        </ul>
-                                        <p>
-                                            * -1.5 means that there will be a maximum of 1.5 goals in the fixture, i.e., 1 goal.
-                                        </p>
-                                    </div>
-                                </div>
                                 <div class="card mt-3">
                                     <div class="card-header">
                                         <h5>Available Fixtures</h5>
@@ -125,7 +89,7 @@
                         </page>
 
                         <!-- Follow Status Page -->
-                        <page string="Follow Status">
+                        <page string="Follow">
                             <group>
                                 <field name="follow" string="Follow This League" widget="boolean_toggle"/>
                             </group>

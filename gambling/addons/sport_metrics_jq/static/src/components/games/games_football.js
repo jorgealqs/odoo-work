@@ -76,16 +76,68 @@ class GamesFootball extends Component {
                 [false, "list"],
                 [false, "form"],
             ],
-            domain: [['follow', '=', 1]],
+            // domain: [['follow', '=', 1]],
             context: {
                 search_default_group_continent: 1,
                 search_default_group_country: 1,
+                search_default_group_follow: 1,
             }
         })
     }
 
     filterMatchesByDate(selectedDate){
         this.loadMatches(selectedDate)
+    }
+
+    openCountries() {
+        this.env.services.action.doAction({
+            name: "Countries",
+            type: "ir.actions.act_window",
+            res_model: "sport.metrics.jq.country",
+            views: [
+                [false, "list"],
+                [false, "form"],
+            ],
+            context: {
+                search_default_group_continent: 1,
+                search_default_group_session: 1,
+            }
+        })
+    }
+
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async syncFixtures() {
+        const games = this.state.games;
+        let requestCount = 0;
+
+        for (const game of games) {
+            const data = {
+                fixture_id_table: game.id,
+                fixture_id: game.fixture_id,
+                league_id: game.id_league,
+                session_id: game.session_id,
+            };
+
+            try {
+                const result = await this.env.services.rpc("/sport/metrics/sync_predictions", {
+                    params: data,
+                });
+                console.log("Result:", result);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+
+            requestCount++;
+            if (requestCount % 10 === 0) {
+                console.log("Esperando 1 minuto para evitar exceder el límite de peticiones...");
+                await this.sleep(60 * 1000); // Esperar 60 segundos después de 10 peticiones
+            } else {
+                await this.sleep(500); // Esperar 500 ms entre cada petición
+            }
+        }
     }
 
 }
