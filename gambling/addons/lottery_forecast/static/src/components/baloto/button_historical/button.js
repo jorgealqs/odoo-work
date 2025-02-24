@@ -8,7 +8,7 @@ export class HistoricalButton extends Component {
     static props = {
         option: { type: String },
         label: { type: String },
-        size: { type: Number, default:1 },
+        size: { type: Number, default:1, optional: true },
         openHistoricalView: { type: Function, optional: true }
     }
 

@@ -10,13 +10,9 @@ class DarkModeSystray extends Component {
     _applyTheme() {
         if (this.state.color_scheme === 'dark') {
             document.body.classList.add('knk_night_mode');
-            // moonButton.style.display = 'none';
-            // sunButton.style.display = 'inline-block';
 
         } else {
             document.body.classList.remove('knk_night_mode');
-            // moonButton.style.display = 'inline-block';
-            // sunButton.style.display = 'none';
         }
     }
     _onClick() {
@@ -58,4 +54,4 @@ export const systrayItem = {
     isDisplayed: () => true,
 };
 
-registry.category("systray").add("DarkModeSystrayItem", systrayItem, { sequence: 1 });
+registry.category("systray").add("DarkModeSystrayItem", systrayItem, { sequence: 30 });

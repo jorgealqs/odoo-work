@@ -6,9 +6,10 @@
     'Management of lessons and exercises to learn English in Odoo.',
     'author': 'Jorge Alberto Quiroz Sierra',
     'category': 'OWN APPS/English',
-    'depends': ['base', "web"],
+    'depends': ['base', "web", "mail"],
     'data': [
         'security/ir.model.access.csv',
+        'views/journal_entry_views.xml',
         'views/lesson_views.xml',
         'views/work_views.xml',
         'views/menu.xml',
