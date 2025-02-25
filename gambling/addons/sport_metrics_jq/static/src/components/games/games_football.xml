@@ -5,8 +5,11 @@
             <t t-set-slot="layout-buttons">
                 <button class="btn btn-primary" t-on-click="openLeaguesView">Leagues</button>
                 <button class="btn btn-primary" t-on-click="openCountries">Countries</button>
-                <div t-if="state.games.length">
+                <div t-if="state.games.length and state.currentDisplay === 'default'">
                     <button class="btn btn-primary" t-on-click="syncFixtures">Sync</button>
+                </div>
+                <div t-if="state.games.length and state.currentDisplay === 'default'">
+                    <button class="btn btn-primary" t-on-click="showInfo">Info</button>
                 </div>
             </t>
 
@@ -18,16 +21,49 @@
             </div>
 
             <!-- Contenedor de partidos -->
-            <div class="container-fluid d-flex justify-content-center mb-4 mt-4">
-                <div class="row d-flex flex-wrap justify-content-center"
-                    t-if="!state.loading &amp;&amp; !state.error"
-                    style="max-height: calc(100vh - 200px); width: 100%; max-width: 1200px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none;">
-                    <MatchesFilter onClickShowMatches="filterMatchesByDate.bind(this)"/>
-                    <t t-foreach="state.games" t-as="game" t-key="game.id">
-                        <MatchesItem data="game" onClickFetchFixture="fetchFixture.bind(this)"/>
-                    </t>
+            <div t-if="state.currentDisplay === 'default'">
+                <div class="container-fluid d-flex justify-content-center mb-4 mt-4">
+                    <div class="row d-flex flex-wrap justify-content-center"
+                        t-if="!state.loading &amp;&amp; !state.error"
+                        style="max-height: calc(100vh - 200px); width: 100%; max-width: 1200px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none;">
+                        <MatchesFilter onClickShowMatches="filterMatchesByDate.bind(this)"/>
+                        <t t-foreach="state.games" t-as="game" t-key="game.id">
+                            <MatchesItem data="game" onClickFetchFixture="fetchFixture.bind(this)"/>
+                        </t>
+                    </div>
                 </div>
             </div>
+
+        <!-- Vista de información cuando se presiona el botón Info -->
+        <div t-if="state.currentDisplay === 'info'">
+            <div class="container text-center mt-5">
+                <h1>Additional information</h1>
+                <p>This is the information view that appears when you press the Info button.</p>
+                <button class="btn btn-secondary" t-on-click="showDefaultDisplay">Back</button>
+            </div>
+            <div class="container mt-5">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Local Team</th>
+                            <th>Visitor Team</th>
+                            <th>Advice</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.fixtures" t-as="game" t-key="game.id">
+                            <tr>
+                                <td><t t-esc="game.home_team_name"/></td>
+                                <td><t t-esc="game.away_team_name"/></td>
+                                <td><t t-esc="game.advice"/></td>
+                                <td><t t-esc="game.comment"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
             <!-- Modal para mostrar detalles del partido -->
             <div class="modal fade" id="matchDetailsModal" tabindex="-1" aria-labelledby="matchDetailsLabel" aria-hidden="true" t-ref="modalRef">

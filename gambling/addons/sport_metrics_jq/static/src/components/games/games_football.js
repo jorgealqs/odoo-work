@@ -20,10 +20,21 @@ class GamesFootball extends Component {
         this.state = useState({
             games: [],
             prediction: [],
+            fixtures: [],
             loading: true,
             error: null,
-            teamsVs : "Match Details"
+            teamsVs : "Match Details",
+            currentDisplay: "default", // <- Controla qué display mostrar
         })
+    }
+
+    // Funciones para cambiar el display
+    showDefaultDisplay() {
+        this.state.currentDisplay = "default";
+    }
+
+    showInfoDisplay() {
+        this.state.currentDisplay = "info";
     }
 
     async fetchFixture(data=null) {
@@ -122,10 +133,9 @@ class GamesFootball extends Component {
             };
 
             try {
-                const result = await this.env.services.rpc("/sport/metrics/sync_predictions", {
+                await this.env.services.rpc("/sport/metrics/sync_predictions", {
                     params: data,
                 });
-                console.log("Result:", result);
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -138,6 +148,12 @@ class GamesFootball extends Component {
                 await this.sleep(500); // Esperar 500 ms entre cada petición
             }
         }
+    }
+
+    async showInfo() {
+        const result = await this.env.services.rpc("/sport/metrics/info", {});
+        this.state.fixtures = result.fixtures;
+        this.state.currentDisplay = "info";
     }
 
 }
