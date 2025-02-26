@@ -2,7 +2,7 @@
 <odoo>
 
     <!-- Action and Menu -->
-    <menuitem id="menu_cv_root" name="CV Manager"/>
+    <menuitem id="menu_cv_root" name="Curriculums"/>
 
     <menuitem id="menu_cv" name="CVs" parent="menu_cv_root" action="cv_manager_action"/>
 

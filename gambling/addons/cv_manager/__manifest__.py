@@ -11,6 +11,7 @@
         'security/ir.model.access.csv',
         'reports/cv_report.xml',
         'views/curriculum_views.xml',
+        'views/cv_education_views.xml',
         'views/menu.xml',
     ],
     "installable": True,

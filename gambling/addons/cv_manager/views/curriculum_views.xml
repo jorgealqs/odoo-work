@@ -1,6 +1,46 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
+    <record id="cv_manager_view_kanban" model="ir.ui.view">
+        <field name="name">cv.manager Kanban</field>
+        <field name="model">cv.manager</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="image_1920"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click d-flex align-items-center p-2" style="border: 1px solid #ddd; border-radius: 10px;">
+                            <!-- Imagen a la izquierda -->
+                            <div class="o_kanban_image me-3">
+                                <img class="rounded-circle"
+                                    t-att-src="kanban_image('cv.manager', 'image_1920', record.id.raw_value)"
+                                    style="width: 75px; height: 75px; object-fit: cover; border: 2px solid #ccc;"/>
+                            </div>
+
+                            <!-- Información a la derecha -->
+                            <div class="o_kanban_details">
+                                <p class="o_kanban_name d-block mb-1" style="font-size: 1.1rem; color: #333;">
+                                    <t t-esc="record.name.raw_value"/>
+                                </p>
+                                <div class="o_kanban_text text-muted">
+                                    <i class="fa fa-envelope me-1 text-primary"/>
+                                    <t t-esc="record.email.raw_value"/>
+                                </div>
+                                <div class="o_kanban_text text-muted">
+                                    <i class="fa fa-phone me-1 text-success"/>
+                                    <t t-esc="record.phone.raw_value"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
     <!-- model.name form view -->
     <record id="cv_manager_view_form" model="ir.ui.view">
@@ -10,8 +50,6 @@
             <form string="Curriculum Vitae">
                 <sheet>
                     <group>
-                        <!-- <widget name="web_ribbon" title="Success" bg_color="text-bg-success"/> -->
-                        <!-- <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"/> -->
                         <group>
                             <field name="name" placeholder="Full name" string=""/>
                             <field name="email" widget="email" placeholder="example@gmail.com" string=""/>
@@ -22,21 +60,66 @@
                         </group>
                     </group>
                     <notebook colspan="4">
-                        <page string="Manager">
+                        <page string="Acerca de">
+                            <separator string="Yo" colspan="4"/>
                             <group>
-                                <field name="address_id"/>
-                                <field name="education"/>
-                                <field name="experience"/>
+                                <field name="about_me" widget="html" string=""/>
                             </group>
                         </page>
-                        <page string="About Me">
+                        <page string="Dirección">
+                            <separator string="Direcciones" colspan="4"/>
                             <group>
-                                <field name="about_me" widget="html"/>
+                                <field name="address_ids" string="">
+                                    <tree editable="bottom">
+                                        <field name="street"/>
+                                        <field name="city"/>
+                                        <field name="state"/>
+                                        <field name="country"/>
+                                        <field name="is_primary" widget="boolean_toggle" invisible="not id"/>
+                                    </tree>
+                                </field>
                             </group>
                         </page>
-                        <page string="Skills">
+                        <page string="Educación">
+                            <separator string="Historial educativo" colspan="4"/>
                             <group>
-                                <field name="skill_ids" string=""/>
+                                <field name="education_ids" string=""/>
+                            </group>
+                        </page>
+                        <page string="Experiencia relevante">
+                            <separator string="Experiencia relevante" colspan="4"/>
+                            <group>
+                                <field name="relevant_experience_ids" string="">
+                                    <tree editable="bottom">
+                                        <field name="title"/>
+                                        <field name="job_position"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Habilidades">
+                            <separator string="Mías" colspan="4"/>
+                            <group>
+                                <field name="skill_ids" string="">
+                                    <tree string="Skills" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="level"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Redes sociales">
+                            <separator string="Mis redes sociales" colspan="4"/>
+                            <group>
+                                <field name="social_media_ids" string="">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="url"/>
+                                    </tree>
+                                </field>
                             </group>
                         </page>
                     </notebook>
@@ -63,7 +146,7 @@
     <record id="cv_manager_action" model="ir.actions.act_window">
         <field name="name">CVs</field>
         <field name="res_model">cv.manager</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->

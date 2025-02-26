@@ -1,51 +1,86 @@
 <odoo>
-
     <template id="report_cv">
-        <t t-call="web.html_container">
-            <t t-call="web.external_layout">
-                <div class="page" style="font-family: Arial, sans-serif; padding: 20px;">
-                    <t t-foreach="docs" t-as="doc">
-                        <!-- Sección de cabecera con imagen y datos personales -->
-                        <div style="display: flex; align-items: center;">
-                            <div style="flex: 1;">
-                                <h1 style="margin: 0;"><span t-field="doc.name"/></h1>
-                                <p><strong>Email:</strong> <span t-field="doc.email"/></p>
-                                <p><strong>Phone:</strong> <span t-field="doc.phone"/></p>
-                            </div>
-                            <div>
-                                <img t-if="doc.image_1920"
-                                    t-att-src="image_data_uri(doc.image_1920)"
-                                    style="max-width: 120px; border-radius: 10px;"/>
-                            </div>
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page" style="font-family: 'Roboto', sans-serif; line-height: 1.6; color: #333;">
+                    <div class="row" style="max-width: 800px; margin: auto;">
+
+                        <!-- FOTO CENTRADA -->
+                        <div style="text-align: center;">
+                            <img t-if="doc.image_1920"
+                                t-att-src="image_data_uri(doc.image_1920)"
+                                style="max-width: 140px; border-radius: 50%; border: 1px solid"/>
                         </div>
 
-                        <!-- Dirección -->
-                        <h2>Address</h2>
-                        <t t-if="doc.address_id">
-                            <p><span t-field="doc.address_id.street"/></p>
-                            <p><span t-field="doc.address_id.city"/>, <span t-field="doc.address_id.state"/></p>
-                            <p><span t-field="doc.address_id.country"/></p>
+                        <!-- INFORMACIÓN PERSONAL -->
+                        <div style="text-align: center; font-size: 16px; margin-bottom: 20px;">
+                            <strong style="font-size: 20px; color: #000;" t-field="doc.name"/><br/>
+                            <t t-set="primary_address" t-value="doc.address_ids.filtered(lambda a: a.is_primary)[:1]"/>
+                            <t t-if="primary_address">
+                                <span t-field="primary_address[0].city"/>,
+                                <span t-field="primary_address[0].state"/>
+                            </t><br/>
+                            <span t-field="doc.email"/> | <span t-field="doc.phone"/>
+                        </div>
+
+                        <!-- REDES SOCIALES -->
+                        <t t-if="doc.social_media_ids">
+                            <div style="text-align: center; margin-top: 10px;">
+                                <t t-foreach="doc.social_media_ids" t-as="social">
+                                    <a t-att-href="social.url" target="_blank" style="margin: 0 8px; text-decoration: none;">
+                                        <img t-att-src="social.icon_url" alt="Social Icon" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ddd; padding: 4px; transition: transform 0.2s ease;"/>
+                                    </a>
+                                </t>
+                            </div>
                         </t>
 
-                        <!-- Educación y Experiencia -->
-                        <h2>Education</h2>
-                        <p t-field="doc.education"/>
+                        <!-- SOBRE MÍ -->
+                        <t t-if="doc.about_me">
+                            <h2 style="text-align: center; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">Sobre Mí</h2>
+                            <p t-field="doc.about_me" style="text-align: justify; font-size: 14px; padding: 10px; background: #f9f9f9; border-radius: 5px;"/>
+                        </t>
 
-                        <h2>Experience</h2>
-                        <p t-field="doc.experience"/>
+                        <!-- EDUCACIÓN -->
+                        <t t-if="doc.education_ids">
+                            <h2 style="text-align: center; font-size: 18px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 5px;">
+                                <img src="https://cdn-icons-png.flaticon.com/512/906/906175.png" alt="Graduation Cap" style="width: 24px; vertical-align: middle;"/> Educación
+                            </h2>
+                            <ul style="font-size: 14px;">
+                                <t t-foreach="doc.education_ids" t-as="edu">
+                                    <li>
+                                        <strong t-field="edu.title"/> - <span t-field="edu.institution"/>
+                                        <br/><small>(<span t-field="edu.start_date"/> - <span t-field="edu.end_date"/>)</small>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
 
-                        <!-- Habilidades -->
-                        <h2>Skills</h2>
-                        <ul>
-                            <t t-foreach="doc.skill_ids" t-as="skill">
-                                <li>
-                                    <span t-field="skill.name"/> (<span t-field="skill.level"/>)
-                                </li>
-                            </t>
-                        </ul>
+                        <!-- EXPERIENCIA -->
+                        <t t-if="doc.relevant_experience_ids">
+                            <h2 style="text-align: center; color: #000; border-bottom: 2px solid #000;"><img src="https://cdn-icons-png.flaticon.com/512/2989/2989976.png" alt="Graduation Cap" style="width: 24px; vertical-align: middle;"/> Experiencia</h2>
+                            <ul style="font-size: 14px;">
+                                <t t-foreach="doc.relevant_experience_ids" t-as="exp">
+                                    <li>
+                                        <strong t-field="exp.title"/> - <span t-field="exp.job_position"/>
+                                        <br/><small>(<span t-field="exp.start_date"/> - <span t-field="exp.end_date"/>)</small>
+                                        <br/><span t-field="exp.description" style="display: block; text-align: justify;"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
 
-                        <hr/>
-                    </t>
+                        <!-- HABILIDADES -->
+                        <t t-if="doc.skill_ids">
+                            <h2 style="text-align: center; color: #000; border-bottom: 2px solid #000;"><img src="https://cdn-icons-png.flaticon.com/512/1021/1021163.png" alt="Graduation Cap" style="width: 24px; vertical-align: middle;"/> Habilidades</h2>
+                            <p style="text-align: center; font-size: 14px;">
+                                <t t-set="separator" t-value="''"/>
+                                <t t-foreach="doc.skill_ids" t-as="skill">
+                                    <t t-esc="separator"/><strong t-field="skill.name"/> (<span t-field="skill.level"/>)
+                                    <t t-set="separator" t-value="', '"/>
+                                </t>
+                            </p>
+                        </t>
+                    </div>
                 </div>
             </t>
         </t>
@@ -53,7 +88,7 @@
 
     <!-- Acción del reporte -->
     <record id="report_cv_action" model="ir.actions.report">
-        <field name="name">Curriculum Vitae</field>
+        <field name="name">Curriculum harvard</field>
         <field name="model">cv.manager</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">cv_manager.report_cv</field>
@@ -62,9 +97,4 @@
         <field name="binding_type">report</field>
     </record>
 
-    <!-- Modelo vinculado al reporte -->
-    <record id="model_cv_manager" model="ir.model">
-        <field name="name">cv.manager</field>
-        <field name="model">cv.manager</field>
-    </record>
 </odoo>
