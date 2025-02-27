@@ -24,41 +24,46 @@
 
                                         <!-- Mostrar última fecha y detalles principales -->
                                         <li class="mb-2 p-2 border-bottom">
-                                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                            <span class="badge rounded-pill px-3 py-2">
                                                 <t t-esc="last_date_parts[0]" /> <!-- Última Fecha -->
                                             </span>
-                                            <span class="badge bg-info rounded-pill px-3 py-2">
+                                            <span class="badge rounded-pill px-3 py-2">
                                                 <t t-esc="last_date_parts[1]" /> <!-- Día de la semana -->
                                             </span>
                                             <span class="badge bg-warning rounded-pill px-3 py-2">
                                                 <t t-if="props.option == 'MiLoto'" t-esc="'Sorteo #' + last_date_parts[2]" />
                                             </span>
-
-                                            <!-- Botón para mostrar más detalles -->
-                                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" data-bs-toggle="collapse" t-attf-data-bs-target="#details-{{result.number}}" aria-expanded="false" aria-controls="details-{{result.id}}">
-                                                Show more
-                                            </button>
+                                            <t t-if="result.date_day_super.length > 1">
+                                                <!-- Botón para mostrar más detalles -->
+                                                <button class="btn btn-outline-secondary btn-sm ms-2" type="button" data-bs-toggle="collapse" t-attf-data-bs-target="#details-{{result.number}}" aria-expanded="false" aria-controls="details-{{result.id}}">
+                                                    <i class="fa fa-chevron-down"></i>
+                                                </button>
+                                            </t>
                                         </li>
 
-                                        <!-- Acordeón que muestra todas las fechas excepto la última -->
-                                        <div t-attf-id="details-{{result.number}}" class="collapse mt-3">
-                                            <ul class="list-unstyled">
-                                                <t t-foreach="result.date_day_super.slice(1)" t-as="date_day" t-key="date_day.id">
-                                                    <t t-set="date_parts" t-value="date_day.split(':')" />
-                                                    <li t-attf-class="day-{{date_parts[1]}} mb-2 p-2 border rounded">
-                                                        <span class="badge bg-light text-dark border px-3 py-2">
-                                                            <t t-esc="date_parts[0]" /> <!-- Fecha -->
-                                                        </span>
-                                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                                            <t t-esc="date_parts[1]" /> <!-- Día de la semana -->
-                                                        </span>
-                                                        <span class="badge bg-dark text-light rounded-pill px-3 py-2">
-                                                            <t t-if="props.option == 'MiLoto'" t-esc="'Sorteo #' + date_parts[2]" />
-                                                        </span>
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </div>
+                                        <t t-if="result.date_day_super.length > 1">
+                                            <!-- Acordeón que muestra todas las fechas excepto la última -->
+                                            <div t-attf-id="details-{{result.number}}" class="collapse mt-3">
+                                                <ul class="list-unstyled d-flex flex-wrap gap-2 p-0">
+                                                    <t t-foreach="result.date_day_super.slice(1)" t-as="date_day" t-key="date_day.id">
+                                                        <t t-set="date_parts" t-value="date_day.split(':')" />
+                                                        <li class="border rounded p-2 d-flex align-items-center gap-2">
+                                                            <span class="badge px-3 py-2">
+                                                                <t t-esc="date_parts[0]" /> <!-- Fecha -->
+                                                            </span>
+                                                            <span class="badge px-3 py-2">
+                                                                <t t-esc="date_parts[1]" /> <!-- Día de la semana -->
+                                                            </span>
+                                                            <t t-if="props.option == 'MiLoto'">
+                                                                <span class="badge px-3 py-2">
+                                                                    <t t-esc="'Sorteo #' + date_parts[2]" />
+                                                                </span>
+                                                            </t>
+                                                        </li>
+                                                    </t>
+                                                </ul>
+                                            </div>
+                                        </t>
                                     </ul>
                                 </td>
                             </tr>

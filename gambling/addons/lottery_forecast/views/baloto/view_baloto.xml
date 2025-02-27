@@ -33,6 +33,8 @@
                     <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year'}"/>
                     <!-- Agrupar por Mes de la fecha del sorteo (requiere agrupar por Año también) -->
                     <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
+
+                    <filter string="Winner" name="group_by_winner" context="{'group_by':'is_winner'}"/>
                 </group>
             </search>
         </field>
@@ -43,12 +45,13 @@
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
             <kanban default_group_by="lottery_type_id" drag_drop="false" duplicate="false" delete="false" create="false">
+                <field name="is_winner"/>
+                <!-- Campo lottery_type_name invisible para lógica interna -->
+                <field name="lottery_type_name"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="kanban-item">
-                                <!-- Campo lottery_type_name invisible para lógica interna -->
-                                <field name="lottery_type_name" invisible="1"/>
 
                                 <div class="kanban-numbers">
                                     <!-- Números del 1 al 5 -->
@@ -71,6 +74,15 @@
                                 <div class="kanban-date">
                                     <span>Date: <field name="draw_date"/></span>
                                 </div>
+
+                                <t t-if="record.is_winner.raw_value">
+                                    <div class="kanban-winner">
+                                        <i class="fa fa-trophy text-warning"></i>
+                                        <strong>¡Ganador!</strong>
+                                        <i class="fa fa-trophy text-warning"></i>
+                                    </div>
+                                </t>
+
                             </div>
                         </div>
                     </t>
@@ -125,6 +137,7 @@
                                 <field name="number_4" readonly="draw_date"/>
                                 <field name="number_5" readonly="draw_date"/>
                                 <field name="super_baloto" readonly="draw_date"/>
+                                <field name="is_winner" widget="boolean_toggle"/>
                             </group>
                         </page>
                     </notebook>

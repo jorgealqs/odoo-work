@@ -60,10 +60,12 @@ export class BalotoForecast extends Component {
     }
 
     openHistoricalView(lotteryType = "") {
-        const context = lotteryType ? { [`search_default_lottery_type_id_${lotteryType}`]: 1 } : {}
+        const context = lotteryType
+            ? { [`search_default_lottery_type_id_${lotteryType}`]: 1, search_default_group_by_winner: 1 }
+            : {};  // Si lotteryType está vacío, no aplica filtros
 
         this.env.services.action.doAction({
-            name: `Historical ${lotteryType}`,
+            name: `Historical ${lotteryType || "All"}`,
             type: "ir.actions.act_window",
             res_model: "lottery.baloto",
             views: [
@@ -72,7 +74,7 @@ export class BalotoForecast extends Component {
                 [false, "form"],
             ],
             context: context,
-        })
+        });
     }
 
     async analisysBalotoPandas(analysisType = null, option = null) {
