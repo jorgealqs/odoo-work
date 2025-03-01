@@ -160,7 +160,7 @@ class LotteryBaloto(models.Model):
 
     def _sync_results_miloto(self):
         """Sincroniza los resultados de MiLoto desde la web de Baloto."""
-        base_url = os.getenv('MILOTO_URL', '')
+        base_url = os.getenv('MILOTO_URL')
         month_replacements = {
             'Enero': 'January',
             'Febrero': 'February',

@@ -72,6 +72,7 @@ export class BalotoForecast extends Component {
                 [false, "kanban"],
                 [false, "list"],
                 [false, "form"],
+                [false, "graph"],
             ],
             context: context,
         });
