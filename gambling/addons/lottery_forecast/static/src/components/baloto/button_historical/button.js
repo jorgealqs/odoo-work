@@ -6,7 +6,7 @@ export class HistoricalButton extends Component {
     static template = "baloto.HistoricalButton";
 
     static props = {
-        option: { type: String },
+        option: { type: String, optional: true },
         label: { type: String },
         size: { type: Number, default:1, optional: true },
         openHistoricalView: { type: Function, optional: true }
