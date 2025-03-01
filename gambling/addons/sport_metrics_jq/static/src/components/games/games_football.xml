@@ -34,36 +34,67 @@
                 </div>
             </div>
 
-        <!-- Vista de información cuando se presiona el botón Info -->
-        <div t-if="state.currentDisplay === 'info'">
-            <div class="container text-center mt-5">
-                <h1>Additional information</h1>
-                <p>This is the information view that appears when you press the Info button.</p>
-                <button class="btn btn-secondary" t-on-click="showDefaultDisplay">Back</button>
+            <!-- Vista de información cuando se presiona el botón Info -->
+            <div t-if="state.currentDisplay === 'info'">
+                <div class="container text-center mt-4">
+                    <h1 class="mb-3 text-primary">Additional Information</h1>
+                    <p class="lead">Detailed match insights and recommendations.</p>
+                    <button class="btn btn-outline-primary mt-3" t-on-click="showDefaultDisplay"><i class="fa fa-arrow-left"></i> Back</button>
+                </div>
+
+                <div class="container mt-4">
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover table-bordered shadow-sm">
+                            <thead style="background-color: #71639e; color: white;" class="text-center">
+                                <tr>
+                                    <th>Local Team</th>
+                                    <th>Visitor Team</th>
+                                    <th>Country</th>
+                                    <th>League</th>
+                                    <th>Advice</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.fixtures" t-as="game" t-key="game.id">
+                                    <tr class="text-center">
+                                        <td>
+                                            <strong>
+                                                <t t-esc="game.home_team_name"/>
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="game.away_team_name"/>
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="game.country_name"/>
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="game.league_name"/>
+                                            </strong>
+                                        </td>
+                                        <td class="text-success">
+                                            <t t-esc="game.advice"/>
+                                        </td>
+                                        <td class="text-muted">
+                                            <t t-esc="game.comment"/>
+                                        </td>
+                                        <td class="text-muted">
+                                            <t t-esc="game.date"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="container mt-5">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Local Team</th>
-                            <th>Visitor Team</th>
-                            <th>Advice</th>
-                            <th>Comment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="state.fixtures" t-as="game" t-key="game.id">
-                            <tr>
-                                <td><t t-esc="game.home_team_name"/></td>
-                                <td><t t-esc="game.away_team_name"/></td>
-                                <td><t t-esc="game.advice"/></td>
-                                <td><t t-esc="game.comment"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
             <!-- Modal para mostrar detalles del partido -->
             <div class="modal fade" id="matchDetailsModal" tabindex="-1" aria-labelledby="matchDetailsLabel" aria-hidden="true" t-ref="modalRef">

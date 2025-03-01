@@ -152,6 +152,7 @@ class GamesFootball extends Component {
 
     async showInfo() {
         const result = await this.env.services.rpc("/sport/metrics/info", {});
+        // console.log("Result:", result);
         this.state.fixtures = result.fixtures;
         this.state.currentDisplay = "info";
     }
