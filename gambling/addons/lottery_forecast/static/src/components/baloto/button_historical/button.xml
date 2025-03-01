@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="baloto.HistoricalButton">
-        <div class="card m-2 border-dark" t-attf-style="width: {{18 * props.size}}rem;">
+        <div class="card" t-attf-style="width: {{18 * props.size}}rem;">
             <button class="btn btn-primary w-100" t-on-click="onClickButton">
                 <t t-esc="props.label"/>
             </button>

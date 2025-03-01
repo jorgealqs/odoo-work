@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import random
 import requests
 import time
+import os
 from bs4 import BeautifulSoup
 from odoo import models, fields, api
 # from odoo import models, fields, tools
@@ -25,6 +26,8 @@ class LotteryBaloto(models.Model):
     number_5 = fields.Integer(string="Number 5", required=True)
     super_baloto = fields.Integer(string="Super Baloto", help="Super Baloto")
     draw_date = fields.Date(string="Draw Date", required=True)
+    is_winner = fields.Boolean(string="Is Winner", default=False)
+    # Relación con el tipo de lotería
     lottery_type_id = fields.Many2one(
         'lottery.baloto.type',
         string="Lottery Type",
@@ -157,7 +160,7 @@ class LotteryBaloto(models.Model):
 
     def _sync_results_miloto(self):
         """Sincroniza los resultados de MiLoto desde la web de Baloto."""
-        base_url = 'https://baloto.com/miloto/resultados-miloto/'
+        base_url = os.getenv('MILOTO_URL')
         month_replacements = {
             'Enero': 'January',
             'Febrero': 'February',
@@ -213,6 +216,7 @@ class LotteryBaloto(models.Model):
 
                 # Capturar los números de las bolas
                 numbers = self._extract_numbers(soup)
+                winner = self._check_if_winner(soup)
                 if numbers:
                     self.create({
                         'number_1': numbers[0],
@@ -221,6 +225,7 @@ class LotteryBaloto(models.Model):
                         'number_4': numbers[3],
                         'number_5': numbers[4],
                         'super_baloto': sorteo,
+                        'is_winner': winner,
                         'draw_date': formatted_date,
                         'lottery_type_id': lottery_type.id,
                     })
@@ -277,6 +282,30 @@ class LotteryBaloto(models.Model):
         except Exception as e:
             _logger.error(f"Error al extraer los números de las bolas: {e}")
         return None
+
+    def _check_if_winner(self, soup):
+        try:
+            # Encontrar el primer bloque con la clase específica
+            first_result = (
+                soup.find_all('div', class_='mt-4 bg-white rounded')[0]
+            )
+
+            # Extraer el monto del premio total
+            prize_total = first_result.find('strong', class_='fs-1 pink-light')
+
+            if prize_total:
+                prize_amount = (
+                    prize_total.text.strip().replace('$', '').replace('.', '')
+                )
+
+                # Convertir a número y verificar si es mayor a 0
+                return int(prize_amount) > 0
+
+            return False
+
+        except Exception as e:
+            print(f"Error al obtener los datos: {e}")
+            return False
 
     @api.model
     def _create_dataframe(self, records, columns):

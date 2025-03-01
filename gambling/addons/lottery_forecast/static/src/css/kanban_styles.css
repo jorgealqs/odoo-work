@@ -26,6 +26,13 @@
     color: #6c757d;
 }
 
+.kanban-winner {
+    text-align: center;  /* Centrar el texto */
+    font-size: 14px;
+    color: #28a745;
+    margin-top: 10px;  /* Ajusta la distancia hacia abajo */
+}
+
 li {
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 1;

@@ -1,7 +1,18 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-    <!-- model.name action server -->
+    <!-- Graph view for lottery.baloto -->
+    <record id="lottery_baloto_view_graph" model="ir.ui.view">
+        <field name="name">lottery.baloto Graph</field>
+        <field name="model">lottery.baloto</field>
+        <field name="arch" type="xml">
+            <graph string="Graph Description">
+                <field name="draw_date" interval="year" type="dimension"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Server action for syncing lottery.baloto -->
     <record id="action_lottery_baloto" model="ir.actions.server">
         <field name="name">Sync</field>
         <field name="model_id" ref="model_lottery_baloto"/>
@@ -14,51 +25,44 @@
         </field>
     </record>
 
+    <!-- Search view for lottery.baloto -->
     <record id="lottery_baloto_search" model="ir.ui.view">
         <field name="name">lottery.baloto Search</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
             <search string="Search">
-                <!-- Add your fields here -->
                 <field name="lottery_type_id"/>
                 <group string="Group By">
-
                     <filter string="Baloto" name="lottery_type_id_baloto" domain="[('lottery_type_id.name', '=', 'Baloto')]"/>
                     <filter string="Revancha" name="lottery_type_id_revancha" domain="[('lottery_type_id.name', '=', 'Revancha')]"/>
                     <filter string="MiLoto" name="lottery_type_id_miloto" domain="[('lottery_type_id.name', '=', 'MiLoto')]"/>
-
-                    <!-- Agrupación por tipo de lotería -->
                     <filter string="Type" name="lottery_type_id_context" context="{'group_by':'lottery_type_id'}"/>
-                    <!-- Agrupar por Año de la fecha del sorteo -->
                     <filter string="Year" name="group_by_year" context="{'group_by':'draw_date:year'}"/>
-                    <!-- Agrupar por Mes de la fecha del sorteo (requiere agrupar por Año también) -->
                     <filter string="Month" name="group_by_month" context="{'group_by':'draw_date:month'}"/>
+                    <filter string="Winner" name="group_by_winner" context="{'group_by':'is_winner'}"/>
                 </group>
             </search>
         </field>
     </record>
 
+    <!-- Kanban view for lottery.baloto -->
     <record id="lottery_baloto_kanban" model="ir.ui.view">
         <field name="name">lottery.baloto Kanban</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
             <kanban default_group_by="lottery_type_id" drag_drop="false" duplicate="false" delete="false" create="false">
+                <field name="is_winner"/>
+                <field name="lottery_type_name"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="kanban-item">
-                                <!-- Campo lottery_type_name invisible para lógica interna -->
-                                <field name="lottery_type_name" invisible="1"/>
-
                                 <div class="kanban-numbers">
-                                    <!-- Números del 1 al 5 -->
                                     <span class="ball"> <field name="number_1"/> </span>
                                     <span class="ball"> <field name="number_2"/> </span>
                                     <span class="ball"> <field name="number_3"/> </span>
                                     <span class="ball"> <field name="number_4"/> </span>
                                     <span class="ball"> <field name="number_5"/> </span>
-
-                                    <!-- Mostrar Super Baloto o Sorteo # según el tipo de lotería -->
                                     <t t-if="record.lottery_type_name.raw_value == 'Baloto' or record.lottery_type_name.raw_value == 'Revancha'">
                                         <span class="super-ball"> <field name="super_baloto"/> </span>
                                     </t>
@@ -66,11 +70,16 @@
                                         <span>Sorteo #: <field name="super_baloto"/></span>
                                     </t>
                                 </div>
-
-                                <!-- Fecha del sorteo -->
                                 <div class="kanban-date">
                                     <span>Date: <field name="draw_date"/></span>
                                 </div>
+                                <t t-if="record.is_winner.raw_value">
+                                    <div class="kanban-winner">
+                                        <i class="fa fa-trophy text-warning"></i>
+                                        <strong>¡Ganador!</strong>
+                                        <i class="fa fa-trophy text-warning"></i>
+                                    </div>
+                                </t>
                             </div>
                         </div>
                     </t>
@@ -79,13 +88,12 @@
         </field>
     </record>
 
-    <!-- lottery.baloto tree view -->
+    <!-- Tree view for lottery.baloto -->
     <record id="lottery_baloto_tree" model="ir.ui.view">
         <field name="name">lottery.baloto Tree</field>
         <field name="model">lottery.baloto</field>
         <field name="arch" type="xml">
             <tree duplicate="false" delete="false" create="false">
-                <!-- Add your fields here -->
                 <field name="lottery_type_id" string="Type"/>
                 <field name="number_1" string="#1"/>
                 <field name="number_2" string="#2"/>
@@ -98,7 +106,7 @@
         </field>
     </record>
 
-    <!-- lottery.baloto form view -->
+    <!-- Form view for lottery.baloto -->
     <record id="lottery_baloto_form" model="ir.ui.view">
         <field name="name">lottery.baloto Form</field>
         <field name="model">lottery.baloto</field>
@@ -125,6 +133,7 @@
                                 <field name="number_4" readonly="draw_date"/>
                                 <field name="number_5" readonly="draw_date"/>
                                 <field name="super_baloto" readonly="draw_date"/>
+                                <field name="is_winner" widget="boolean_toggle"/>
                             </group>
                         </page>
                     </notebook>
@@ -133,15 +142,15 @@
         </field>
     </record>
 
-    <!-- lottery.baloto action window -->
+    <!-- Uncomment and complete the following action window if needed -->
+    <!--
     <record id="lottery_baloto_action" model="ir.actions.act_window">
         <field name="name">Historical</field>
         <field name="res_model">lottery.baloto</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,graph</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="target">current</field>
-        <!-- Activar el filtro por defecto -->
         <field name="context">
             {
                 'search_default_lottery_type_id_context': 1,
@@ -159,5 +168,6 @@
             </p>
         </field>
     </record>
+    -->
 
 </odoo>
