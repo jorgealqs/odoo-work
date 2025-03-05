@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <!-- model.name tree view -->
+    <record id="social_media_tag_view_tree" model="ir.ui.view">
+        <field name="name">social.media.tag Tree</field>
+        <field name="model">social.media.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Tags" editable="top" sample="1" multi_edit="1" default_order="name">
+                <!-- Add your fields here -->
+                <field name="name"/>
+                <field name="color" widget="color_picker" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="social_media_tag_action" model="ir.actions.act_window">
+        <field name="name">social_media_tag Action</field>
+        <field name="res_model">social.media.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first tag
+            </p>
+            <p>
+                Create, schedule your tags.
+            </p>
+        </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="social_media_tag_menu_act" name="Tag" parent="social_medial_menu_1" action="social_media_tag_action" sequence="1"/>
+
+</odoo>

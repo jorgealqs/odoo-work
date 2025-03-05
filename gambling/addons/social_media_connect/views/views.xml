@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+
+    <!-- Top menu item -->
+
+    <menuitem name="Social Media Connect" id="social_media_menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Networking" id="social_medial_menu_1" parent="social_media_menu_root"/>
+    <!-- <menuitem name="Menu 2" id="social_media_menu_2" parent="social_media_menu_root"/> -->
+
+  </data>
+</odoo>
