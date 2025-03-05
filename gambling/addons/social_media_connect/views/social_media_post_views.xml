@@ -153,7 +153,7 @@
         <field name="name">social.media.post.kanban</field>
         <field name="model">social.media.post</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
+            <kanban default_group_by="state" class="o_kanban_small_column" create="false" records_draggable="false">
                 <field name="name"/>
                 <field name="platform_ids"/>
                 <field name="scheduled_date"/>

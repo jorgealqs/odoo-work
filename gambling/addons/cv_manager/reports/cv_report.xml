@@ -90,7 +90,7 @@
     <record id="report_cv_action" model="ir.actions.report">
         <field name="name">Curriculum harvard</field>
         <field name="model">cv.manager</field>
-        <field name="report_type">qweb-pdf</field>
+        <field name="report_type">qweb-html</field>
         <field name="report_name">cv_manager.report_cv</field>
         <field name="report_file">cv_manager.report_cv</field>
         <field name="binding_model_id" ref="model_cv_manager"/>
