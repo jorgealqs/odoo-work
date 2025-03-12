@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_patient_tag_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.tag.tree</field>
+        <field name="model">hospital.patient.tag</field>
+        <field name="arch" type="xml">
+            <tree editable="top" sample="1" multi_edit="1">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name action window -->
+    <record id="hospital_patient_tag_action" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">hospital.patient.tag</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_smiling_face">
+                Create a new tag by clicking the New button.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_hospital_menu_tag" name="Configuration" parent="menu_hospital_root" sequence="20"/>
+
+    <menuitem id="menu_hospital_tag" name="Tags" parent="menu_hospital_menu_tag" action="hospital_patient_tag_action" sequence="1"/>
+
+</odoo>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="menu_hospital_root" name="HMS" web_icon="oe_hospital,static/description/icon_2.png"/>
+    <menuitem id="menu_hospital_patients" name="Front Desk" parent="menu_hospital_root" sequence="10"/>
+    <!-- This Menu Item must have a parent and an action -->
+
+</odoo>
