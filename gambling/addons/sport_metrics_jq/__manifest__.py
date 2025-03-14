@@ -21,6 +21,7 @@
         "views/countries/country.xml",
         "views/leagues/league.xml",
         "views/teams/team.xml",
+        "views/teams/team_readonly_views.xml",
         "views/standings/standing.xml",
         "views/rounds/round.xml",
         "views/matches/match.xml",
