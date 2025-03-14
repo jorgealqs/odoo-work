@@ -2,7 +2,7 @@ import logging
 import os
 import requests  # type:ignore
 from requests.exceptions import RequestException  # type:ignore
-from odoo import models, fields, api
+from odoo import models, fields, api  # type: ignore
 
 # Configuring the logger to record relevant information in Odoo logs
 _logger = logging.getLogger(__name__)
@@ -97,9 +97,14 @@ class SportMetricsJQLeague(models.Model):
 
     def _fetch_leagues(self, info=None):
         """Fetch leagues data from API for a given country and season."""
-        country = info.get("country")
-        session = info.get("session")
-        country_code = info.get("country_code")
+        if info is not None:
+            country = info.get("country")
+            session = info.get("session")
+            country_code = info.get("country_code")
+        else:
+            country = None
+            session = None
+            country_code = None
         _logger.info(
             f"Fetching leagues for {country} ({country_code}), season "
             f"{session}."
@@ -130,8 +135,12 @@ class SportMetricsJQLeague(models.Model):
 
     def _process_and_save_leagues(self, leagues, info=None):
         """Process and save the fetched leagues data."""
-        country_name = info.get('country')
-        session_year = info.get('session')
+        if info is not None:
+            country_name = info.get('country')
+            session_year = info.get('session')
+        else:
+            country_name = None
+            session_year = None
 
         # Fetch country and session IDs in bulk
         country = self.env[
