@@ -2,7 +2,7 @@ import os
 import logging
 import requests
 from requests.exceptions import RequestException
-from odoo import models, fields, api
+from odoo import models, fields, api  # type: ignore
 
 _logger = logging.getLogger(__name__)
 
@@ -80,8 +80,12 @@ class SportMetricsJQTeam(models.Model):
             """
 
     def _sync_teams(self, data=None):
-        id_league = data.get('id_league')
-        session = data.get('session')
+        if data is not None:
+            id_league = data.get('id_league')
+            session = data.get('session')
+        else:
+            id_league = None
+            session = None
         response = self._fetch_teams_from_api(id_league, session)
         if response and response.status_code == 200:
             teams_data = response.json().get('response', [])
@@ -108,6 +112,9 @@ class SportMetricsJQTeam(models.Model):
         specific league and session.
         """
         base_url = os.getenv('API_FOOTBALL_URL')
+        if not base_url:
+            _logger.error("API_FOOTBALL_URL is not set in the environment variables.")
+            return None
         url = base_url + '/teams'
         headers = {
             'x-rapidapi-host': os.getenv('API_FOOTBALL_URL_V3'),
