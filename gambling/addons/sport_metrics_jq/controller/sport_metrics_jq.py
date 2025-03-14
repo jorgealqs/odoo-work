@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import http    # type: ignore
 from odoo.http import request  # type: ignore
 import logging
 from datetime import datetime
@@ -72,6 +72,7 @@ class SportMetricsJQ(http.Controller):
             f.id = c.fixture_id
             LEFT JOIN sport_metrics_jq_team t ON t.id = f.home_team_id
             WHERE f.date BETWEEN %s AND %s
+            AND league.follow = TRUE
             ORDER BY p.percent_home DESC, p.percent_away DESC
             '''
 
