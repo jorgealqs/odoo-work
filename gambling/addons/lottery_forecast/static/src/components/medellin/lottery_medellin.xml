@@ -2,10 +2,23 @@
     <t t-name="lottery.LotteryMedellin">
         <div class="o_action">
             <Layout display="display" className="'h-100'">
+                <t t-set-slot="layout-buttons">
+                    <button class="btn btn-primary w-100" t-on-click="onClickHistoricalM">
+                        Historical
+                    </button>
+                </t>
                 <div class="container">
                     <div class="row">
                         <div class="container mt-4 text-center">
                             <AnalisysLotteryMedellin option="'Lottery Medellín Analysis!!!'" getAnalysisMedellin="gameOptions" analysisMedellinPandas.bind="analysisMedellinPandas"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="container mt-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title text-center">Results <strong> for <t t-esc="state.option" /></strong></h2>
+                            <TablaResultBaloto results="state.results"/>
                         </div>
                     </div>
                 </div>

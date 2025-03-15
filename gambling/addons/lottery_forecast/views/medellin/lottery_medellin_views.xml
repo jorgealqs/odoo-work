@@ -8,19 +8,35 @@
             <kanban class="o_kanban_example" delete="false" duplicate="false" create="false">
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click card border-0 shadow-lg mb-4">
-                            <!-- Card Header with the Lottery Draw Title -->
-                            <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: rgb(36, 54, 66)">
-                                <h5 class="card-title mb-0 text-white"><field name="name"/></h5>
-                                <span class="badge">Sorteo: <field name="number_sorteo"/></span>
+                        <div class="o_kanban_card oe_kanban_global_click">
+                            <!-- Pie con iconos o acciones -->
+                            <div class="o_kanban_card_footer bg-light py-2 text-center">
+                                <!-- <span class="badge bg-info px-3 py-1">Disponible</span> -->
                             </div>
-                            <!-- Card Body with Lottery Details -->
-                            <div class="card-body bg-light">
-                                <hr class="my-2" />
-                                <div>
-                                    <strong>Draw Date:</strong>
-                                    <span class="text-muted fs-6"><field name="draw_date"/></span>
+                            <!-- Encabezado con el nombre del sorteo -->
+                            <div class="o_kanban_card_header text-white text-center py-2">
+                                <h5 class="mb-0">
+                                    <field name="name"/>
+                                </h5>
+                            </div>
+
+                            <!-- Cuerpo con detalles -->
+                            <div class="o_kanban_card_body px-3 py-2">
+                                <div class="o_kanban_details">
+                                    <div class="o_row d-flex justify-content-between">
+                                        <span class="fw-bold">Sorteo:</span>
+                                        <span class="text-muted"><field name="number_sorteo"/></span>
+                                    </div>
+                                    <div class="o_row d-flex justify-content-between mt-1">
+                                        <span class="fw-bold">Fecha:</span>
+                                        <span class="text-muted"><field name="draw_date"/></span>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <!-- Pie con iconos o acciones -->
+                            <div class="o_kanban_card_footer bg-light py-2 text-center">
+                                <!-- <span class="badge bg-info px-3 py-1">Disponible</span> -->
                             </div>
                         </div>
                     </t>
@@ -85,13 +101,5 @@
         sequence="10"
         parent="lottery_forecast.lottery_menu_root"
     />
-
-    <menuitem
-        id="menu_lottery_medellin"
-        name="Historical"
-        parent="menu_lottery_medellin_root"
-        action="action_lottery_medellin"
-    />
-
 
 </odoo>
