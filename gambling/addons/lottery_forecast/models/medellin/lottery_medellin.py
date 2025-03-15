@@ -3,6 +3,7 @@ import logging
 import requests  # type: ignore
 from bs4 import BeautifulSoup  # type: ignore
 import pandas as pd
+import itertools
 # import numpy as np
 
 _logger = logging.getLogger(__name__)
@@ -174,38 +175,94 @@ class LotteryMedellin(models.Model):
     @api.model
     def pandasLotteryAnalysisMedellin(self, **kw):
         """
-        Realiza análisis estadístico de los resultados de la lotería usando
-        pandas.
+            Realiza análisis estadístico de los resultados de la lotería
+            usando pandas.
+            - analysisType: Tipo de análisis
+            ('four-Medellin', 'three-Medellin', etc.)
+            - default_number: Número de cifras o combinaciones a analizar
+            (por defecto 1)
         """
-        _logger.info('\n\n __Pandas Lottery Analysis__ \n\n')
-
-        # Obtener todos los registros de lotería
-        lottery_records = self.search([])
-
-        # Crear DataFrame con los números
-        df = pd.DataFrame(
-            [
-                (rec.number) for rec in lottery_records
-            ], columns=['number']
+        _logger.info(
+            f"Realizando análisis de frecuencia para {kw} números "
         )
 
-        # Análisis de números de 4 cifras
-        four_digit_freq = df['number'].value_counts()
+        default_number = 1
 
-        # Análisis de números de 3 cifras (últimos 3 dígitos)
-        df['last_three'] = df['number'].str[-3:]
-        three_digit_freq = df['last_three'].value_counts()
+        try:
+            analysisType = kw.get('analysisType', '')
+            # Obtener registros de la lotería
+            lottery_records = self.search_read([], ['number', 'draw_date'])
 
-        results = {
-            'four_digits': {
-                'analysis': 'Top 10 números más frecuentes (4 cifras)',
-                'data': four_digit_freq.to_dict()
-            },
-            'three_digits': {
-                'analysis': 'Top 10 números más frecuentes (últimos 3 cifras)',
-                'data': three_digit_freq.to_dict()
-            }
-        }
+            if not lottery_records:
+                _logger.warning("No se encontraron registros para analizar.")
+                return []
 
-        _logger.info('Análisis de frecuencia completado: %s', results)
-        return results
+            # Crear DataFrame con los datos
+            df = pd.DataFrame(lottery_records)
+
+            # Convertir fechas a formato datetime
+            df['draw_date'] = pd.to_datetime(df['draw_date'])
+            df['day_of_week'] = df['draw_date'].dt.day_name()
+
+            # Generar combinaciones de números
+            combinations_data = []
+
+            for _, row in df.iterrows():
+                number_str = str(row['number']).zfill(4)
+                # Asegurar que el número tenga 4 cifras
+
+                if analysisType == 'four-Medellin':
+                    numbers = [number_str]
+                    # Usar el número completo de 4 cifras
+                elif analysisType == 'three-Medellin':
+                    numbers = [number_str[-3:]]  # Últimos 3 dígitos
+                else:
+                    _logger.error("Tipo de análisis no válido.")
+                    return []
+
+                # Crear combinaciones del tamaño default_number
+                for combination in itertools.combinations(
+                    numbers, default_number
+                ):
+                    combinations_data.append({
+                        'number': "-".join(combination),
+                        'draw_date': row['draw_date'].strftime('%Y-%m-%d'),
+                        'day_of_week': row['day_of_week']
+                    })
+
+            # Crear DataFrame con las combinaciones
+            df_combinations = pd.DataFrame(combinations_data)
+
+            # Concatenar fecha y día de la semana
+            df_combinations['date_day_super'] = (
+                df_combinations['draw_date'] + ':' +
+                df_combinations['day_of_week']
+            )
+
+            # Contar la frecuencia de cada combinación
+            frequency_df = df_combinations.groupby(
+                'number'
+            ).size().reset_index(
+                name='frequency'
+            )
+
+            # Agrupar fechas de aparición por combinación
+            dates_sorteos_df = df_combinations.groupby('number').agg({
+                'date_day_super': lambda x: list(x),
+            }).reset_index()
+
+            # Combinar frecuencia con fechas de aparición
+            result_df = pd.merge(frequency_df, dates_sorteos_df, on='number')
+
+            # Ordenar por frecuencia en orden descendente
+            result_df = result_df.sort_values(by='frequency', ascending=False)
+
+            # Convertir el resultado a una lista de diccionarios
+            result = result_df.to_dict(orient='records')
+
+            _logger.info(f"Análisis de frecuencia completado {analysisType}.")
+            return result
+
+        except Exception as e:
+            _logger.error(f"Error en el análisis de la lotería: {e}")
+            return []

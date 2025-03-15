@@ -4,10 +4,11 @@ import { Component, useState } from "@odoo/owl"
 import { registry } from "@web/core/registry"
 import { Layout } from "@web/search/layout"
 import { AnalisysLotteryMedellin } from "./analysis/analysis_medellin"
+import { TablaResultBaloto } from "../baloto/tabla_result/tabla_result"
 
 export class LotteryMedellin extends Component {
     static template = "lottery.LotteryMedellin"
-    static components = { Layout, AnalisysLotteryMedellin }
+    static components = { Layout, AnalisysLotteryMedellin, TablaResultBaloto }
 
     setup() {
         this.display = {
@@ -55,11 +56,17 @@ export class LotteryMedellin extends Component {
             return
         }
 
-        const results = await this.env.services.orm.call(
+        const options = {
+            analysisType,
+        }
+
+        this.state.results = await this.env.services.orm.call(
             'lottery.medellin',
-            "pandasLotteryAnalysisMedellin"
+            "pandasLotteryAnalysisMedellin",
+            [],  // IMPORTANTE: lista vacía como primer argumento
+            options  // Segundo argumento con los datos como **kw
         )
-        console.log(analysisType, results)
+        this.state.option = analysisType
     }
 
     /**
@@ -73,6 +80,19 @@ export class LotteryMedellin extends Component {
             title,
             type,
         })
+    }
+
+    onClickHistoricalM() {
+        this.env.services.action.doAction({
+            name: `Historical Medellín`,
+            type: "ir.actions.act_window",
+            res_model: "lottery.medellin",
+            views: [
+                [false, "kanban"],
+                [false, "list"],
+                [false, "form"],
+            ],
+        });
     }
 
 }
