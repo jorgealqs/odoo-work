@@ -1,0 +1,113 @@
+<odoo>
+    <template id="report_vitae">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page" style="font-family: 'Roboto', sans-serif; line-height: 1.6; color: #333;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <!-- Columna Izquierda (Foto, Sobre Mí, Contacto) -->
+                            <td style="width: 30%; vertical-align: top; background: #1E3A5F; color: #fff; padding: 20px; border-radius: 10px 0 0 10px;">
+                                <div style="text-align: center;">
+                                    <img t-if="doc.image_1920" t-att-src="image_data_uri(doc.image_1920)"
+                                        style="width: 120px; border-radius: 50%; border: 3px solid #F4A261;"/>
+                                </div>
+                                <div style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+                                    <strong style="font-size: 22px; color: #F4A261;" t-field="doc.name"/><br/>
+                                    <t t-set="primary_address" t-value="doc.address_ids.filtered(lambda a: a.is_primary)[:1]"/>
+                                    <t t-if="primary_address">
+                                        <span t-field="primary_address[0].city"/>,
+                                        <span t-field="primary_address[0].state"/>
+                                    </t><br/>
+                                </div>
+
+                                <!-- Contacto -->
+                                <h2 style="text-align: center; color: #F4A261; border-bottom: 2px solid #F4A261; padding-bottom: 5px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/126/126509.png" style="width: 20px; margin-right: 5px;"/> Contacto
+                                </h2>
+                                <p style="text-align: center;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" style="width: 18px; margin-right: 5px;"/>
+                                    <span t-field="doc.phone"/>
+                                    |
+                                    <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" style="width: 18px; margin-right: 5px;"/>
+                                    <span t-field="doc.email"/>
+                                </p>
+
+                                <!-- Sobre Mí -->
+                                <h2 style="text-align: center; color: #F4A261; border-bottom: 2px solid #F4A261; padding-bottom: 5px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" style="width: 20px; margin-right: 5px;"/> Sobre Mí
+                                </h2>
+                                <p t-field="doc.about_me" style="text-align: justify; font-size: 14px;"/>
+
+                                <!-- Redes Sociales -->
+                                <h2 style="text-align: center; color: #F4A261; border-bottom: 2px solid #F4A261; padding-bottom: 5px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" style="width: 20px; margin-right: 5px;"/> Redes Sociales
+                                </h2>
+                                <t t-if="doc.social_media_ids">
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <t t-foreach="doc.social_media_ids" t-as="social">
+                                            <a t-att-href="social.url" target="_blank" style="margin: 0 8px; text-decoration: none;">
+                                                <img t-att-src="social.icon_url" alt="Social Icon"
+                                                    style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #F4A261; padding: 4px;"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </t>
+                            </td>
+
+                            <!-- Columna Derecha (Experiencia, Educación, Habilidades) -->
+                            <td style="width: 70%; vertical-align: top; padding: 20px; background: #F8F9FA; border-radius: 0 10px 10px 0;">
+                                <!-- Experiencia -->
+                                <h2 style="border-bottom: 2px solid #1E3A5F; padding-bottom: 5px; color: #1E3A5F;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3039/3039569.png" style="width: 20px; margin-right: 5px;"/> Experiencia
+                                </h2>
+                                <ul>
+                                    <t t-foreach="doc.relevant_experience_ids" t-as="exp">
+                                        <li>
+                                            <strong t-field="exp.title"/> - <span t-field="exp.job_position"/><br/>
+                                            <small>(<span t-field="exp.start_date"/> - <span t-field="exp.end_date"/>)</small>
+                                            <p t-field="exp.description" style="text-align: justify;"/>
+                                        </li>
+                                    </t>
+                                </ul>
+
+                                <!-- Educación -->
+                                <h2 style="border-bottom: 2px solid #1E3A5F; padding-bottom: 5px; color: #1E3A5F;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3175/3175193.png" style="width: 20px; margin-right: 5px;"/> Educación
+                                </h2>
+                                <ul>
+                                    <t t-foreach="doc.education_ids" t-as="edu">
+                                        <li>
+                                            <strong t-field="edu.title"/> - <span t-field="edu.institution"/><br/>
+                                            <small>(<span t-field="edu.start_date"/> - <span t-field="edu.end_date"/>)</small>
+                                        </li>
+                                    </t>
+                                </ul>
+
+                                <!-- Habilidades -->
+                                <h2 style="border-bottom: 2px solid #1E3A5F; padding-bottom: 5px; color: #1E3A5F;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3386/3386768.png" style="width: 20px; margin-right: 5px;"/> Habilidades
+                                </h2>
+                                <ul>
+                                    <t t-foreach="doc.skill_ids" t-as="skill">
+                                        <li><strong t-field="skill.name"/> (<span t-field="skill.level"/>)</li>
+                                    </t>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Acción del reporte -->
+    <record id="report_vitae_action" model="ir.actions.report">
+        <field name="name">Vitae</field>
+        <field name="model">cv.manager</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">cv_manager.report_vitae</field>
+        <field name="report_file">cv_manager.report_vitae</field>
+        <field name="binding_model_id" ref="model_cv_manager"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
