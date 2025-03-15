@@ -88,7 +88,7 @@
 
     <!-- Acción del reporte -->
     <record id="report_cv_action" model="ir.actions.report">
-        <field name="name">Curriculum harvard</field>
+        <field name="name">Harvard</field>
         <field name="model">cv.manager</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">cv_manager.report_cv</field>
